@@ -190,10 +190,44 @@ var TSOS;
             if (args.length > 0) {
                 var topic = args[0];
                 switch (topic) {
+                    case "yostos":
+                        _StdOut.putText("YostOS is a browser-based virtual operating system.");
+                        _StdOut.advanceLine();
+                        _StdOut.putText("It's written in typescript and based on Alan Labouseur's" +
+                            "TSOS-2019 template.");
+                        break;
+                    case "ver":
+                        _StdOut.putText("Ver displays the operating system name and current version.");
+                        break;
                     case "help":
                         _StdOut.putText("Help displays a list of (hopefully) valid commands.");
                         break;
-                    // TODO: Make descriptive MANual page entries for the the rest of the shell commands here.
+                    case "shutdown":
+                        _StdOut.putText("Shutdown deactivates the OS but leaves the virtual hardware running.");
+                        break;
+                    case "cls":
+                        _StdOut.putText("Cls clears the screen and resets the cursor to position zero.");
+                        break;
+                    case "man":
+                        _StdOut.putText("Usage: man <topic>");
+                        _StdOut.advanceLine();
+                        _StdOut.putText("Man displays detailed information about a specific topic or command.");
+                        break;
+                    case "trace":
+                        _StdOut.putText("Usage: trace <on | off>");
+                        _StdOut.advanceLine();
+                        _StdOut.putText("Trace turns the OS trace in the Host Log on or off.");
+                        break;
+                    case "rot13":
+                        _StdOut.putText("Usage: rot13 <string>");
+                        _StdOut.advanceLine();
+                        _StdOut.putText("Perform ceaser-cipher-style rot13 encryption on <string>.");
+                        break;
+                    case "prompt":
+                        _StdOut.putText("Usage: prompt <string>");
+                        _StdOut.advanceLine();
+                        _StdOut.putText("Set the prompt that appears before any text you enter. Default is '>'");
+                        break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
