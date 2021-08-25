@@ -73,6 +73,12 @@ module TSOS {
                                   "<string> - Sets the prompt.");
             this.commandList[this.commandList.length] = sc;
 
+            // date
+            sc = new ShellCommand(this.shellDate,
+                                  "date",
+                                  "- Displays the current date and time.");
+            this.commandList[this.commandList.length] = sc;
+
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
 
@@ -211,7 +217,8 @@ module TSOS {
             _StdOut.putText("Commands:");
             for (var i in _OsShell.commandList) {
                 _StdOut.advanceLine();
-                _StdOut.putText("  " + _OsShell.commandList[i].command + " " + _OsShell.commandList[i].description);
+                _StdOut.putText("  " + _OsShell.commandList[i].command + " " + 
+                    _OsShell.commandList[i].description);
             }
         }
 
@@ -235,7 +242,8 @@ module TSOS {
                         _StdOut.putText("YostOS is a browser-based virtual operating system.");
                         _StdOut.advanceLine();
                         _StdOut.putText("It's written in typescript and based on Alan Labouseur's" + 
-                                        "TSOS-2019 template.");
+                            "TSOS-2019 template. Despite its flaws, it is indisputably " +
+                            "better than Windows Vista.");
                         break;
                     case "ver":
                         _StdOut.putText("Ver displays the operating system name and current version.");
@@ -262,12 +270,16 @@ module TSOS {
                     case "rot13":
                         _StdOut.putText("Usage: rot13 <string>");
                         _StdOut.advanceLine();
-                        _StdOut.putText("Perform ceaser-cipher-style rot13 encryption on <string>.");
+                        _StdOut.putText("Rot13 performs ceaser-cipher-style rot13 encryption on <string>.");
                         break;
                     case "prompt":
                         _StdOut.putText("Usage: prompt <string>");
                         _StdOut.advanceLine();
-                        _StdOut.putText("Set the prompt that appears before any text you enter. Default is '>'");
+                        _StdOut.putText("Prompt sets the prompt that appears before any text you enter. " +
+                            "Default is '>'");
+                        break;
+                    case "date":
+                        _StdOut.putText("Date displays the current date and time according to a JS Date object.");
                         break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
@@ -318,5 +330,9 @@ module TSOS {
             }
         }
 
+        public shellDate(args: string[]) {
+            var d = new Date();
+            _StdOut.putText(d.toString());
+        }
     }
 }
