@@ -48,6 +48,9 @@ var TSOS;
             // date
             sc = new TSOS.ShellCommand(this.shellDate, "date", "- Displays the current date and time.");
             this.commandList[this.commandList.length] = sc;
+            // whereami
+            sc = new TSOS.ShellCommand(this.shellWhereAmI, "whereami", "- Displays your approximate location.");
+            this.commandList[this.commandList.length] = sc;
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
             // Display the initial prompt.
@@ -197,7 +200,7 @@ var TSOS;
                     case "yostos":
                         _StdOut.putText("YostOS is a browser-based virtual operating system.");
                         _StdOut.advanceLine();
-                        _StdOut.putText("It's written in typescript and based on Alan Labouseur's" +
+                        _StdOut.putText("It's written in typescript and based on Alan Labouseur's " +
                             "TSOS-2019 template. Despite its flaws, it is indisputably " +
                             "better than Windows Vista.");
                         break;
@@ -237,6 +240,8 @@ var TSOS;
                     case "date":
                         _StdOut.putText("Date displays the current date and time according to a JS Date object.");
                         break;
+                    case "whereami":
+                        _StdOut.putText("Whereami shows your current latitude and longitude using the HTML5 geolocation system.");
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -288,8 +293,25 @@ var TSOS;
             }
         };
         Shell.prototype.shellDate = function (args) {
+            //JS comes with a built-in date object that displays the current date, so we just use that.
             var d = new Date();
             _StdOut.putText(d.toString());
+        };
+        Shell.prototype.shellWhereAmI = function (args) {
+            //HTML5 has a handy geolocation function to find lat/lng.
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function (pos) {
+                    _StdOut.putText("Here is your current...");
+                    _StdOut.advanceLine();
+                    _StdOut.putText("  Latitude: " + pos.coords.latitude);
+                    _StdOut.advanceLine();
+                    _StdOut.putText("  Longitude: " + pos.coords.longitude);
+                    _StdOut.advanceLine();
+                });
+            }
+            else {
+                _StdOut.putText("Your browser does not support geolocation.");
+            }
         };
         return Shell;
     }());
