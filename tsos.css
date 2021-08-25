@@ -1,48 +1,79 @@
 /* TSOS.css */
 
 body {
-  background: #909193 url(distrib/images/linen.png) repeat;
-  font-family: Helvetica, Verdana, Arial, sans-serif;
-  font-size: 12pt;
-  font-weight: normal;
-  font-style: normal;
+    background: #09090F;
+    font-family: Helvetica, Verdana, Arial, sans-serif;
+    font-size: 12pt;
+    color: white;
+    font-weight: normal;
+    font-style: normal;
+    overflow: hidden;
+    margin: 0;
 }
 
 h1 {
-  color: black;
-  font-size: 24pt;
-  font-weight: normal;
-  font-style: normal;
-  border-bottom: 1px solid black;
+    color: white;
+    font-size: 24pt;
+    font-weight: normal;
+    font-style: normal;
+    border-bottom: 1px solid black;
 }
 
 h2 {
-  color: black;
-  font-size: 20pt;
-  font-weight: normal;
-  font-style: normal;
+    color: white;
+    font-size: 20pt;
+    font-weight: normal;
+    font-style: normal;
 }
 
 h3 {
-  font-family: Helvetica, Verdana, Arial, sans-serif;
-  font-size: 16pt;
-  font-weight: normal;
-  font-style: normal;
+    color: white;
+    font-family: Helvetica, Verdana, Arial, sans-serif;
+    font-size: 16pt;
+    font-weight: normal;
+    font-style: normal;
+}
+
+textarea {
+    background: #0F0F15;
+    color: white;
+    border: 1px solid black;
 }
 
 #display {
-  background-color:#DFDBC3;
-  border: 2px solid red;
-  cursor: default;
+    background-color: #0F0F15;
+    border: 1px solid black;
+    cursor: default;
+}
+
+#background {
+    position: fixed;
+    z-index: -100;
+}
+
+#divMain {
+    animation-name:fadein;
+    animation-duration:0.75s;
 }
 
 .normal_button {
-  width: 100px;
+    width: 100px;
 }
 
 .footerText {
-  color: black;
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 8pt;
-  text-align: center;
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 8pt;
+    text-align: center;
+}
+
+@keyframes fadein {
+    0% { 
+        opacity: 0%;
+        transform: translate(0px, 100px);
+    }
+    100% { 
+        opacity: 100%;
+        transform: translate(0px, 0px);
+    }
 }
