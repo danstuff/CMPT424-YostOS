@@ -51,6 +51,9 @@ var TSOS;
             // whereami
             sc = new TSOS.ShellCommand(this.shellWhereAmI, "whereami", "- Displays your approximate location.");
             this.commandList[this.commandList.length] = sc;
+            // oracle
+            sc = new TSOS.ShellCommand(this.shellOracle, "oracle", "<string> - Consult the oracle with any question.");
+            this.commandList[this.commandList.length] = sc;
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
             // Display the initial prompt.
@@ -241,7 +244,15 @@ var TSOS;
                         _StdOut.putText("Date displays the current date and time according to a JS Date object.");
                         break;
                     case "whereami":
-                        _StdOut.putText("Whereami shows your current latitude and longitude using the HTML5 geolocation system.");
+                        _StdOut.putText("Whereami shows your current latitude and longitude using the" +
+                            " HTML5 geolocation system.");
+                        break;
+                    case "oracle":
+                        _StdOut.putText("Usage: oracle <string>");
+                        _StdOut.advanceLine();
+                        _StdOut.putText("Oracle allows you to ask a holy oracle (definitely not RNG) for " +
+                            "the answer to your life's toughest questions.");
+                        break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -311,6 +322,28 @@ var TSOS;
             }
             else {
                 _StdOut.putText("Your browser does not support geolocation.");
+            }
+        };
+        Shell.prototype.shellOracle = function (args) {
+            //don't tell anyone, but the oracle is actually not sacred or anything.
+            //it just picks some words from your input sentence and tries to make a randomized sentence.
+            if (args.length > 0) {
+                var randMax = function (max) {
+                    return Math.floor(max * Math.random());
+                };
+                var adjectives = ["holy", "great", "sexy", "opulent", "magnanimous", "verdant",
+                    "all-mighty", "luxurious", "fortunate", "promiscuous", "rancorous", "mountainous"];
+                var verbs = ["make", "do", "is", "was", "exist in", "run from", "is not", "do not"];
+                var adjective0 = adjectives[randMax(adjectives.length)];
+                var adjective1 = adjectives[randMax(adjectives.length)];
+                var noun0 = args[randMax(args.length)].toLowerCase().replace("/r", "/");
+                var noun1 = args[randMax(args.length)].toLowerCase().replace("/r", "/");
+                var verb = verbs[randMax(verbs.length)];
+                _StdOut.putText("[ORACLE] " + adjective0 + " " + noun0 + " " + verb +
+                    " " + adjective1 + " " + noun1 + ".");
+            }
+            else {
+                _StdOut.putText("[ORACLE] Hurry up and ask a question; I'm very busy today.");
             }
         };
         return Shell;
