@@ -31,10 +31,12 @@ var TSOS;
             _DrawingContext.clearRect(0, 0, _Canvas.width, _Canvas.height);
         };
         Console.prototype.blueScreen = function (error) {
+            this.clearScreen();
+            this.resetXY();
             //draw a big ol blue box over the whole screen
-            _DrawingContext.strokeStyle = "blue";
+            _DrawingContext.fillStyle = "blue";
             _DrawingContext.beginPath();
-            _DrawingContext.rect(0, 0, _Canvas.width, _Canvas.height);
+            _DrawingContext.fillRect(0, 0, _Canvas.width, _Canvas.height);
             _DrawingContext.stroke();
             //print the error
             this.putText(error);

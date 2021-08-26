@@ -57,6 +57,9 @@ var TSOS;
             // status
             sc = new TSOS.ShellCommand(this.shellStatus, "status", "<string> - Change the Host Log status message.");
             this.commandList[this.commandList.length] = sc;
+            // crash/BSOD tester
+            sc = new TSOS.ShellCommand(this.shellCrash, "crash", "<string> - Cause a crash with an error message.");
+            this.commandList[this.commandList.length] = sc;
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
             // Display the initial prompt.
@@ -272,6 +275,11 @@ var TSOS;
                         _StdOut.advanceLine();
                         _StdOut.putText("Status changes the message that appears above the host log window.");
                         break;
+                    case "crash":
+                        _StdOut.putText("Usage: crash <string>");
+                        _StdOut.advanceLine();
+                        _StdOut.putText("Crash allows you to immediately crash the OS with an error message.");
+                        break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -381,6 +389,16 @@ var TSOS;
             }
             else {
                 _StdOut.putText("Usage: status <string>  Please supply a string.");
+            }
+        };
+        Shell.prototype.shellCrash = function (args) {
+            if (args.length > 0) {
+                var crashMsg = "";
+                for (var a in args) {
+                    crashMsg = crashMsg + " " + args[a];
+                }
+                crashMsg = crashMsg.slice(1);
+                _Kernel.krnTrapError(crashMsg);
             }
         };
         return Shell;

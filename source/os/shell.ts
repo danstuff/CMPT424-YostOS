@@ -27,76 +27,82 @@ module TSOS {
 
             // ver
             sc = new ShellCommand(this.shellVer,
-                                  "ver",
-                                  "- Displays the current version data.");
+                "ver",
+                "- Displays the current version data.");
             this.commandList[this.commandList.length] = sc;
 
             // help
             sc = new ShellCommand(this.shellHelp,
-                                  "help",
-                                  "- This is the help command. Seek help.");
+                "help",
+                "- This is the help command. Seek help.");
             this.commandList[this.commandList.length] = sc;
 
             // shutdown
             sc = new ShellCommand(this.shellShutdown,
-                                  "shutdown",
-                                  "- Shuts down the virtual OS but leaves the underlying host / hardware simulation running.");
+                "shutdown",
+                "- Shuts down the virtual OS but leaves the underlying host / hardware simulation running.");
             this.commandList[this.commandList.length] = sc;
 
             // cls
             sc = new ShellCommand(this.shellCls,
-                                  "cls",
-                                  "- Clears the screen and resets the cursor position.");
+                "cls",
+                "- Clears the screen and resets the cursor position.");
             this.commandList[this.commandList.length] = sc;
 
             // man <topic>
             sc = new ShellCommand(this.shellMan,
-                                  "man",
-                                  "<topic> - Displays the MANual page for <topic>.");
+                "man",
+                "<topic> - Displays the MANual page for <topic>.");
             this.commandList[this.commandList.length] = sc;
 
             // trace <on | off>
             sc = new ShellCommand(this.shellTrace,
-                                  "trace",
-                                  "<on | off> - Turns the OS trace on or off.");
+                "trace",
+                "<on | off> - Turns the OS trace on or off.");
             this.commandList[this.commandList.length] = sc;
 
             // rot13 <string>
             sc = new ShellCommand(this.shellRot13,
-                                  "rot13",
-                                  "<string> - Does rot13 obfuscation on <string>.");
+                "rot13",
+                "<string> - Does rot13 obfuscation on <string>.");
             this.commandList[this.commandList.length] = sc;
 
             // prompt <string>
             sc = new ShellCommand(this.shellPrompt,
-                                  "prompt",
-                                  "<string> - Sets the prompt.");
+                "prompt",
+                "<string> - Sets the prompt.");
             this.commandList[this.commandList.length] = sc;
 
             // date
             sc = new ShellCommand(this.shellDate,
-                                  "date",
-                                  "- Displays the current date and time.");
+                "date",
+                "- Displays the current date and time.");
             this.commandList[this.commandList.length] = sc;
 
             // whereami
             sc = new ShellCommand(this.shellWhereAmI,
-                                  "whereami",
-                                  "- Displays your approximate location.");
+                "whereami",
+                "- Displays your approximate location.");
             this.commandList[this.commandList.length] = sc;
 
             // oracle
             sc = new ShellCommand(this.shellOracle,
-                                  "oracle",
-                                  "<string> - Consult the sacred oracle with any question.");
+                "oracle",
+                "<string> - Consult the sacred oracle with any question.");
             this.commandList[this.commandList.length] = sc;
-            
+
             // status
             sc = new ShellCommand(this.shellStatus,
-                                  "status",
-                                  "<string> - Change the Host Log status message.");
+                "status",
+                "<string> - Change the Host Log status message.");
             this.commandList[this.commandList.length] = sc;
-            
+
+            // crash/BSOD tester
+            sc = new ShellCommand(this.shellCrash,
+                "crash",
+                "<string> - Cause a crash with an error message.");
+            this.commandList[this.commandList.length] = sc;
+
 
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
@@ -229,14 +235,14 @@ module TSOS {
         }
 
         public shellApology() {
-           if (_SarcasticMode) {
-              _StdOut.putText("I think we can put our differences behind us.");
-              _StdOut.advanceLine();
-              _StdOut.putText("For science . . . You monster.");
-              _SarcasticMode = false;
-           } else {
-              _StdOut.putText("For what?");
-           }
+            if (_SarcasticMode) {
+                _StdOut.putText("I think we can put our differences behind us.");
+                _StdOut.advanceLine();
+                _StdOut.putText("For science . . . You monster.");
+                _SarcasticMode = false;
+            } else {
+                _StdOut.putText("For what?");
+            }
         }
 
         // Although args is unused in some of these functions, it is always provided in the 
@@ -256,8 +262,8 @@ module TSOS {
         }
 
         public shellShutdown(args: string[]) {
-             _StdOut.putText("Shutting down...");
-             // Call Kernel shutdown routine.
+            _StdOut.putText("Shutting down...");
+            // Call Kernel shutdown routine.
             _Kernel.krnShutdown();
             // TODO: Stop the final prompt from being displayed. If possible. Not a high priority. (Damn OCD!)
         }
@@ -328,6 +334,11 @@ module TSOS {
                         _StdOut.putText("Usage: status <string>");
                         _StdOut.advanceLine();
                         _StdOut.putText("Status changes the message that appears above the host log window.");
+                        break;
+                    case "crash":
+                        _StdOut.putText("Usage: crash <string>");
+                        _StdOut.advanceLine();
+                        _StdOut.putText("Crash allows you to immediately crash the OS with an error message.");
                         break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
@@ -448,6 +459,20 @@ module TSOS {
 
             } else {
                 _StdOut.putText("Usage: status <string>  Please supply a string.");
+            }
+        }
+
+        public shellCrash(args: string[]) {
+            if(args.length > 0) {
+                var crashMsg = "";
+
+                for (var a in args) {
+                    crashMsg = crashMsg + " " + args[a];
+                }
+
+                crashMsg = crashMsg.slice(1);
+
+                _Kernel.krnTrapError(crashMsg);
             }
         }
     }
