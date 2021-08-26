@@ -419,9 +419,17 @@ module TSOS {
                 var statusElem = document.getElementById("divStatus");
 
                 if(statusElem) {
-                    statusElem.innerHTML = args[0];
+                    var statusStr = "";
 
-                    _StdOut.putText("Changed Status to '" + args[0] + "'");               
+                    for (var a in args) {
+                        statusStr = statusStr + " " + args[a];
+                    }
+
+                    statusStr = statusStr.slice(1);
+
+                    statusElem.innerHTML = statusStr;
+
+                    _StdOut.putText("Changed Status to '" + statusStr + "'");               
                 }
 
             } else {

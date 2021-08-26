@@ -359,8 +359,13 @@ var TSOS;
             if (args.length > 0) {
                 var statusElem = document.getElementById("divStatus");
                 if (statusElem) {
-                    statusElem.innerHTML = args[0];
-                    _StdOut.putText("Changed Status to '" + args[0] + "'");
+                    var statusStr = "";
+                    for (var a in args) {
+                        statusStr = statusStr + " " + args[a];
+                    }
+                    statusStr = statusStr.slice(1);
+                    statusElem.innerHTML = statusStr;
+                    _StdOut.putText("Changed Status to '" + statusStr + "'");
                 }
             }
             else {
