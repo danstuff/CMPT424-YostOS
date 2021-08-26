@@ -61,6 +61,8 @@ var TSOS;
                 (keyCode == 32) || // space
                 (keyCode == 13) || // enter
                 (keyCode == 9) || // tab
+                (keyCode == 38) || // up
+                (keyCode == 40) || // down
                 (keyCode == 8)) { // backspace
                 chr = String.fromCharCode(keyCode);
                 _KernelInputQueue.enqueue(chr);

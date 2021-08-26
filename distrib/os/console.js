@@ -7,17 +7,21 @@
 var TSOS;
 (function (TSOS) {
     var Console = /** @class */ (function () {
-        function Console(currentFont, currentFontSize, currentXPosition, currentYPosition, buffer) {
+        function Console(currentFont, currentFontSize, currentXPosition, currentYPosition, buffer, bufHistory, bufHistoryPos) {
             if (currentFont === void 0) { currentFont = _DefaultFontFamily; }
             if (currentFontSize === void 0) { currentFontSize = _DefaultFontSize; }
             if (currentXPosition === void 0) { currentXPosition = 0; }
             if (currentYPosition === void 0) { currentYPosition = _DefaultFontSize; }
             if (buffer === void 0) { buffer = ""; }
+            if (bufHistory === void 0) { bufHistory = []; }
+            if (bufHistoryPos === void 0) { bufHistoryPos = 0; }
             this.currentFont = currentFont;
             this.currentFontSize = currentFontSize;
             this.currentXPosition = currentXPosition;
             this.currentYPosition = currentYPosition;
             this.buffer = buffer;
+            this.bufHistory = bufHistory;
+            this.bufHistoryPos = bufHistoryPos;
         }
         Console.prototype.init = function () {
             this.clearScreen();
@@ -25,6 +29,26 @@ var TSOS;
         };
         Console.prototype.clearScreen = function () {
             _DrawingContext.clearRect(0, 0, _Canvas.width, _Canvas.height);
+        };
+        Console.prototype.clearAfterCurrentPos = function () {
+            //clear everything after the current position
+            //it's a little hacky, but since i know the backspaced text will always be at
+            //the bottom of the canvas I can just add a big value to the height instead of
+            //bothering myself with the descent calculation.
+            _DrawingContext.clearRect(this.currentXPosition, this.currentYPosition - this.currentFontSize, 1000, 1000);
+        };
+        Console.prototype.clearCurrentLine = function () {
+            //measure the buffer width then clear it
+            var bufferwidth = _DrawingContext.measureText(this.currentFont, this.currentFontSize, this.buffer);
+            this.buffer = "";
+            //reset x position to before the buffer
+            this.currentXPosition -= bufferwidth;
+            this.clearAfterCurrentPos();
+        };
+        Console.prototype.addTypedText = function (text) {
+            //draw the text and add it to the buffer
+            this.putText(text);
+            this.buffer += text;
         };
         Console.prototype.resetXY = function () {
             this.currentXPosition = 0;
@@ -40,6 +64,8 @@ var TSOS;
                     // The enter key marks the end of a console command, so ...
                     // ... tell the shell ...
                     _OsShell.handleInput(this.buffer);
+                    //... push the command to the back of our history...
+                    this.bufHistory[this.bufHistory.length] = this.buffer;
                     // ... and reset our buffer.
                     this.buffer = "";
                 }
@@ -50,25 +76,42 @@ var TSOS;
                     //measure the size of the last character, and remove it from the X pos
                     var backoffset = _DrawingContext.measureText(this.currentFont, this.currentFontSize, lastchr);
                     this.currentXPosition -= backoffset;
-                    //clear the canvas space where the last character just was
-                    //it's a little hacky, but since i know the backspaced text will always be at
-                    //the bottom of the canvas I can just add a big value to the height instead of
-                    //bothering myself with the descent calculation.
-                    _DrawingContext.clearRect(this.currentXPosition, this.currentYPosition - this.currentFontSize, backoffset, this.currentFontSize + 10);
+                    this.clearAfterCurrentPos();
                 }
                 else if (chr === String.fromCharCode(9)) { // tab
                     //use the shell to predict the typed command
                     var pred = _OsShell.predictInput(this.buffer);
                     //type out the prediction
-                    this.putText(pred);
-                    this.buffer += pred;
+                    this.addTypedText(pred);
+                }
+                else if (chr === String.fromCharCode(38)) { //up
+                    //go back in the command history
+                    this.bufHistoryPos++;
+                    //loop back to beginning if you reached history end
+                    if (this.bufHistoryPos >= this.bufHistory.length) {
+                        this.bufHistoryPos = 0;
+                    }
+                    //clear whatever you'd typed previously
+                    this.clearCurrentLine();
+                    //type out the history entry
+                    this.addTypedText(this.bufHistory[this.bufHistoryPos]);
+                }
+                else if (chr === String.fromCharCode(40)) { //up
+                    //go back in the command history
+                    this.bufHistoryPos--;
+                    //loop to end of history at 0
+                    if (this.bufHistoryPos < 0) {
+                        this.bufHistoryPos = this.bufHistory.length - 1;
+                    }
+                    //clear whatever you'd typed previously
+                    this.clearCurrentLine();
+                    //type out the history entry
+                    this.addTypedText(this.bufHistory[this.bufHistoryPos]);
                 }
                 else {
                     // This is a "normal" character, so ...
-                    // ... draw it on the screen...
-                    this.putText(chr);
-                    // ... and add it to our buffer.
-                    this.buffer += chr;
+                    // ... draw it on the screen and add it to our buffer.
+                    this.addTypedText(chr);
                 }
                 // TODO: Add a case for Ctrl-C that would allow the user to break the current program.
             }
