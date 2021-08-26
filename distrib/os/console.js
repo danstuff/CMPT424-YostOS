@@ -47,8 +47,14 @@ var TSOS;
                     //if backspace was hit, remove the last character from the buffer
                     var lastchr = this.buffer.slice(-1);
                     this.buffer = this.buffer.slice(0, -1);
+                    //measure the size of the last character, and remove it from the X pos
                     var backoffset = _DrawingContext.measureText(this.currentFont, this.currentFontSize, lastchr);
                     this.currentXPosition -= backoffset;
+                    //clear the space where the last character just was
+                    //it's a little hacky, but since i know the backspaced text will always be at
+                    //the bottom of the canvas I can just add a big value to the height instead of
+                    //bothering myself with the descent calculation.
+                    _DrawingContext.clearRect(this.currentXPosition, this.currentYPosition - this.currentFontSize, backoffset, this.currentFontSize + 10);
                 }
                 else {
                     // This is a "normal" character, so ...
@@ -69,13 +75,9 @@ var TSOS;
                 decided to write one function and use the term "text" to connote string or char.
              */
             if (text !== "") {
-                //split the text into individual words for line wrapping
-                var words = text.split(" ");
+                //split the text into individual words for line wrapping (but use regex to preserve whitespace)
+                var words = text.split(/(?= )/g);
                 for (var i in words) {
-                    //we removed all the spaces, so add them back
-                    if (words.length > 1) {
-                        words[i] += " ";
-                    }
                     //determine the word's length in pixels
                     var offset = _DrawingContext.measureText(this.currentFont, this.currentFontSize, words[i]);
                     //wrap the line if we went too far
