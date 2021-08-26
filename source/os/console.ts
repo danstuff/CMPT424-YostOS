@@ -45,7 +45,13 @@ module TSOS {
                     this.buffer = "";
                 } else if (chr === String.fromCharCode(8)) { // backspace
                     //if backspace was hit, remove the last character from the buffer
+                    var lastchr = this.buffer.slice(-1);
                     this.buffer = this.buffer.slice(0, -1);
+
+                    var backoffset = _DrawingContext.measureText(this.currentFont, 
+                        this.currentFontSize, lastchr);
+
+                    this.currentXPosition -= backoffset;
 
                 } else {
                     // This is a "normal" character, so ...
@@ -72,7 +78,9 @@ module TSOS {
 
                 for(var i in words) {
                     //we removed all the spaces, so add them back
-                    words[i] += " ";
+                    if(words.length > 1) {
+                        words[i] += " ";
+                    }
 
                     //determine the word's length in pixels
                     var offset = _DrawingContext.measureText(this.currentFont, this.currentFontSize, words[i]);
