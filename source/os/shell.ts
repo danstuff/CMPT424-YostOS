@@ -473,6 +473,8 @@ module TSOS {
                 crashMsg = crashMsg.slice(1);
 
                 _Kernel.krnTrapError(crashMsg);
+            } else {
+                _Kernel.krnTrapError("No error message provided.");
             }
         }
     }

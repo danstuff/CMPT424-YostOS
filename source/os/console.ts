@@ -28,7 +28,6 @@ module TSOS {
         }
 
         public blueScreen(error: string): void { 
-            this.clearScreen();
             this.resetXY();
 
             //draw a big ol blue box over the whole screen
