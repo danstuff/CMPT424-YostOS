@@ -30,6 +30,15 @@ var TSOS;
         Console.prototype.clearScreen = function () {
             _DrawingContext.clearRect(0, 0, _Canvas.width, _Canvas.height);
         };
+        Console.prototype.blueScreen = function (error) {
+            //draw a big ol blue box over the whole screen
+            _DrawingContext.strokeStyle = "blue";
+            _DrawingContext.beginPath();
+            _DrawingContext.rect(0, 0, _Canvas.width, _Canvas.height);
+            _DrawingContext.stroke();
+            //print the error
+            this.putText(error);
+        };
         Console.prototype.clearAfterCurrentPos = function () {
             //clear everything after the current position
             //it's a little hacky, but since i know the backspaced text will always be at

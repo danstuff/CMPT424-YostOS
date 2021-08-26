@@ -27,6 +27,17 @@ module TSOS {
             _DrawingContext.clearRect(0, 0, _Canvas.width, _Canvas.height);
         }
 
+        public blueScreen(error: string): void { 
+            //draw a big ol blue box over the whole screen
+            _DrawingContext.strokeStyle = "blue";
+            _DrawingContext.beginPath();
+            _DrawingContext.rect(0, 0, _Canvas.width, _Canvas.height);
+            _DrawingContext.stroke();
+
+            //print the error
+            this.putText(error);
+        }
+
         public clearAfterCurrentPos(): void {
             //clear everything after the current position
             //it's a little hacky, but since i know the backspaced text will always be at
