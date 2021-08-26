@@ -52,7 +52,10 @@ var TSOS;
             sc = new TSOS.ShellCommand(this.shellWhereAmI, "whereami", "- Displays your approximate location.");
             this.commandList[this.commandList.length] = sc;
             // oracle
-            sc = new TSOS.ShellCommand(this.shellOracle, "oracle", "<string> - Consult the oracle with any question.");
+            sc = new TSOS.ShellCommand(this.shellOracle, "oracle", "<string> - Consult the sacred oracle with any question.");
+            this.commandList[this.commandList.length] = sc;
+            // status
+            sc = new TSOS.ShellCommand(this.shellStatus, "status", "<string> - Change the Host Log status message.");
             this.commandList[this.commandList.length] = sc;
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
@@ -253,6 +256,11 @@ var TSOS;
                         _StdOut.putText("Oracle allows you to ask a holy oracle (definitely not RNG) for " +
                             "the answer to your life's toughest questions.");
                         break;
+                    case "status":
+                        _StdOut.putText("Usage: status <string>");
+                        _StdOut.advanceLine();
+                        _StdOut.putText("Status changes the message that appears above the host log window.");
+                        break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -326,7 +334,8 @@ var TSOS;
         };
         Shell.prototype.shellOracle = function (args) {
             //don't tell anyone, but the oracle is actually not sacred or anything.
-            //it just picks some words from your input sentence and tries to make a randomized sentence.
+            //it just picks some words from your input sentence and tries to make a randomized sentence
+            //using some predefined adjectives and verbs.
             if (args.length > 0) {
                 var randMax = function (max) {
                     return Math.floor(max * Math.random());
@@ -344,6 +353,18 @@ var TSOS;
             }
             else {
                 _StdOut.putText("[ORACLE] Hurry up and ask a question; I'm very busy today.");
+            }
+        };
+        Shell.prototype.shellStatus = function (args) {
+            if (args.length > 0) {
+                var statusElem = document.getElementById("divStatus");
+                if (statusElem) {
+                    statusElem.innerHTML = args[0];
+                    _StdOut.putText("Changed Status to '" + args[0] + "'");
+                }
+            }
+            else {
+                _StdOut.putText("Usage: status <string>  Please supply a string.");
             }
         };
         return Shell;

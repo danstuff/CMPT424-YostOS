@@ -91,6 +91,12 @@ module TSOS {
                                   "<string> - Consult the sacred oracle with any question.");
             this.commandList[this.commandList.length] = sc;
             
+            // status
+            sc = new ShellCommand(this.shellStatus,
+                                  "status",
+                                  "<string> - Change the Host Log status message.");
+            this.commandList[this.commandList.length] = sc;
+            
 
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
@@ -304,6 +310,11 @@ module TSOS {
                         _StdOut.putText("Oracle allows you to ask a holy oracle (definitely not RNG) for " +
                             "the answer to your life's toughest questions.");
                         break;
+                    case "status":
+                        _StdOut.putText("Usage: status <string>");
+                        _StdOut.advanceLine();
+                        _StdOut.putText("Status changes the message that appears above the host log window.");
+                        break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -400,6 +411,21 @@ module TSOS {
                     " " + adjective1 + " " + noun1 + ".");
             } else {
                 _StdOut.putText("[ORACLE] Hurry up and ask a question; I'm very busy today.");
+            }
+        }
+
+        public shellStatus(args: string[]) {
+            if(args.length > 0) {
+                var statusElem = document.getElementById("divStatus");
+
+                if(statusElem) {
+                    statusElem.innerHTML = args[0];
+
+                    _StdOut.putText("Changed Status to '" + args[0] + "'");               
+                }
+
+            } else {
+                _StdOut.putText("Usage: status <string>  Please supply a string.");
             }
         }
     }
