@@ -64,13 +64,24 @@ var TSOS;
                 So rather than be like PHP and write two (or more) functions that
                 do the same thing, thereby encouraging confusion and decreasing readability, I
                 decided to write one function and use the term "text" to connote string or char.
-            */
+             */
             if (text !== "") {
-                // Draw the text at the current X and Y coordinates.
-                _DrawingContext.drawText(this.currentFont, this.currentFontSize, this.currentXPosition, this.currentYPosition, text);
-                // Move the current X position.
-                var offset = _DrawingContext.measureText(this.currentFont, this.currentFontSize, text);
-                this.currentXPosition = this.currentXPosition + offset;
+                //split the text into individual words for line wrapping
+                var words = text.split(" ");
+                for (var i in words) {
+                    //we removed all the spaces, so add them back
+                    words[i] += " ";
+                    //determine the word's length in pixels
+                    var offset = _DrawingContext.measureText(this.currentFont, this.currentFontSize, words[i]);
+                    //wrap the line if we went too far
+                    if (this.currentXPosition + offset > 500) {
+                        this.advanceLine();
+                    }
+                    // Draw the word at the current X and Y coordinates.
+                    _DrawingContext.drawText(this.currentFont, this.currentFontSize, this.currentXPosition, this.currentYPosition, words[i]);
+                    // Move the current X position.
+                    this.currentXPosition = this.currentXPosition + offset;
+                }
             }
         };
         Console.prototype.advanceLine = function () {
