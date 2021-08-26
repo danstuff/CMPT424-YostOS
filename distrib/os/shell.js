@@ -144,6 +144,17 @@ var TSOS;
             }
             return retVal;
         };
+        Shell.prototype.predictInput = function (buffer) {
+            var prediction = "";
+            //iterate through the command list and try to find a match for buffer
+            for (var i in this.commandList) {
+                var sc = this.commandList[i];
+                if (sc.command.startsWith(buffer)) {
+                    prediction = sc.command.replace(buffer, "");
+                }
+            }
+            return prediction;
+        };
         //
         // Shell Command Functions. Kinda not part of Shell() class exactly, but
         // called from here, so kept here to avoid violating the law of least astonishment.

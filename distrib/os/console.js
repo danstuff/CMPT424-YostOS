@@ -50,11 +50,18 @@ var TSOS;
                     //measure the size of the last character, and remove it from the X pos
                     var backoffset = _DrawingContext.measureText(this.currentFont, this.currentFontSize, lastchr);
                     this.currentXPosition -= backoffset;
-                    //clear the space where the last character just was
+                    //clear the canvas space where the last character just was
                     //it's a little hacky, but since i know the backspaced text will always be at
                     //the bottom of the canvas I can just add a big value to the height instead of
                     //bothering myself with the descent calculation.
                     _DrawingContext.clearRect(this.currentXPosition, this.currentYPosition - this.currentFontSize, backoffset, this.currentFontSize + 10);
+                }
+                else if (chr === String.fromCharCode(9)) { // tab
+                    //use the shell to predict the typed command
+                    var pred = _OsShell.predictInput(this.buffer);
+                    //type out the prediction
+                    this.putText(pred);
+                    this.buffer += pred;
                 }
                 else {
                     // This is a "normal" character, so ...
@@ -75,7 +82,8 @@ var TSOS;
                 decided to write one function and use the term "text" to connote string or char.
              */
             if (text !== "") {
-                //split the text into individual words for line wrapping (but use regex to preserve whitespace)
+                //split the text into individual words for line wrapping 
+                //(but use regex lookahead to preserve whitespace)
                 var words = text.split(/(?= )/g);
                 for (var i in words) {
                     //determine the word's length in pixels
