@@ -142,7 +142,7 @@ var TSOS;
                     //determine the word's length in pixels
                     var offset = _DrawingContext.measureText(this.currentFont, this.currentFontSize, words[i]);
                     //wrap the line if we went too far
-                    if (this.currentXPosition + offset > 500) {
+                    if (this.currentXPosition + offset > _Canvas.width) {
                         this.advanceLine();
                     }
                     // Draw the word at the current X and Y coordinates.
@@ -159,10 +159,17 @@ var TSOS;
              * Font descent measures from the baseline to the lowest point in the font.
              * Font height margin is extra spacing between the lines.
              */
-            this.currentYPosition += _DefaultFontSize +
+            var lineHeight = _DefaultFontSize +
                 _DrawingContext.fontDescent(this.currentFont, this.currentFontSize) +
                 _FontHeightMargin;
-            // TODO: Handle scrolling. (iProject 1)
+            this.currentYPosition += lineHeight;
+            // if you exceeded canvas size, translate the whole canvas up by the line height
+            if (this.currentYPosition > _Canvas.height) {
+                this.currentYPosition -= lineHeight;
+                var img = _DrawingContext.getImageData(0, 0, _Canvas.width, _Canvas.height);
+                this.clearScreen();
+                _DrawingContext.putImageData(img, 0, -lineHeight);
+            }
         };
         return Console;
     }());
