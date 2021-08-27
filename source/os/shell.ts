@@ -103,6 +103,11 @@ module TSOS {
                 "<string> - Cause a crash with an error message.");
             this.commandList[this.commandList.length] = sc;
 
+            // load
+            sc = new ShellCommand(this.shellLoad,
+                "load",
+                "- Load and validate the User Program Input.");
+            this.commandList[this.commandList.length] = sc;
 
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
@@ -278,9 +283,8 @@ module TSOS {
                 var topic = args[0];
                 switch (topic) {
                     case "yostos":
-                        _StdOut.putText("YostOS is a browser-based virtual operating system.");
-                        _StdOut.advanceLine();
-                        _StdOut.putText("It's written in typescript and based on Alan Labouseur's " + 
+                        _StdOut.putText("YostOS is a browser-based virtual operating system." +
+                            "It's written in typescript and based on Alan Labouseur's " + 
                             "TSOS-2019 template. Despite its flaws, it is indisputably " +
                             "better than Windows Vista.");
                         break;
@@ -339,6 +343,10 @@ module TSOS {
                         _StdOut.putText("Usage: crash <string>");
                         _StdOut.advanceLine();
                         _StdOut.putText("Crash allows you to immediately crash the OS with an error message.");
+                        break
+                    case "load":
+                        _StdOut.putText("Load validates and processes assembly from the User Program Input." +
+                            "All code must be in the form of hex values separated by spaces.");
                         break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
@@ -476,6 +484,32 @@ module TSOS {
             } else {
                 _Kernel.krnTrapError("No error message provided.");
             }
+        }
+
+        public shellLoad(args: string[]) {
+            var inputElem = <HTMLInputElement> document.getElementById("taProgramInput");
+            var inputStr = inputElem.value;
+
+            //split input into individual hex numbers by whitespace
+            var hexStrList = inputStr.split(" ");
+
+            var hexList = [];
+
+            for(var i in hexStrList) {
+                var hexStr = hexStrList[i].trim();
+
+                //for now, I'm doing super strict syntax checking.
+                //every hex number must be 2 digits and contain only 0-9, a-f, or A-F
+                if(hexStr.length == 2 &&
+                   hexStr.match(/[a-fA-F0-9][a-fA-F0-9]/g)) {
+                    hexList[hexList.length] = parseInt(hexStr, 16);
+                } else {
+                    _StdOut.putText("ERROR - Unrecognized term '" + hexStr + "'. Load failed.");
+                    return;
+                }
+            }
+
+            _StdOut.putText("Load successful.");
         }
     }
 }

@@ -198,6 +198,7 @@ module TSOS {
             if (this.currentYPosition > _Canvas.height) {
                 this.currentYPosition -= lineHeight;
 
+                //copy the canvas data, clear canvas, and replace the data translated up a bit
                 var img = _DrawingContext.getImageData(0, 0, _Canvas.width, _Canvas.height);
                 this.clearScreen();
                 _DrawingContext.putImageData(img, 0, -lineHeight);
