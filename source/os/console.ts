@@ -15,7 +15,9 @@ module TSOS {
             public currentYPosition = _DefaultFontSize,
             public buffer = "",
             public bufHistory = [],
-            public bufHistoryPos = -1) {
+            public bufHistoryPos = -1,
+            public predictionBase = "",
+            public predictionNum = 0) {
         }
 
         public init(): void {
@@ -90,7 +92,9 @@ module TSOS {
 
                     // ... and reset our buffer.
                     this.buffer = "";
+
                     this.bufHistoryPos = -1;
+                    this.predictionNum = 0;
 
                 } else if (chr === '#Backspace') { // backspace
                     //if backspace was hit, remove the last character from the buffer
@@ -104,14 +108,35 @@ module TSOS {
                     this.currentXPosition -= backoffset;
 
                     this.clearAfterCurrentPos();
+
                     this.bufHistoryPos = -1;
+                    this.predictionNum = 0;
 
                 } else if (chr === '#Tab') { // tab
-                    //use the shell to predict the typed command
-                    var pred = _OsShell.predictInput(this.buffer);
+                    //if it's your first time predicting, use the current buffer as a base
+                    if(this.predictionNum == 0) {
+                        this.predictionBase = this.buffer;
+                    }
 
-                    //type out the prediction
-                    this.addTypedText(pred);
+                    //get a list of predictions from the shell
+                    var predictions = _OsShell.predictInput(this.predictionBase);
+
+                    //if you found any,
+                    if(predictions.length > 0) {
+                        //make sure you haven't exceeded the predicitons
+                        if(this.predictionNum >= predictions.length) {
+                            this.predictionNum = 0;
+                        }
+
+                        //type out the prediction
+                        this.clearCurrentLine();
+                        console.log(predictions[this.predictionNum]);
+                        this.addTypedText(predictions[this.predictionNum]);
+
+                        //advance to the next prediction
+                        this.predictionNum++;
+                    }
+
                     this.bufHistoryPos = -1;
                     
                 } else if (chr === '#Up') { //up
@@ -129,6 +154,8 @@ module TSOS {
                         this.addTypedText(this.bufHistory[this.bufHistoryPos]);
                     }
 
+                    this.predictionNum = 0;
+
                 } else if (chr === '#Down') { //down
                     //go back in the command history
                     this.bufHistoryPos--;
@@ -144,11 +171,14 @@ module TSOS {
                         this.addTypedText(this.bufHistory[this.bufHistoryPos]);
                     }
 
+                    this.predictionNum = 0;
+
                 } else {
                     // This is a "normal" character, so ...
                     // ... draw it on the screen and add it to our buffer.
                     this.addTypedText(chr); 
                     this.bufHistoryPos = -1;
+                    this.predictionNum = 0;
                 }
                 // TODO: Add a case for Ctrl-C that would allow the user to break the current program.
             }

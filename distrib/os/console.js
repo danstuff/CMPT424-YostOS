@@ -7,7 +7,7 @@
 var TSOS;
 (function (TSOS) {
     var Console = /** @class */ (function () {
-        function Console(currentFont, currentFontSize, currentXPosition, currentYPosition, buffer, bufHistory, bufHistoryPos) {
+        function Console(currentFont, currentFontSize, currentXPosition, currentYPosition, buffer, bufHistory, bufHistoryPos, predictionBase, predictionNum) {
             if (currentFont === void 0) { currentFont = _DefaultFontFamily; }
             if (currentFontSize === void 0) { currentFontSize = _DefaultFontSize; }
             if (currentXPosition === void 0) { currentXPosition = 0; }
@@ -15,6 +15,8 @@ var TSOS;
             if (buffer === void 0) { buffer = ""; }
             if (bufHistory === void 0) { bufHistory = []; }
             if (bufHistoryPos === void 0) { bufHistoryPos = -1; }
+            if (predictionBase === void 0) { predictionBase = ""; }
+            if (predictionNum === void 0) { predictionNum = 0; }
             this.currentFont = currentFont;
             this.currentFontSize = currentFontSize;
             this.currentXPosition = currentXPosition;
@@ -22,6 +24,8 @@ var TSOS;
             this.buffer = buffer;
             this.bufHistory = bufHistory;
             this.bufHistoryPos = bufHistoryPos;
+            this.predictionBase = predictionBase;
+            this.predictionNum = predictionNum;
         }
         Console.prototype.init = function () {
             this.clearScreen();
@@ -79,6 +83,7 @@ var TSOS;
                     // ... and reset our buffer.
                     this.buffer = "";
                     this.bufHistoryPos = -1;
+                    this.predictionNum = 0;
                 }
                 else if (chr === '#Backspace') { // backspace
                     //if backspace was hit, remove the last character from the buffer
@@ -89,12 +94,24 @@ var TSOS;
                     this.currentXPosition -= backoffset;
                     this.clearAfterCurrentPos();
                     this.bufHistoryPos = -1;
+                    this.predictionNum = 0;
                 }
                 else if (chr === '#Tab') { // tab
                     //use the shell to predict the typed command
-                    var pred = _OsShell.predictInput(this.buffer);
-                    //type out the prediction
-                    this.addTypedText(pred);
+                    if (this.predictionNum == 0) {
+                        this.predictionBase = this.buffer;
+                    }
+                    var predictions = _OsShell.predictInput(this.predictionBase);
+                    if (predictions.length > 0) {
+                        if (this.predictionNum >= predictions.length) {
+                            this.predictionNum = 0;
+                        }
+                        //type out the prediction
+                        this.clearCurrentLine();
+                        console.log(predictions[this.predictionNum]);
+                        this.addTypedText(predictions[this.predictionNum]);
+                        this.predictionNum++;
+                    }
                     this.bufHistoryPos = -1;
                 }
                 else if (chr === '#Up') { //up
@@ -110,6 +127,7 @@ var TSOS;
                         //type out the history entry
                         this.addTypedText(this.bufHistory[this.bufHistoryPos]);
                     }
+                    this.predictionNum = 0;
                 }
                 else if (chr === '#Down') { //down
                     //go back in the command history
@@ -124,12 +142,14 @@ var TSOS;
                         //type out the history entry
                         this.addTypedText(this.bufHistory[this.bufHistoryPos]);
                     }
+                    this.predictionNum = 0;
                 }
                 else {
                     // This is a "normal" character, so ...
                     // ... draw it on the screen and add it to our buffer.
                     this.addTypedText(chr);
                     this.bufHistoryPos = -1;
+                    this.predictionNum = 0;
                 }
                 // TODO: Add a case for Ctrl-C that would allow the user to break the current program.
             }
