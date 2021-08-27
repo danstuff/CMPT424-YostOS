@@ -70,7 +70,7 @@ var TSOS;
                 var chr = _KernelInputQueue.dequeue();
                 // Check to see if it's "special" (enter or ctrl-c) or "normal"
                 // (anything else that the keyboard device driver gave us).
-                if (chr === String.fromCharCode(13)) { // the Enter key
+                if (chr === '#Enter') { // the Enter key
                     // The enter key marks the end of a console command, so ...
                     // ... tell the shell ...
                     _OsShell.handleInput(this.buffer);
@@ -79,7 +79,7 @@ var TSOS;
                     // ... and reset our buffer.
                     this.buffer = "";
                 }
-                else if (chr === String.fromCharCode(8)) { // backspace
+                else if (chr === '#Backspace') { // backspace
                     //if backspace was hit, remove the last character from the buffer
                     var lastchr = this.buffer.slice(-1);
                     this.buffer = this.buffer.slice(0, -1);
@@ -88,13 +88,13 @@ var TSOS;
                     this.currentXPosition -= backoffset;
                     this.clearAfterCurrentPos();
                 }
-                else if (chr === String.fromCharCode(9)) { // tab
+                else if (chr === '#Tab') { // tab
                     //use the shell to predict the typed command
                     var pred = _OsShell.predictInput(this.buffer);
                     //type out the prediction
                     this.addTypedText(pred);
                 }
-                else if (chr === String.fromCharCode(38)) { //up
+                else if (chr === '#Up') { //up
                     //go back in the command history
                     this.bufHistoryPos++;
                     //loop back to beginning if you reached history end
@@ -106,7 +106,7 @@ var TSOS;
                     //type out the history entry
                     this.addTypedText(this.bufHistory[this.bufHistoryPos]);
                 }
-                else if (chr === String.fromCharCode(40)) { //up
+                else if (chr === '#Down') { //down
                     //go back in the command history
                     this.bufHistoryPos--;
                     //loop to end of history at 0

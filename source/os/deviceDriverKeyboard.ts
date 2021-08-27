@@ -4,10 +4,47 @@
    The Kernel Keyboard Device Driver.
    ---------------------------------- */
 
-module TSOS {
+const KeySpecials = {
+    32: ' ',
+    13: '#Enter',
+    9: '#Tab',
+    38: '#Up',
+    40: '#Down',
+    8: '#Backspace'
+}
 
+const KeyPairs = {
+    192: [ '`', '~' ],
+    49: [ '1', '!' ],
+    50: [ '2', '@' ],
+    51: [ '3', '#' ],
+    52: [ '4', '$' ],
+    53: [ '5', '%' ],
+    54: [ '6', '^' ],
+    55: [ '7', '&' ],
+    56: [ '8', '*' ],
+    57: [ '9', '(' ],
+    48: [ '0', ')' ],
+    173: [ '-', '_' ],
+    61: [ '=', '+' ],
+
+    219: [ '[', '{' ],
+    221: [ ']', '}' ],
+    220: [ '\\', '|' ],
+    
+    59: [ ';', ':' ],
+    222: [ '\'', '"' ],
+
+    188: [ ',', '<' ],
+    190: [ '.', '>' ],
+    191: [ '/', '?' ]
+};
+
+module TSOS {
+    
     // Extends DeviceDriver
     export class DeviceDriverKeyboard extends DeviceDriver {
+
 
         constructor() {
             // Override the base method pointers.
@@ -33,6 +70,7 @@ module TSOS {
             var isShifted = params[1];
             _Kernel.krnTrace("Key code:" + keyCode + " shifted:" + isShifted);
             var chr = "";
+
             // Check to see if we even want to deal with the key that was pressed.
             if ((keyCode >= 65) && (keyCode <= 90)) { // letter
                 if (isShifted === true) { 
@@ -42,14 +80,21 @@ module TSOS {
                 }
                 // TODO: Check for caps-lock and handle as shifted if so.
                 _KernelInputQueue.enqueue(chr);
-            } else if (((keyCode >= 48) && (keyCode <= 57))     ||   // digits
-                        (keyCode == 32)                         ||   // space
-                        (keyCode == 13)                         ||   // enter
-                        (keyCode == 9)                          ||   // tab
-                        (keyCode == 38)                         ||   // up
-                        (keyCode == 40)                         ||   // down
-                        (keyCode == 8)) {                            // backspace
-                chr = String.fromCharCode(keyCode);
+
+            // check if keycode is a special control button (enter, up arrow, etc.)
+            } else if (KeySpecials[keyCode]) {
+                chr = KeySpecials[keyCode];
+                _KernelInputQueue.enqueue(chr);
+            
+            //check if the key code matches a key pair
+            } else if(KeyPairs[keyCode]){
+                //if shifted, output the 2nd in the pair, if not, the 1st.
+                if(isShifted === true) {
+                    chr = KeyPairs[keyCode][1];
+                } else {
+                    chr = KeyPairs[keyCode][0];
+                }
+
                 _KernelInputQueue.enqueue(chr);
             }
         }
