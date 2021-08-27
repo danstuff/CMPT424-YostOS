@@ -15,7 +15,7 @@ module TSOS {
             public currentYPosition = _DefaultFontSize,
             public buffer = "",
             public bufHistory = [],
-            public bufHistoryPos = 0) {
+            public bufHistoryPos = -1) {
         }
 
         public init(): void {
@@ -85,11 +85,12 @@ module TSOS {
                     // ... tell the shell ...
                     _OsShell.handleInput(this.buffer);
 
-                    //... push the command to the back of our history...
-                    this.bufHistory[this.bufHistory.length] = this.buffer;
+                    //... push the command to the front of our history...
+                    this.bufHistory.unshift(this.buffer);
 
                     // ... and reset our buffer.
                     this.buffer = "";
+                    this.bufHistoryPos = -1;
 
                 } else if (chr === '#Backspace') { // backspace
                     //if backspace was hit, remove the last character from the buffer
@@ -103,6 +104,7 @@ module TSOS {
                     this.currentXPosition -= backoffset;
 
                     this.clearAfterCurrentPos();
+                    this.bufHistoryPos = -1;
 
                 } else if (chr === '#Tab') { // tab
                     //use the shell to predict the typed command
@@ -110,41 +112,46 @@ module TSOS {
 
                     //type out the prediction
                     this.addTypedText(pred);
+                    this.bufHistoryPos = -1;
                     
                 } else if (chr === '#Up') { //up
                     //go back in the command history
                     this.bufHistoryPos++;
 
-                    //loop back to beginning if you reached history end
+                    //top out at length-1 (start of history)
                     if(this.bufHistoryPos >= this.bufHistory.length) {
-                        this.bufHistoryPos = 0;
-                    }
+                        this.bufHistoryPos = this.bufHistory.length-1;
+                    } else {
 
                     //clear whatever you'd typed previously
                     this.clearCurrentLine();
 
                     //type out the history entry
                     this.addTypedText(this.bufHistory[this.bufHistoryPos]);
+
+                    }
 
                 } else if (chr === '#Down') { //down
                     //go back in the command history
                     this.bufHistoryPos--;
 
-                    //loop to end of history at 0
+                    //bottom out at -1 (not in history)
                     if(this.bufHistoryPos < 0) {
-                        this.bufHistoryPos = this.bufHistory.length-1;
+                        this.bufHistoryPos = -1;
+                    } else {
+                        //clear whatever you'd typed previously
+                        this.clearCurrentLine();
+
+                        //type out the history entry
+                        this.addTypedText(this.bufHistory[this.bufHistoryPos]);
                     }
 
-                    //clear whatever you'd typed previously
-                    this.clearCurrentLine();
-
-                    //type out the history entry
-                    this.addTypedText(this.bufHistory[this.bufHistoryPos]);
 
                 } else {
                     // This is a "normal" character, so ...
                     // ... draw it on the screen and add it to our buffer.
                     this.addTypedText(chr); 
+                    this.bufHistoryPos = -1;
                 }
                 // TODO: Add a case for Ctrl-C that would allow the user to break the current program.
             }
