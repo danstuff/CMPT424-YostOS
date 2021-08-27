@@ -122,23 +122,6 @@ module TSOS {
                     if(this.bufHistoryPos >= this.bufHistory.length) {
                         this.bufHistoryPos = this.bufHistory.length-1;
                     } else {
-
-                    //clear whatever you'd typed previously
-                    this.clearCurrentLine();
-
-                    //type out the history entry
-                    this.addTypedText(this.bufHistory[this.bufHistoryPos]);
-
-                    }
-
-                } else if (chr === '#Down') { //down
-                    //go back in the command history
-                    this.bufHistoryPos--;
-
-                    //bottom out at -1 (not in history)
-                    if(this.bufHistoryPos < 0) {
-                        this.bufHistoryPos = -1;
-                    } else {
                         //clear whatever you'd typed previously
                         this.clearCurrentLine();
 
@@ -146,6 +129,20 @@ module TSOS {
                         this.addTypedText(this.bufHistory[this.bufHistoryPos]);
                     }
 
+                } else if (chr === '#Down') { //down
+                    //go back in the command history
+                    this.bufHistoryPos--;
+
+                    //bottom out at 0 (end of history)
+                    if(this.bufHistoryPos < 0) {
+                        this.bufHistoryPos = 0;
+                    } else {
+                        //clear whatever you'd typed previously
+                        this.clearCurrentLine();
+
+                        //type out the history entry
+                        this.addTypedText(this.bufHistory[this.bufHistoryPos]);
+                    }
 
                 } else {
                     // This is a "normal" character, so ...
