@@ -90,6 +90,7 @@ module TSOS {
 
                     // ... and reset our buffer.
                     this.buffer = "";
+
                 } else if (chr === String.fromCharCode(8)) { // backspace
                     //if backspace was hit, remove the last character from the buffer
                     var lastchr = this.buffer.slice(-1);

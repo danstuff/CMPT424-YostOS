@@ -503,7 +503,8 @@ module TSOS {
                 if(hexStr.length == 2 &&
                    hexStr.match(/[a-fA-F0-9][a-fA-F0-9]/g)) {
                     hexList[hexList.length] = parseInt(hexStr, 16);
-                } else {
+
+                } else if(hexStr != ""){
                     _StdOut.putText("ERROR - Unrecognized term '" + hexStr + "'. Load failed.");
                     return;
                 }
