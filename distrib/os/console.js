@@ -97,12 +97,15 @@ var TSOS;
                     this.predictionNum = 0;
                 }
                 else if (chr === '#Tab') { // tab
-                    //use the shell to predict the typed command
+                    //if it's your first time predicting, use the current buffer as a base
                     if (this.predictionNum == 0) {
                         this.predictionBase = this.buffer;
                     }
+                    //get a list of predictions from the shell
                     var predictions = _OsShell.predictInput(this.predictionBase);
+                    //if you found any,
                     if (predictions.length > 0) {
+                        //make sure you haven't exceeded the predicitons
                         if (this.predictionNum >= predictions.length) {
                             this.predictionNum = 0;
                         }
@@ -110,6 +113,7 @@ var TSOS;
                         this.clearCurrentLine();
                         console.log(predictions[this.predictionNum]);
                         this.addTypedText(predictions[this.predictionNum]);
+                        //advance to the next prediction
                         this.predictionNum++;
                     }
                     this.bufHistoryPos = -1;

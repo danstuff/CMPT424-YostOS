@@ -91,7 +91,9 @@ var TSOS;
         };
         Control.hostBtnReset_click = function (btn) {
             // The easiest and most thorough way to do this is to reload (not refresh) the document.
-            location.reload(true);
+            // UPDATE: according to https://developer.mozilla.org/en-US/docs/Web/API/Location/reload, there is no official support for a boolean parameter for location.reload. Because it causes an error in some versions of typescript, I have decided to remove it.
+            //location.reload(true);
+            location.reload();
             // That boolean parameter is the 'forceget' flag. When it is true it causes the page to always
             // be reloaded from the server. If it is false or not specified the browser may reload the
             // page from its cache, which is not what we want.

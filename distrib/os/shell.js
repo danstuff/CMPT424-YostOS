@@ -413,22 +413,38 @@ var TSOS;
         Shell.prototype.shellLoad = function (args) {
             var inputElem = document.getElementById("taProgramInput");
             var inputStr = inputElem.value;
-            //split input into individual hex numbers by whitespace
-            var hexStrList = inputStr.split(" ");
+            //ensure program input has something in it.
+            if (inputStr == "") {
+                _StdOut.putText("ERROR - Program Input is empty." +
+                    "Load failed.");
+                return;
+            }
             var hexList = [];
-            for (var i in hexStrList) {
-                var hexStr = hexStrList[i].trim();
-                //for now, I'm doing super strict syntax checking.
-                //every hex number must be 2 digits and contain only 0-9, a-f, or A-F
-                if (hexStr.length == 2 &&
-                    hexStr.match(/[a-fA-F0-9][a-fA-F0-9]/g)) {
-                    hexList[hexList.length] = parseInt(hexStr, 16);
+            var hexStrBuf = "";
+            for (var i = 0; i < inputStr.length; i++) {
+                //every hex number must contain only 0-9, a-f, or A-F
+                if (inputStr[i].match(/[a-fA-F0-9]/g)) {
+                    hexStrBuf += inputStr[i];
+                    //anything except whitespace throws an error
                 }
-                else if (hexStr != "") {
-                    _StdOut.putText("ERROR - Unrecognized term '" + hexStr + "'. Load failed.");
+                else if (!inputStr[i].match(/\s/)) {
+                    _StdOut.putText("ERROR - Unrecognized symbol '" +
+                        inputStr[i] + "' at position " + i +
+                        ". Load failed.");
                     return;
                 }
+                // every hex number must be 2 digits
+                if (hexStrBuf.length == 2) {
+                    hexList[hexList.length] = parseInt(hexStrBuf, 16);
+                    hexStrBuf = "";
+                }
             }
+            //if there's anything left in the buffer, warn the user
+            if (hexStrBuf != "") {
+                _StdOut.putText("WARNING - Dangling character: '" +
+                    hexStrBuf + "' is not used. ");
+            }
+            //TODO store loaded input in memory
             _StdOut.putText("Load successful.");
         };
         return Shell;
