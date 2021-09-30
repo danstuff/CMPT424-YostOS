@@ -1,0 +1,14 @@
+/* ------------
+     MemoryAccessor.ts
+
+    MemoryAccessor handles storage access via the CPU.
+     ------------ */
+var TSOS;
+(function (TSOS) {
+    var MemoryAccessor = /** @class */ (function () {
+        function MemoryAccessor() {
+        }
+        return MemoryAccessor;
+    }());
+    TSOS.MemoryAccessor = MemoryAccessor;
+})(TSOS || (TSOS = {}));

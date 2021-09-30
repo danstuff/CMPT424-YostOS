@@ -15,7 +15,7 @@ module TSOS {
         // Properties
         public processID;
 
-        public processState = PROCESS_STATE_IDLE;
+        public processState = ProcessState.PROCESS_STATE_IDLE;
         public programCounter = 0;
 
         public registers = [];          //list of CPU registers
