@@ -44,6 +44,12 @@ var TSOS;
                 _GLaDOS = new Glados();
                 _GLaDOS.init();
             }
+            // Initialize CPU and memory objects
+            _CPU = new TSOS.Cpu();
+            _CPU.init();
+            _Memory = new TSOS.Memory();
+            _Memory.init();
+            _MemoryAccessor = new TSOS.MemoryAccessor();
         };
         Control.hostLog = function (msg, source) {
             if (source === void 0) { source = "?"; }

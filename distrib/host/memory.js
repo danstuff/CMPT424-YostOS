@@ -5,11 +5,16 @@
      ------------ */
 var TSOS;
 (function (TSOS) {
-    var MEMORY_SIZE = 1024;
+    TSOS.MEMORY_SIZE = 1024;
     var Memory = /** @class */ (function () {
         function Memory() {
-            this.data = Array(MEMORY_SIZE);
+            this.data = new Array(TSOS.MEMORY_SIZE);
         }
+        Memory.prototype.init = function () {
+            for (var i = 0; i < TSOS.MEMORY_SIZE; i++) {
+                this.data[i] = 0;
+            }
+        };
         return Memory;
     }());
     TSOS.Memory = Memory;

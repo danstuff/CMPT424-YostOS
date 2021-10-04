@@ -6,14 +6,20 @@
 
 module TSOS {
 
-    const MEMORY_SIZE = 1024;
+    export const MEMORY_SIZE = 1024;
 
     export class Memory {
 
-        public data = Array<number>(MEMORY_SIZE);
+        public data: Array<number>;
 
         constructor(){
-            
+            this.data = new Array<number>(MEMORY_SIZE);
+        }
+
+        public init() {
+            for(var i = 0; i < MEMORY_SIZE; i++) {
+                this.data[i] = 0;
+            }
         }
     }
 }

@@ -50,6 +50,15 @@ module TSOS {
                 _GLaDOS = new Glados();
                 _GLaDOS.init();
             }
+
+            // Initialize CPU and memory objects
+            _CPU = new Cpu();
+            _CPU.init();
+
+            _Memory = new Memory();
+            _Memory.init();
+            _MemoryAccessor = new MemoryAccessor();
+
         }
 
         public static hostLog(msg: string, source: string = "?"): void {

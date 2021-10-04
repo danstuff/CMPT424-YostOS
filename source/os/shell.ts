@@ -346,7 +346,7 @@ module TSOS {
                         break
                     case "load":
                         _StdOut.putText("Load validates and processes assembly from the User Program Input." +
-                            "All code must be in the form of 2-digit hex values separated by spaces.");
+                            "All code must be in the form of 2-digit hex values.");
                         break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
