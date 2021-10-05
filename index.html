@@ -104,7 +104,7 @@
                 <table>
                     <tr>
                     <td>
-                        <table id="taHostLog" class="bordered solid scrolling">
+                        <table class="bordered solid scrolling">
                             <thead>
                             <tr>
                                 <th>Host Log</th>
@@ -112,18 +112,15 @@
                                 <th id="divDateTime">no date</th>
                             </tr>
                             </thead>
-                            <tr><td colspan='3'>The quick brown fox jumped over the lazy dog.</td></tr>
-                            <tr><td colspan='3'>.</td></tr>
-                            <tr><td colspan='3'>.</td></tr>
-                            <tr><td colspan='3'>.</td></tr>
-                            <tr><td colspan='3'>.</td></tr>
+                            <tbody id="taHostLog">
+                            </tbody>
                         </table>
                     </td>
                     </tr>
 
                     <tr>
                     <td>
-                        <table id="taProcesses" class="bordered solid scrolling">
+                        <table class="bordered solid scrolling">
                             <thead>
                             <tr>
                                 <th colspan='10'>Processes</th>
@@ -142,18 +139,22 @@
                                 <th>Location</th>
                             </tr>
                             </thead>
+                            <tbody id="taProcesses">
+                            </tbody>
                         </table>
                     </td>
                     </tr>
 
                     <tr>
                     <td>
-                        <table id="taMemory" class="bordered solid scrolling">
+                        <table class="bordered solid scrolling">
                             <thead>
                             <tr>
                                 <th>Memory</th>
                             </tr>
                             </thead>
+                            <tbody id="taMemory">
+                            </tbody>
                         </table>
                     </td>
                     </tr>
@@ -163,7 +164,7 @@
                     <table>
                         <tr>
                             <td>
-                                <table id="taCPU" class="bordered solid scrolling">
+                                <table class="bordered solid scrolling">
                                     <thead>
                                     <tr>
                                         <th colspan='5'>CPU</th>
@@ -178,6 +179,8 @@
                                         <th>Z</th>
                                     </tr>
                                     </thead>
+                                    <tbody id="taCPU">
+                                    </tbody>
                                 </table>
                             </td>
                             <td>

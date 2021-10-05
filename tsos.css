@@ -53,6 +53,10 @@ textarea {
     z-index: -100;
 }
 
+#divConsole {
+    vertical-align: top;
+}
+
 #divMain {
     animation-name:fadein;
     animation-duration:0.75s;
@@ -90,18 +94,17 @@ textarea {
     background: #0F0F15;
 }
 
-.solid tr:nth-child(2n+1) {
-    background-color: #0D0D15;
-}
-
 .solid thead {
     width: inherit;
-    background-color: #0A0A10 !important;
 }
 
 .solid thead tr {
     width: inherit;
-    background-color: #0A0A10 !important;
+    background-color: #0A0A10;
+}
+
+.solid td {
+    border-top: 1px black;
 }
 
 .solid td, th {
