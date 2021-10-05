@@ -8,6 +8,9 @@
             YostOS 
         </title>
 
+        <!-- External libraries to use -->
+        <script type="text/javascript" src="distrib/vendor/fa-js/all.js"></script>
+
         <!-- Globals CONSTANTS and _Variables. Must included be first. -->
         <script type="text/javascript" src="distrib/globals.js"></script>
 
@@ -55,80 +58,141 @@
             document.body.appendChild(elem)
         </script>
 
-        <div id="divMain" style="margin: 0 auto; width: 1000px; padding-top:4px;">
+        <table id="divMain" class="bordered" style="margin: 0 auto; width: 1000px; padding-top:4px;">
 
-            <div id="divButtonBar" style="margin:4px;">
-                <input type="button"
-                       id = "btnStartOS"
-                       name="brnStartOS"
-                       class="normal_button"
-                       value="Start"
-                       tabindex="0"
-                       onclick="TSOS.Control.hostBtnStartOS_click(this);">
+            <tr id="divButtonBar" style="margin:4px;">
+                <td>
+                    <button id="btnStartOS"
+                           name="brnStartOS"
+                           class="normal_button"
+                           tabindex="0"
+                           onclick="TSOS.Control.hostBtnStartOS_click(this);">
+                        <i class="fas fa-play"></i>
+                    </button>
 
-                <input type="button"
-                       id = "btnHaltOS"
-                       name="brnHaltOS"
-                       class="normal_button"
-                       disabled="disabled"
-                       value="Halt"
-                       tabindex="1"
-                       onclick="TSOS.Control.hostBtnHaltOS_click(this);">
+                    <button id="btnHaltOS"
+                           name="brnHaltOS"
+                           class="normal_button"
+                           disabled="disabled"
+                           tabindex="1"
+                           onclick="TSOS.Control.hostBtnHaltOS_click(this);">
+                        <i class="fas fa-stop"></i>
+                    </button>
 
-                <input type="button"
-                       id = "btnReset"
-                       name="brnReset"
-                       class="normal_button"
-                       disabled="disabled"
-                       value="Reset"
-                       tabindex="2"
-                       onclick="TSOS.Control.hostBtnReset_click(this);">
-            </div>
+                    <button id="btnReset"
+                           name="brnReset"
+                           class="normal_button"
+                           disabled="disabled"
+                           tabindex="2"
+                           onclick="TSOS.Control.hostBtnReset_click(this);">
+                        <i class="fas fa-sync"></i>
+                    </button>
+                </td>
+            </tr>
 
-            <div id="divConsole" style="margin:4px; width:500px; height:600px; float:left;">
-                <canvas id="display"
-                        width="500px"
-                        height="590px"
-                        tabindex="3">
-                </canvas>
-            </div>
+            <tr>
+                <td id="divConsole" style="width:500px; height:600px;">
+                    <canvas id="display"
+                            class="bordered solid"
+                            width="500px"
+                            height="600px"
+                            tabindex="3">
+                    </canvas>
+                </td>
 
-            <div id="divLog" style="margin-left:520px;">
-                <label>
-                    Host Log
-                    <div id="divLogSub"> 
-                        <div id="divStatus">no status</div>
-                         - 
-                        <div id="divDateTime"></div>
-                    </div>
-                    <textarea name="taHostLog"
-                              id  ="taHostLog"
-                              rows="26"
-                              cols="64"
-                              ></textarea>
-                </label>
-            </div>
+                <td>
+                <table>
+                    <tr>
+                    <td>
+                        <table id="taHostLog" class="bordered solid scrolling">
+                            <thead>
+                            <tr>
+                                <th>Host Log</th>
+                                <th id="divStatus">no status</th>
+                                <th id="divDateTime">no date</th>
+                            </tr>
+                            </thead>
+                            <tr><td colspan='3'>The quick brown fox jumped over the lazy dog.</td></tr>
+                            <tr><td colspan='3'>.</td></tr>
+                            <tr><td colspan='3'>.</td></tr>
+                            <tr><td colspan='3'>.</td></tr>
+                            <tr><td colspan='3'>.</td></tr>
+                        </table>
+                    </td>
+                    </tr>
 
-            <div id="divUserProgramInput" style="margin-left:520px;">
-                <label>
-                    User Program Input
-                    <br>
-                    <textarea name="taProgramInput"
-                              id  ="taProgramInput"
-                              rows="8"
-                              cols="64"
-                              ></textarea>
-                </label>
-            </div>
+                    <tr>
+                    <td>
+                        <table id="taProcesses" class="bordered solid scrolling">
+                            <thead>
+                            <tr>
+                                <th colspan='10'>Processes</th>
+                            </tr>
 
-            <p class="footerText" style="clear:both;">
-            <br>
-            Copyright &copy; 2008 - 2021 No Rights Reserved.
-            <br>
-            Reproduction is inhibited without the express written consent of
-            Ted Codd, Stevie Ray Vaughan, and Ian Fleming.
-            </p>
-        </div>
+                            <tr>
+                                <th>PID</th>
+                                <th>PC</th>
+                                <th>IR</th>
+                                <th>ACC</th>
+                                <th>X</th>
+                                <th>Y</th>
+                                <th>Z</th>
+                                <th>Priority</th>
+                                <th>State</th>
+                                <th>Location</th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </td>
+                    </tr>
 
+                    <tr>
+                    <td>
+                        <table id="taMemory" class="bordered solid scrolling">
+                            <thead>
+                            <tr>
+                                <th>Memory</th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </td>
+                    </tr>
+
+                    <tr>
+                    <td>
+                    <table>
+                        <tr>
+                            <td>
+                                <table id="taCPU" class="bordered solid scrolling">
+                                    <thead>
+                                    <tr>
+                                        <th colspan='5'>CPU</th>
+                                        <th>INST</th>
+                                    </tr>
+                                    <tr>
+                                        <th>PC</th>
+                                        <th>IR</th>
+                                        <th>ACC</th>
+                                        <th>X</th>
+                                        <th>Y</th>
+                                        <th>Z</th>
+                                    </tr>
+                                    </thead>
+                                </table>
+                            </td>
+                            <td>
+                                <textarea name="taProgramInput"
+                                          class="bordered solid"
+                                          id  ="taProgramInput"
+                                          rows="9"
+                                          cols="24"></textarea>
+                            </td>
+                        </tr>
+                    </table>
+                    </td>
+                    </tr>
+                </table>
+            </tr>
+        </table>
     </body>
 </html>
