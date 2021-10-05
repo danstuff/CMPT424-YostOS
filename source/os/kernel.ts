@@ -88,7 +88,6 @@ module TSOS {
             }
         }
 
-
         //
         // Interrupt Handling
         //

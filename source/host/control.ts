@@ -82,7 +82,30 @@ module TSOS {
             // TODO in the future: Optionally update a log database or some streaming service.
         }
 
+        public static hostSetTable(tableID: string, tableData) {
+            var taBody = <HTMLTableSectionElement> document.getElementById(tableID);
+            var taBodyNew = document.createElement("tbody");
 
+            //populate the new table body with data
+            for(var i in tableData) {
+                var taRow = taBodyNew.insertRow(0);
+
+                for(var j in tableData[i]) {
+                    var taCell = taRow.insertCell(0);
+                    taCell.innerHTML = tableData[i][j];
+            }
+    
+            //replace the old body with the new one
+            taBody.parentNode.replaceChild(taBodyNew, taBody);
+        }
+
+        public static hostMemory(memoryStatus) {
+
+        }
+
+        public static hostCPU(cpuStatus) {
+
+        }
         //
         // Host Events
         //
