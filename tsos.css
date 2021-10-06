@@ -103,8 +103,11 @@ textarea {
     background-color: #0A0A10;
 }
 
+.solid tr {
+    background-color: #0F0F15;
+}
 .solid td {
-    border-top: 1px black;
+    border-top: 1px solid black;
 }
 
 .solid td, th {

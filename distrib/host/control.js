@@ -22,6 +22,15 @@ var TSOS;
     var Control = /** @class */ (function () {
         function Control() {
         }
+        Control.toHexStr = function (value, digits) {
+            if (digits === void 0) { digits = 2; }
+            //return a formatted hex string.
+            var str = value.toString(16);
+            for (var i = str.length; i < digits; i++) {
+                str = "0" + str;
+            }
+            return str;
+        };
         Control.hostInit = function () {
             // This is called from index.html's onLoad event via the onDocumentLoad function pointer.
             // Get a global reference to the canvas.  TODO: Should we move this stuff into a Display Device Driver?
@@ -55,17 +64,34 @@ var TSOS;
             // Note the REAL clock in milliseconds since January 1, 1970.
             var now = new Date().getTime();
             // Build the log string.
-            var str = "({ clock:" + clock + ", source:" + source + ", msg:" + msg + ", now:" + now + " })" + "\n";
+            var str = "({ clk:" + clock + ", src:" + source + ", msg:" + msg + ", now:" + now + " })" + "\n";
             // Update the log console.
             // Insert a new row into the host log table.
-            var taLog = document.getElementById("taHostLog");
+            var taLog = document.
+                getElementById("taHostLog");
             var taRow = taLog.insertRow(0);
             var taCell = taRow.insertCell(0);
             taCell.colSpan = 3;
             taCell.innerHTML = str;
             // Update the Host Log header with the current date and time
-            document.getElementById("divDateTime").innerHTML = new Date().toLocaleString();
+            document.getElementById("divDateTime").innerHTML =
+                new Date().toLocaleString();
             // TODO in the future: Optionally update a log database or some streaming service.
+        };
+        Control.hostSetTable = function (tableID, tableData) {
+            var taBody = document
+                .getElementById(tableID);
+            var taBodyNew = document.createElement("tbody");
+            //populate the new table body with data
+            for (var i in tableData) {
+                var taRow = taBodyNew.insertRow(0);
+                for (var j in tableData[i]) {
+                    var taCell = taRow.insertCell(0);
+                    taCell.innerHTML = tableData[i][j];
+                }
+            }
+            //replace the old body with the new one
+            taBody.parentNode.replaceChild(taBodyNew, taBody);
         };
         //
         // Host Events

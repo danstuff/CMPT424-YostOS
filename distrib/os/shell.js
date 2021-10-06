@@ -419,7 +419,7 @@ var TSOS;
                     "Load failed.");
                 return;
             }
-            var hexList = [];
+            var hexList = new Array();
             var hexStrBuf = "";
             for (var i = 0; i < inputStr.length; i++) {
                 //every hex number must contain only 0-9, a-f, or A-F
@@ -444,7 +444,9 @@ var TSOS;
                 _StdOut.putText("WARNING - Dangling character: '" +
                     hexStrBuf + "' is not used. ");
             }
-            //TODO store loaded input in memory
+            //store loaded input in memory
+            _MemoryManager.setSegment(0, hexList);
+            _MemoryManager.logSegment(0, hexList.length);
             _StdOut.putText("Load successful.");
         };
         return Shell;

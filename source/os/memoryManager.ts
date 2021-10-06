@@ -19,30 +19,80 @@ module TSOS {
             }
         }
 
+        public isValid(index: number) {
+            if(index >= 0 && index < MEMORY_SIZE) {
+                return true;
+            } else {
+                //TODO make this error not destroy everything
+                _Kernel.krnTrapError("Index " + index + " out of range");
+                return false;
+            }
+        }
+
         public setValue(index: number, value: number) {
             // ensure index is within memory bounds
-            if(index >= 0 && index < MEMORY_SIZE ) {
+            if(this.isValid(index)) {
                 _MemoryAccessor.setValue(index, value);
+            }
+        }
 
-            } else {
-                _Kernel.krnTrapError("Index " + index + " out of range");
+        public getValue(index: number) {
+            // ensure index is within memory bounds
+            if(this.isValid(index)) {
+                return _MemoryAccessor.getValue(index);
             }
         }
 
         public clearSegment(clearValue: number = 0,
-                            lo: number = 0,
-                            hi: number =  MEMORY_SIZE) {
+                            start: number = 0,
+                            end: number =  MEMORY_SIZE-1) {
 
             // loop over the range, and set the memory values to clearValue
-            for(var i = lo; i < hi; i++) {
+            for(var i = start; i <= end; i++) {
                 this.setValue(i, clearValue);
             }
         }
 
-        public copyTo(start: number, data: Array<number>) {
-            for(var i = 0; i < data.length; i++) {
-                this.setValue(start+i, data[i]);
+        public setSegment(start: number, data: Array<number>) {
+            if(this.isValid(start) && this.isValid(start+data.length)) {
+                _MemoryAccessor.setSegment(start, data);
             }
+        }
+
+        public getSegment(start: number, end: number) {
+            if(this.isValid(start) && this.isValid(end)) {
+                return _MemoryAccessor.getSegment(start, end);
+            }
+        }
+
+        public logSegment(start: number = 0,
+                          end: number = MEMORY_SIZE-1,
+                          rowlen: number=8) {
+            //create array to store the rows of the table
+            var tableRows = new Array<any>();
+
+            //iterate over all the rows
+            var rownum = Math.ceil((end - start) / rowlen);
+            for(var i = 0; i < rownum; i++) {
+
+                //create a new row and prepend it with row address
+                var tableRow = new Array<string>();
+
+                //add values to the row in descending order
+                for(var j = 1; j <= rowlen; j++) {
+                    tableRow[j] = Control.toHexStr(this.
+                        getValue((i*rowlen)+j-1));
+                }
+
+                tableRow[tableRow.length] = "0x" + 
+                    Control.toHexStr(i*rowlen, 4);
+
+                tableRows[i] = tableRow;
+            }
+
+            console.log(tableRows);
+
+            Control.hostSetTable("taMemory", tableRows);
         }
     }
 }

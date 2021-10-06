@@ -21,6 +21,15 @@
 module TSOS {
 
     export class Control {
+        
+        public static toHexStr(value: number, digits: number = 2) {
+            //return a formatted hex string.
+            var str = value.toString(16);
+            for(var i = str.length; i < digits; i++) {
+                str = "0"+str;
+            }
+            return str;
+        }
 
         public static hostInit(): void {
             // This is called from index.html's onLoad event via the onDocumentLoad function pointer.
@@ -65,11 +74,12 @@ module TSOS {
             var now: number = new Date().getTime();
 
             // Build the log string.
-            var str: string = "({ clock:" + clock + ", source:" + source + ", msg:" + msg + ", now:" + now  + " })"  + "\n";
+            var str: string = "({ clk:" + clock + ", src:" + source + ", msg:" + msg + ", now:" + now  + " })"  + "\n";
 
             // Update the log console.
             // Insert a new row into the host log table.
-            var taLog = <HTMLTableSectionElement> document.getElementById("taHostLog");
+            var taLog = <HTMLTableSectionElement> document.
+                getElementById("taHostLog");
 
             var taRow = taLog.insertRow(0);
             var taCell = taRow.insertCell(0);
@@ -77,13 +87,15 @@ module TSOS {
             taCell.innerHTML = str;
 
             // Update the Host Log header with the current date and time
-            document.getElementById("divDateTime").innerHTML = new Date().toLocaleString();
+            document.getElementById("divDateTime").innerHTML = 
+                new Date().toLocaleString();
 
             // TODO in the future: Optionally update a log database or some streaming service.
         }
 
         public static hostSetTable(tableID: string, tableData) {
-            var taBody = <HTMLTableSectionElement> document.getElementById(tableID);
+            var taBody = <HTMLTableSectionElement> document
+                .getElementById(tableID);
             var taBodyNew = document.createElement("tbody");
 
             //populate the new table body with data
@@ -93,19 +105,13 @@ module TSOS {
                 for(var j in tableData[i]) {
                     var taCell = taRow.insertCell(0);
                     taCell.innerHTML = tableData[i][j];
+                }
             }
     
             //replace the old body with the new one
             taBody.parentNode.replaceChild(taBodyNew, taBody);
         }
 
-        public static hostMemory(memoryStatus) {
-
-        }
-
-        public static hostCPU(cpuStatus) {
-
-        }
         //
         // Host Events
         //

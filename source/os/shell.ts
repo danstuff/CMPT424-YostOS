@@ -499,7 +499,7 @@ module TSOS {
                 return;
             }
 
-            var hexList = [];
+            var hexList = new Array<number>();
             var hexStrBuf = "";
 
             for(var i = 0; i < inputStr.length; i++) {
@@ -530,7 +530,9 @@ module TSOS {
                                 hexStrBuf + "' is not used. ");
             }
 
-            //TODO store loaded input in memory
+            //store loaded input in memory
+            _MemoryManager.setSegment(0, hexList);
+            _MemoryManager.logSegment(0, hexList.length);
 
             _StdOut.putText("Load successful.");
         }
