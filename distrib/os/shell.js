@@ -415,7 +415,7 @@ var TSOS;
             var inputStr = inputElem.value;
             //ensure program input has something in it.
             if (inputStr == "") {
-                _StdOut.putText("ERROR - Program Input is empty." +
+                _StdOut.putText("ERROR - Program Input is empty. " +
                     "Load failed.");
                 return;
             }
@@ -446,7 +446,6 @@ var TSOS;
             }
             //store loaded input in memory
             _MemoryManager.setSegment(0, hexList);
-            _MemoryManager.logSegment(0, hexList.length);
             _StdOut.putText("Load successful.");
         };
         return Shell;

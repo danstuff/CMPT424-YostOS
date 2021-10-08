@@ -77,6 +77,8 @@ var TSOS;
             else { // If there are no interrupts and there is nothing being executed then just be idle.
                 this.krnTrace("Idle");
             }
+            //output the contents of memory to the memory table
+            _MemoryManager.logSegment();
         };
         //
         // Interrupt Handling

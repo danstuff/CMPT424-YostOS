@@ -78,19 +78,17 @@ module TSOS {
                 //create a new row and prepend it with row address
                 var tableRow = new Array<string>();
 
+                tableRow[tableRow.length] = "0x" + 
+                    Control.toHexStr(i*rowlen, 3);
+
                 //add values to the row in descending order
                 for(var j = 1; j <= rowlen; j++) {
                     tableRow[j] = Control.toHexStr(this.
                         getValue((i*rowlen)+j-1));
                 }
-
-                tableRow[tableRow.length] = "0x" + 
-                    Control.toHexStr(i*rowlen, 4);
-
+              
                 tableRows[i] = tableRow;
             }
-
-            console.log(tableRows);
 
             Control.hostSetTable("taMemory", tableRows);
         }

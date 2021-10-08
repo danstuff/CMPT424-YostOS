@@ -66,16 +66,15 @@ var TSOS;
             for (var i = 0; i < rownum; i++) {
                 //create a new row and prepend it with row address
                 var tableRow = new Array();
+                tableRow[tableRow.length] = "0x" +
+                    TSOS.Control.toHexStr(i * rowlen, 3);
                 //add values to the row in descending order
                 for (var j = 1; j <= rowlen; j++) {
                     tableRow[j] = TSOS.Control.toHexStr(this.
                         getValue((i * rowlen) + j - 1));
                 }
-                tableRow[tableRow.length] = "0x" +
-                    TSOS.Control.toHexStr(i * rowlen, 4);
                 tableRows[i] = tableRow;
             }
-            console.log(tableRows);
             TSOS.Control.hostSetTable("taMemory", tableRows);
         };
         return MemoryManager;

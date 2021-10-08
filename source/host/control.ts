@@ -100,10 +100,10 @@ module TSOS {
 
             //populate the new table body with data
             for(var i in tableData) {
-                var taRow = taBodyNew.insertRow(0);
+                var taRow = taBodyNew.insertRow(-1);
 
                 for(var j in tableData[i]) {
-                    var taCell = taRow.insertCell(0);
+                    var taCell = taRow.insertCell(-1);
                     taCell.innerHTML = tableData[i][j];
                 }
             }

@@ -5,7 +5,7 @@
      ------------ */
 var TSOS;
 (function (TSOS) {
-    TSOS.MEMORY_SIZE = 1024;
+    TSOS.MEMORY_SIZE = 256;
     var Memory = /** @class */ (function () {
         function Memory() {
             this.data = new Array(TSOS.MEMORY_SIZE);
