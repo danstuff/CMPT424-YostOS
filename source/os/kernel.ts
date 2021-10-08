@@ -39,6 +39,9 @@ module TSOS {
             _MemoryManager = new MemoryManager();
             _MemoryManager.init();
 
+            // Create the PCB list.
+            _ProcessList = new Array<PCB>(); 
+
             // Enable the OS Interrupts.  (Not the CPU clock interrupt, as that is done in the hardware sim.)
             this.krnTrace("Enabling the interrupts.");
             this.krnEnableInterrupts();
@@ -87,8 +90,8 @@ module TSOS {
                 this.krnTrace("Idle");
             }
 
-            //output the contents of memory to the memory table
-            _MemoryManager.logSegment();
+            //log memory to memory table
+            Control.hostUpdateMemoryTable();
         }
 
         //

@@ -109,6 +109,12 @@ module TSOS {
                 "- Load and validate the User Program Input.");
             this.commandList[this.commandList.length] = sc;
 
+            // run
+            sc = new ShellCommand(this.shellRun,
+                "run",
+                "<pid> - Execute the program at <pid>.");
+            this.commandList[this.commandList.length] = sc;
+
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
 
@@ -348,6 +354,10 @@ module TSOS {
                         _StdOut.putText("Load validates and processes assembly from the User Program Input." +
                             "All code must be in the form of 2-digit hex values.");
                         break;
+                    case "run":
+                        _StdOut.putText("Execute the program at the desired PID." +
+                            "Programs must first be loaded from the User Program Input using load.");
+                        break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -532,7 +542,27 @@ module TSOS {
             //store loaded input in memory
             _MemoryManager.setSegment(0, hexList);
 
-            _StdOut.putText("Load successful.");
+            //create a PCB for the new program
+            var pcb = new PCB();
+            _ProcessList[_ProcessList.length] = pcb;
+
+            _StdOut.putText("Load successful. Assigned PID " + 
+                            pcb.processID + 
+                            ".\n You can now run this program via: \n" +
+                            " run " + pcb.processID);
+
+            Control.hostUpdateProcessTable();
+        }
+
+        public shellRun(args: string[]) {
+            if(args.length > 0) {
+                var pid = args[0];
+
+                 
+
+            } else {
+                _StdOut.putText("Usage: run <pid>. Please supply a string.");
+            }
         }
     }
 }

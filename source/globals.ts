@@ -35,6 +35,8 @@ var _MemoryAccessor: TSOS.MemoryAccessor;
 // Software (OS)
 var _MemoryManager: any = null;
 
+var _ProcessList: Array<TSOS.PCB>;
+
 var _OSclock: number = 0;  // Page 23.
 
 var _Mode: number = 0;     // (currently unused)  0 = Kernel Mode, 1 = User Mode.  See page 21.
