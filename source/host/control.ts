@@ -97,6 +97,7 @@ module TSOS {
             var taBody = <HTMLTableSectionElement> document
                 .getElementById(tableID);
             var taBodyNew = document.createElement("tbody");
+            taBodyNew.id = tableID;
 
             //populate the new table body with data
             for(var i in tableData) {
