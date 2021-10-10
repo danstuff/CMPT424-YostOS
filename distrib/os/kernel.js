@@ -34,6 +34,8 @@ var TSOS;
             // Initialize the memory manager.
             _MemoryManager = new TSOS.MemoryManager();
             _MemoryManager.init();
+            // Create the PCB list.
+            _ProcessList = new Array();
             // Enable the OS Interrupts.  (Not the CPU clock interrupt, as that is done in the hardware sim.)
             this.krnTrace("Enabling the interrupts.");
             this.krnEnableInterrupts();
@@ -77,8 +79,8 @@ var TSOS;
             else { // If there are no interrupts and there is nothing being executed then just be idle.
                 this.krnTrace("Idle");
             }
-            //output the contents of memory to the memory table
-            _MemoryManager.logSegment();
+            //log memory to memory table
+            TSOS.Control.hostUpdateMemoryTable();
         };
         //
         // Interrupt Handling

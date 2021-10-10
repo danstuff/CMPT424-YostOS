@@ -35,6 +35,14 @@ var TSOS;
             this.Zflag = 0;
             this.isExecuting = false;
         };
+        Cpu.prototype.startProcess = function (pcb) {
+            this.PC = pcb.programCounter;
+            this.Acc = pcb.accumulator;
+            this.Xreg = pcb.Xreg;
+            this.Xreg = pcb.Xreg;
+            this.Zflag = pcb.Zflag;
+            this.isExecuting = true;
+        };
         Cpu.prototype.cycle = function () {
             _Kernel.krnTrace('CPU cycle');
             // TODO: Accumulate CPU usage and profiling statistics here.

@@ -12,23 +12,22 @@ var TSOS;
         ProcessState[ProcessState["PROCESS_STATE_RUNNING"] = 1] = "PROCESS_STATE_RUNNING";
         ProcessState[ProcessState["PROCESS_STATE_MAX"] = 2] = "PROCESS_STATE_MAX";
     })(ProcessState || (ProcessState = {}));
-    ;
     var PCB = /** @class */ (function () {
         function PCB() {
+            this.programCounter = 1;
+            this.instructionReg = 2;
+            this.accumulator = 3;
+            this.Xreg = 4;
+            this.Yreg = 5;
+            this.Zflag = 6;
+            this.processPriority = 7;
             this.processState = ProcessState.PROCESS_STATE_IDLE;
-            this.programCounter = 0;
-            this.registers = []; //list of CPU registers
-            this.childIDs = []; //list of process children
-            //minimum and maxiumum address
-            this.memorySector = [0, TSOS.MEMORY_SIZE];
-            //generate a random number for PID
-            //this has a 1 in 4 billion chance of colliding
-            //with another PID. So I guess it could happen.
-            //but probably not. hopefully.
-            var numArray = new Uint32Array(1);
-            window.crypto.getRandomValues(numArray);
-            this.processID = numArray[0];
+            this.processLocation = 8;
+            // sequential PID
+            this.processID = PCB.lastID++;
         }
+        // Static properties
+        PCB.lastID = 0;
         return PCB;
     }());
     TSOS.PCB = PCB;

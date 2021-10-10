@@ -14,109 +14,36 @@ module TSOS {
         // Properties
         public promptStr = ">";
         public commandList = [];
-        public curses = "[fuvg],[cvff],[shpx],[phag],[pbpxfhpxre],[zbgureshpxre],[gvgf]";
-        public apologies = "[sorry]";
 
-        constructor() {
-        }
+        constructor() {}
 
         public init() {
-            var sc: ShellCommand;
+            const shell = this;
+            var addCmd = function(func: any, command: string) {
+                shell.commandList[shell.commandList.length] = 
+                    new ShellCommand(func, command);
+            }
+
             //
             // Load the command list.
 
-            // ver
-            sc = new ShellCommand(this.shellVer,
-                "ver",
-                "- Displays the current version data.");
-            this.commandList[this.commandList.length] = sc;
-
-            // help
-            sc = new ShellCommand(this.shellHelp,
-                "help",
-                "- This is the help command. Seek help.");
-            this.commandList[this.commandList.length] = sc;
-
-            // shutdown
-            sc = new ShellCommand(this.shellShutdown,
-                "shutdown",
-                "- Shuts down the virtual OS but leaves the underlying host / hardware simulation running.");
-            this.commandList[this.commandList.length] = sc;
-
-            // cls
-            sc = new ShellCommand(this.shellCls,
-                "cls",
-                "- Clears the screen and resets the cursor position.");
-            this.commandList[this.commandList.length] = sc;
-
-            // man <topic>
-            sc = new ShellCommand(this.shellMan,
-                "man",
-                "<topic> - Displays the MANual page for <topic>.");
-            this.commandList[this.commandList.length] = sc;
-
-            // trace <on | off>
-            sc = new ShellCommand(this.shellTrace,
-                "trace",
-                "<on | off> - Turns the OS trace on or off.");
-            this.commandList[this.commandList.length] = sc;
-
-            // rot13 <string>
-            sc = new ShellCommand(this.shellRot13,
-                "rot13",
-                "<string> - Does rot13 obfuscation on <string>.");
-            this.commandList[this.commandList.length] = sc;
-
-            // prompt <string>
-            sc = new ShellCommand(this.shellPrompt,
-                "prompt",
-                "<string> - Sets the prompt.");
-            this.commandList[this.commandList.length] = sc;
-
-            // date
-            sc = new ShellCommand(this.shellDate,
-                "date",
-                "- Displays the current date and time.");
-            this.commandList[this.commandList.length] = sc;
-
-            // whereami
-            sc = new ShellCommand(this.shellWhereAmI,
-                "whereami",
-                "- Displays your approximate location.");
-            this.commandList[this.commandList.length] = sc;
-
-            // oracle
-            sc = new ShellCommand(this.shellOracle,
-                "oracle",
-                "<string> - Consult the sacred oracle with any question.");
-            this.commandList[this.commandList.length] = sc;
-
-            // status
-            sc = new ShellCommand(this.shellStatus,
-                "status",
-                "<string> - Change the Host Log status message.");
-            this.commandList[this.commandList.length] = sc;
-
-            // crash/BSOD tester
-            sc = new ShellCommand(this.shellCrash,
-                "crash",
-                "<string> - Cause a crash with an error message.");
-            this.commandList[this.commandList.length] = sc;
-
-            // load
-            sc = new ShellCommand(this.shellLoad,
-                "load",
-                "- Load and validate the User Program Input.");
-            this.commandList[this.commandList.length] = sc;
-
-            // run
-            sc = new ShellCommand(this.shellRun,
-                "run",
-                "<pid> - Execute the program at <pid>.");
-            this.commandList[this.commandList.length] = sc;
-
-            // ps  - list the running processes and their IDs
-            // kill <id> - kills the specified process id.
+            addCmd(this.shellVer, "ver");
+            addCmd(this.shellHelp, "help");
+            addCmd(this.shellShutdown, "shutdown");
+            addCmd(this.shellCls, "cls");
+            addCmd(this.shellMan, "man");
+            addCmd(this.shellTrace, "trace");
+            addCmd(this.shellRot13, "rot13");
+            addCmd(this.shellPrompt, "prompt");
+            addCmd(this.shellDate, "date");
+            addCmd(this.shellWhereAmI, "whereami");
+            addCmd(this.shellOracle, "oracle");
+            addCmd(this.shellStatus, "status");
+            addCmd(this.shellCrash, "crash");
+            addCmd(this.shellLoad, "load");
+            addCmd(this.shellRun, "run");
+            //addCmd(this.shellProcesses, "ps");
+            //addCmd(this.shellKill, "kill");
 
             // Display the initial prompt.
             this.putPrompt();
@@ -124,6 +51,15 @@ module TSOS {
 
         public putPrompt() {
             _StdOut.putText(this.promptStr);
+        }
+
+        public static putUsage(topic: string) {
+            if(ShellCommand.information[topic].usage != "") {
+                _StdOut.putLine("Usage: " + topic + " " +
+                    ShellCommand.information[topic].usage + ".");
+            } else {
+                _StdOut.putLine("Usage: " + topic + ".");
+            }
         }
 
         public handleInput(buffer) {
@@ -155,14 +91,8 @@ module TSOS {
             if (found) {
                 this.execute(fn, args);  // Note that args is always supplied, though it might be empty.
             } else {
-                // It's not found, so check for curses and apologies before declaring the command invalid.
-                if (this.curses.indexOf("[" + Utils.rot13(cmd) + "]") >= 0) {     // Check for curses.
-                    this.execute(this.shellCurse);
-                } else if (this.apologies.indexOf("[" + cmd + "]") >= 0) {        // Check for apologies.
-                    this.execute(this.shellApology);
-                } else { // It's just a bad command. {
-                    this.execute(this.shellInvalidCommand);
-                }
+                // It's not found, declare invalid command
+                this.execute(this.shellInvalidCommand);
             }
         }
 
@@ -228,32 +158,8 @@ module TSOS {
         // called from here, so kept here to avoid violating the law of least astonishment.
         //
         public shellInvalidCommand() {
-            _StdOut.putText("Invalid Command. ");
-            if (_SarcasticMode) {
-                _StdOut.putText("Unbelievable. You, [subject name here],");
-                _StdOut.advanceLine();
-                _StdOut.putText("must be the pride of [subject hometown here].");
-            } else {
-                _StdOut.putText("Type 'help' for, well... help.");
-            }
-        }
-
-        public shellCurse() {
-            _StdOut.putText("Oh, so that's how it's going to be, eh? Fine.");
-            _StdOut.advanceLine();
-            _StdOut.putText("Bitch.");
-            _SarcasticMode = true;
-        }
-
-        public shellApology() {
-            if (_SarcasticMode) {
-                _StdOut.putText("I think we can put our differences behind us.");
-                _StdOut.advanceLine();
-                _StdOut.putText("For science . . . You monster.");
-                _SarcasticMode = false;
-            } else {
-                _StdOut.putText("For what?");
-            }
+            _StdOut.putLine("Invalid Command. ");
+            _StdOut.putText("Type 'help' for, well... help.");
         }
 
         // Although args is unused in some of these functions, it is always provided in the 
@@ -267,8 +173,10 @@ module TSOS {
             _StdOut.putText("Commands:");
             for (var i in _OsShell.commandList) {
                 _StdOut.advanceLine();
-                _StdOut.putText("  " + _OsShell.commandList[i].command + " " + 
-                    _OsShell.commandList[i].description);
+                _StdOut.putText("  " + 
+                                _OsShell.commandList[i].command + 
+                                " - " + 
+                                ShellCommand.information[i].description);
             }
         }
 
@@ -294,75 +202,21 @@ module TSOS {
                             "TSOS-2019 template. Despite its flaws, it is indisputably " +
                             "better than Windows Vista.");
                         break;
-                    case "ver":
-                        _StdOut.putText("Ver displays the operating system name and current version.");
-                        break;
-                    case "help":
-                        _StdOut.putText("Help displays a list of (hopefully) valid commands.");
-                        break;
-                    case "shutdown":
-                        _StdOut.putText("Shutdown deactivates the OS but leaves the virtual hardware running.");
-                        break;
-                    case "cls":
-                        _StdOut.putText("Cls clears the screen and resets the cursor to position zero.");
-                        break;
-                    case "man":
-                        _StdOut.putText("Usage: man <topic>");
-                        _StdOut.advanceLine();
-                        _StdOut.putText("Man displays detailed information about a specific topic or command.");
-                        break;
-                    case "trace":
-                        _StdOut.putText("Usage: trace <on | off>");
-                        _StdOut.advanceLine();
-                        _StdOut.putText("Trace turns the OS trace in the Host Log on or off.");
-                        break
-                    case "rot13":
-                        _StdOut.putText("Usage: rot13 <string>");
-                        _StdOut.advanceLine();
-                        _StdOut.putText("Rot13 performs ceaser-cipher-style rot13 encryption on <string>.");
-                        break;
-                    case "prompt":
-                        _StdOut.putText("Usage: prompt <string>");
-                        _StdOut.advanceLine();
-                        _StdOut.putText("Prompt sets the prompt that appears before any text you enter. " +
-                            "Default is '>'");
-                        break;
-                    case "date":
-                        _StdOut.putText("Date displays the current date and time according to a JS Date object.");
-                        break;
-                    case "whereami":
-                        _StdOut.putText("Whereami shows your current latitude and longitude using the" + 
-                            " HTML5 geolocation system.");
-                        break;
-                    case "oracle":
-                        _StdOut.putText("Usage: oracle <string>");
-                        _StdOut.advanceLine();
-                        _StdOut.putText("Oracle allows you to ask a holy oracle (definitely not RNG) for " +
-                            "the answer to your life's toughest questions.");
-                        break;
-                    case "status":
-                        _StdOut.putText("Usage: status <string>");
-                        _StdOut.advanceLine();
-                        _StdOut.putText("Status changes the message that appears above the host log window.");
-                        break;
-                    case "crash":
-                        _StdOut.putText("Usage: crash <string>");
-                        _StdOut.advanceLine();
-                        _StdOut.putText("Crash allows you to immediately crash the OS with an error message.");
-                        break
-                    case "load":
-                        _StdOut.putText("Load validates and processes assembly from the User Program Input." +
-                            "All code must be in the form of 2-digit hex values.");
-                        break;
-                    case "run":
-                        _StdOut.putText("Execute the program at the desired PID." +
-                            "Programs must first be loaded from the User Program Input using load.");
-                        break;
+
                     default:
-                        _StdOut.putText("No manual entry for " + args[0] + ".");
+                        var info = ShellCommand.information[topic];
+                        if(info) {
+                            Shell.putUsage(topic);
+                            _StdOut.putLine(info.manual);
+
+                        } else {
+                            _StdOut.putText("No manual entry for " +
+                                            topic + ".");
+                        }
+                        break;
                 }
             } else {
-                _StdOut.putText("Usage: man <topic>  Please supply a topic.");
+                Shell.putUsage("man");
             }
         }
 
@@ -371,12 +225,8 @@ module TSOS {
                 var setting = args[0];
                 switch (setting) {
                     case "on":
-                        if (_Trace && _SarcasticMode) {
-                            _StdOut.putText("Trace is already on, doofus.");
-                        } else {
-                            _Trace = true;
-                            _StdOut.putText("Trace ON");
-                        }
+                        _Trace = true;
+                        _StdOut.putText("Trace ON");
                         break;
                     case "off":
                         _Trace = false;
@@ -386,7 +236,7 @@ module TSOS {
                         _StdOut.putText("Invalid arguement.  Usage: trace <on | off>.");
                 }
             } else {
-                _StdOut.putText("Usage: trace <on | off>");
+                Shell.putUsage("trace");
             }
         }
 
@@ -395,7 +245,7 @@ module TSOS {
                 // Requires Utils.ts for rot13() function.
                 _StdOut.putText(args.join(' ') + " = '" + Utils.rot13(args.join(' ')) +"'");
             } else {
-                _StdOut.putText("Usage: rot13 <string>  Please supply a string.");
+                Shell.putUsage("rot13");
             }
         }
 
@@ -403,7 +253,7 @@ module TSOS {
             if (args.length > 0) {
                 _OsShell.promptStr = args[0];
             } else {
-                _StdOut.putText("Usage: prompt <string>  Please supply a string.");
+                Shell.putUsage("prompt");
             }
         }
 
@@ -476,7 +326,7 @@ module TSOS {
                 }
 
             } else {
-                _StdOut.putText("Usage: status <string>  Please supply a string.");
+                Shell.putUsage("status");
             }
         }
 
@@ -544,12 +394,12 @@ module TSOS {
 
             //create a PCB for the new program
             var pcb = new PCB();
-            _ProcessList[_ProcessList.length] = pcb;
+            _ProcessList[pcb.processID] = pcb;
 
-            _StdOut.putText("Load successful. Assigned PID " + 
-                            pcb.processID + 
-                            ".\n You can now run this program via: \n" +
-                            " run " + pcb.processID);
+            _StdOut.putLine("Load successful. Assigned PID " + 
+                            pcb.processID + ".");
+            _StdOut.putLine("You can now run this program via:");
+            _StdOut.putLine("  run " + pcb.processID);
 
             Control.hostUpdateProcessTable();
         }
@@ -558,10 +408,14 @@ module TSOS {
             if(args.length > 0) {
                 var pid = args[0];
 
-                 
-
+                if(_ProcessList[pid]) {
+                    //TODO execute the program
+                } else {
+                    _StdOut.putLine("ERROR - PCB for Process ID " + pid +
+                                    " is undefined.");
+                }
             } else {
-                _StdOut.putText("Usage: run <pid>. Please supply a string.");
+                Shell.putUsage("run");
             }
         }
     }

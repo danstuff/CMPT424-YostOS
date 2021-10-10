@@ -10,7 +10,7 @@ module TSOS {
         PROCESS_STATE_IDLE,
         PROCESS_STATE_RUNNING,
         PROCESS_STATE_MAX
-    };
+    }
 
     export class PCB {
         // Static properties
@@ -23,9 +23,9 @@ module TSOS {
         public instructionReg = 0;
         public accumulator = 0;
 
-        public regX = 0;
-        public regY = 0;
-        public regZ = 0;
+        public Xreg = 0;
+        public Yreg = 0;
+        public Zflag = 0;
 
         public processPriority = 0;
         public processState = ProcessState.PROCESS_STATE_IDLE;
@@ -33,7 +33,7 @@ module TSOS {
 
         constructor() {
             // sequential PID
-            this.processID = lastID++;
+            this.processID = PCB.lastID++;
         }   
     }
 }

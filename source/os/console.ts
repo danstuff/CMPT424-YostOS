@@ -238,6 +238,12 @@ module TSOS {
                 this.clearScreen();
                 _DrawingContext.putImageData(img, 0, -lineHeight);
             }
+
+        }
+        
+        public putLine(line: string) {
+            this.putText(line);
+            this.advanceLine();
         }
     }
 }

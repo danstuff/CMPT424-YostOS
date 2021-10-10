@@ -204,6 +204,10 @@ var TSOS;
                 _DrawingContext.putImageData(img, 0, -lineHeight);
             }
         };
+        Console.prototype.putLine = function (line) {
+            this.putText(line);
+            this.advanceLine();
+        };
         return Console;
     }());
     TSOS.Console = Console;

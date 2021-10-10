@@ -155,9 +155,9 @@ module TSOS {
                 pcbTable[i][1] = Control.toHexStr(pcb.programCounter);
                 pcbTable[i][2] = Control.toHexStr(pcb.instructionReg);
                 pcbTable[i][3] = Control.toHexStr(pcb.accumulator);
-                pcbTable[i][4] = Control.toHexStr(pcb.regX);
-                pcbTable[i][5] = Control.toHexStr(pcb.regY);
-                pcbTable[i][6] = Control.toHexStr(pcb.regZ);
+                pcbTable[i][4] = Control.toHexStr(pcb.Xreg);
+                pcbTable[i][5] = Control.toHexStr(pcb.Yreg);
+                pcbTable[i][6] = Control.toHexStr(pcb.Zflag);
                 pcbTable[i][7] = Control.toHexStr(pcb.processPriority);
                 pcbTable[i][8] = Control.toHexStr(pcb.processState);
                 pcbTable[i][9] = Control.toHexStr(pcb.processLocation);

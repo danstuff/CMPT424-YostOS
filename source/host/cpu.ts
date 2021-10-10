@@ -33,6 +33,15 @@ module TSOS {
             this.isExecuting = false;
         }
 
+        public startProcess(pcb: PCB) {
+            this.PC = pcb.programCounter;
+            this.Acc = pcb.accumulator;
+            this.Xreg = pcb.Xreg;
+            this.Xreg = pcb.Xreg;
+            this.Zflag = pcb.Zflag;
+            this.isExecuting = true;
+        }
+
         public cycle(): void {
             _Kernel.krnTrace('CPU cycle');
             // TODO: Accumulate CPU usage and profiling statistics here.

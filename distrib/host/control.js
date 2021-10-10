@@ -94,6 +94,47 @@ var TSOS;
             //replace the old body with the new one
             taBody.parentNode.replaceChild(taBodyNew, taBody);
         };
+        Control.hostUpdateMemoryTable = function () {
+            var start = 0;
+            var end = TSOS.MEMORY_SIZE - 1;
+            var rowlen = 8;
+            //create array to store the rows of the table
+            var tableRows = new Array();
+            //iterate over all the rows
+            var rownum = Math.ceil((end - start) / rowlen);
+            for (var i = 0; i < rownum; i++) {
+                //create a new row and prepend it with row address
+                var tableRow = new Array();
+                tableRow[tableRow.length] = "0x" +
+                    Control.toHexStr(i * rowlen, 3);
+                //add values to the row in descending order
+                for (var j = 1; j <= rowlen; j++) {
+                    tableRow[j] = Control.toHexStr(_MemoryAccessor.
+                        getValue((i * rowlen) + j - 1));
+                }
+                tableRows[i] = tableRow;
+            }
+            Control.hostSetTable("taMemory", tableRows);
+        };
+        Control.hostUpdateProcessTable = function () {
+            //update process table log
+            var pcbTable = new Array();
+            for (var i in _ProcessList) {
+                pcbTable[i] = new Array();
+                var pcb = _ProcessList[i];
+                pcbTable[i][0] = Control.toHexStr(pcb.processID);
+                pcbTable[i][1] = Control.toHexStr(pcb.programCounter);
+                pcbTable[i][2] = Control.toHexStr(pcb.instructionReg);
+                pcbTable[i][3] = Control.toHexStr(pcb.accumulator);
+                pcbTable[i][4] = Control.toHexStr(pcb.Xreg);
+                pcbTable[i][5] = Control.toHexStr(pcb.Yreg);
+                pcbTable[i][6] = Control.toHexStr(pcb.Zflag);
+                pcbTable[i][7] = Control.toHexStr(pcb.processPriority);
+                pcbTable[i][8] = Control.toHexStr(pcb.processState);
+                pcbTable[i][9] = Control.toHexStr(pcb.processLocation);
+            }
+            Control.hostSetTable("taProcesses", pcbTable);
+        };
         //
         // Host Events
         //

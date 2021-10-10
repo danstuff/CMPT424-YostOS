@@ -55,28 +55,6 @@ var TSOS;
                 return _MemoryAccessor.getSegment(start, end);
             }
         };
-        MemoryManager.prototype.logSegment = function (start, end, rowlen) {
-            if (start === void 0) { start = 0; }
-            if (end === void 0) { end = TSOS.MEMORY_SIZE - 1; }
-            if (rowlen === void 0) { rowlen = 8; }
-            //create array to store the rows of the table
-            var tableRows = new Array();
-            //iterate over all the rows
-            var rownum = Math.ceil((end - start) / rowlen);
-            for (var i = 0; i < rownum; i++) {
-                //create a new row and prepend it with row address
-                var tableRow = new Array();
-                tableRow[tableRow.length] = "0x" +
-                    TSOS.Control.toHexStr(i * rowlen, 3);
-                //add values to the row in descending order
-                for (var j = 1; j <= rowlen; j++) {
-                    tableRow[j] = TSOS.Control.toHexStr(this.
-                        getValue((i * rowlen) + j - 1));
-                }
-                tableRows[i] = tableRow;
-            }
-            TSOS.Control.hostSetTable("taMemory", tableRows);
-        };
         return MemoryManager;
     }());
     TSOS.MemoryManager = MemoryManager;
