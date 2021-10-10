@@ -15,6 +15,7 @@ module TSOS {
     export class PCB {
         // Static properties
         public static lastID = 0;
+        public static lastLocation = 0;
 
         // Properties
         public processID;
@@ -31,9 +32,11 @@ module TSOS {
         public processState = ProcessState.PROCESS_STATE_IDLE;
         public processLocation = 0;
 
-        constructor() {
+        constructor(_processLength) {
             // sequential PID
             this.processID = PCB.lastID++;
+            this.processLocation = PCB.lastLocation;
+            PCB.lastLocation += _processLength;
         }   
     }
 }

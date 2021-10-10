@@ -389,12 +389,12 @@ module TSOS {
                                 hexStrBuf + "' is not used. ");
             }
 
-            //store loaded input in memory
-            _MemoryManager.setSegment(0, hexList);
-
             //create a PCB for the new program
-            var pcb = new PCB();
+            var pcb = new PCB(hexList.length);
             _ProcessList[pcb.processID] = pcb;
+
+            //store loaded input in memory
+            _MemoryManager.setSegment(pcb.processLocation, hexList);
 
             _StdOut.putLine("Load successful. Assigned PID " + 
                             pcb.processID + ".");

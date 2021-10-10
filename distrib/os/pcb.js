@@ -13,21 +13,24 @@ var TSOS;
         ProcessState[ProcessState["PROCESS_STATE_MAX"] = 2] = "PROCESS_STATE_MAX";
     })(ProcessState || (ProcessState = {}));
     var PCB = /** @class */ (function () {
-        function PCB() {
-            this.programCounter = 1;
-            this.instructionReg = 2;
-            this.accumulator = 3;
-            this.Xreg = 4;
-            this.Yreg = 5;
-            this.Zflag = 6;
-            this.processPriority = 7;
+        function PCB(_processLength) {
+            this.programCounter = 0;
+            this.instructionReg = 0;
+            this.accumulator = 0;
+            this.Xreg = 0;
+            this.Yreg = 0;
+            this.Zflag = 0;
+            this.processPriority = 0;
             this.processState = ProcessState.PROCESS_STATE_IDLE;
-            this.processLocation = 8;
+            this.processLocation = 0;
             // sequential PID
             this.processID = PCB.lastID++;
+            this.processLocation = PCB.lastLocation;
+            PCB.lastLocation += _processLength;
         }
         // Static properties
         PCB.lastID = 0;
+        PCB.lastLocation = 0;
         return PCB;
     }());
     TSOS.PCB = PCB;

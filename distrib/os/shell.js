@@ -342,11 +342,11 @@ var TSOS;
                 _StdOut.putText("WARNING - Dangling character: '" +
                     hexStrBuf + "' is not used. ");
             }
-            //store loaded input in memory
-            _MemoryManager.setSegment(0, hexList);
             //create a PCB for the new program
-            var pcb = new TSOS.PCB();
+            var pcb = new TSOS.PCB(hexList.length);
             _ProcessList[pcb.processID] = pcb;
+            //store loaded input in memory
+            _MemoryManager.setSegment(pcb.processLocation, hexList);
             _StdOut.putLine("Load successful. Assigned PID " +
                 pcb.processID + ".");
             _StdOut.putLine("You can now run this program via:");
