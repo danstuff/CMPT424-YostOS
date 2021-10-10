@@ -92,6 +92,7 @@ module TSOS {
 
             //log memory to memory table
             Control.hostUpdateMemoryTable();
+            Control.hostUpdateCPUTable();
         }
 
         //

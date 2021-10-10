@@ -81,6 +81,7 @@ var TSOS;
             }
             //log memory to memory table
             TSOS.Control.hostUpdateMemoryTable();
+            TSOS.Control.hostUpdateCPUTable();
         };
         //
         // Interrupt Handling

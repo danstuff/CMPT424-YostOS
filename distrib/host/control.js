@@ -135,6 +135,21 @@ var TSOS;
             }
             Control.hostSetTable("taProcesses", pcbTable);
         };
+        Control.hostUpdateCPUTable = function () {
+            var cpuTable = new Array();
+            var cpuRow = new Array();
+            cpuRow[0] = Control.toHexStr(_CPU.PC);
+            cpuRow[1] = Control.toHexStr(_CPU.IR);
+            cpuRow[2] = Control.toHexStr(_CPU.Acc);
+            cpuRow[3] = Control.toHexStr(_CPU.Xreg);
+            cpuRow[3] = Control.toHexStr(_CPU.Yreg);
+            cpuRow[4] = Control.toHexStr(_CPU.Zflag);
+            cpuTable[0] = cpuRow;
+            Control.hostSetTable("taCPU", cpuTable);
+            //look up the current instruction and set it to thINST
+            var thINST = document.getElementById("thINST");
+            thINST.innerHTML = TSOS.Cpu.instructions[_CPU.IR];
+        };
         //
         // Host Events
         //
