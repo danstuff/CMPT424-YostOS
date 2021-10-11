@@ -10,6 +10,8 @@
 module TSOS {
 
     export class Kernel {
+        public debugMode: boolean;
+
         //
         // OS Startup and Shutdown Routines
         //
@@ -51,6 +53,9 @@ module TSOS {
             _OsShell = new Shell();
             _OsShell.init();
 
+            //default debug mode to false
+            this.debugMode = false;
+
             // Finally, initiate student testing protocol.
             if (_GLaDOS) {
                 _GLaDOS.afterStartup();
@@ -89,7 +94,7 @@ module TSOS {
 
                 //only do one step at a time if you're in debug mode
                 if(this.debugMode) {
-
+                    _CPU.isExecuting = false;
                 }
             } else {                       // If there are no interrupts and there is nothing being executed then just be idle.
                 this.krnTrace("Idle");

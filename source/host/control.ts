@@ -64,6 +64,15 @@ module TSOS {
             _Memory.init();
             _MemoryAccessor = new MemoryAccessor();
 
+            //disable all buttons
+            (<HTMLButtonElement>document.getElementById("btnHaltOS")).
+                disabled = true;
+            (<HTMLButtonElement>document.getElementById("btnReset")).
+                disabled = true;
+            (<HTMLButtonElement>document.getElementById("btnDebug")).
+                disabled = true;
+            (<HTMLButtonElement>document.getElementById("btnStep")).
+                disabled = true;
         }
 
         public static hostLog(msg: string, source: string = "?"): void {
@@ -196,6 +205,9 @@ module TSOS {
             // .. enable the Halt and Reset buttons ...
             (<HTMLButtonElement>document.getElementById("btnHaltOS")).disabled = false;
             (<HTMLButtonElement>document.getElementById("btnReset")).disabled = false;
+            (<HTMLButtonElement>document.getElementById("btnDebug")).disabled = false;
+
+
 
             // .. set focus on the OS console display ...
             document.getElementById("display").focus();
@@ -229,6 +241,20 @@ module TSOS {
             // That boolean parameter is the 'forceget' flag. When it is true it causes the page to always
             // be reloaded from the server. If it is false or not specified the browser may reload the
             // page from its cache, which is not what we want.
+        }
+
+        public static hostBtnDebug_click(btn): void {
+            
+            _Kernel.debugMode = !_Kernel.debugMode;
+
+            (<HTMLButtonElement>document.getElementById("btnStep")).
+                disabled = false;
+
+            console.log(_Kernel.debugMode);
+        }
+
+        public static hostBtnStep_click(btn): void {
+            _CPU.isExecuting = true; 
         }
     }
 }

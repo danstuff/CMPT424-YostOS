@@ -64,7 +64,7 @@
             <tr id="divButtonBar" style="margin:4px;">
                 <td>
                     <button id="btnStartOS"
-                           name="brnStartOS"
+                           name="btnStartOS"
                            class="normal_button"
                            tabindex="0"
                            onclick="TSOS.Control.hostBtnStartOS_click(this);">
@@ -72,30 +72,38 @@
                     </button>
 
                     <button id="btnHaltOS"
-                           name="brnHaltOS"
+                           name="btnHaltOS"
                            class="normal_button"
-                           disabled="disabled"
+                           disabled
                            tabindex="1"
                            onclick="TSOS.Control.hostBtnHaltOS_click(this);">
                         <i class="fas fa-stop"></i>
                     </button>
 
                     <button id="btnReset"
-                           name="brnReset"
+                           name="btnReset"
                            class="normal_button"
-                           disabled="disabled"
+                           disabled
                            tabindex="2"
                            onclick="TSOS.Control.hostBtnReset_click(this);">
                         <i class="fas fa-sync"></i>
                     </button>
 
                     <button id="btnDebug"
-                           name="brnDebug"
+                           name="btnDebug"
                            class="normal_button"
-                           disabled="disabled"
-                           tabindex="2"
-                           onclick="TSOS.Control.hostBtnReset_click(this);">
+                           disabled
+                           tabindex="3"
+                           onclick="TSOS.Control.hostBtnDebug_click(this);">
                         <i class="fas fa-bug"></i>
+
+                    <button id="btnStep"
+                           name="btnStep"
+                           class="normal_button"
+                           disabled
+                           tabindex="4"
+                           onclick="TSOS.Control.hostBtnStep_click(this);">
+                        <i class="fas fa-step-forward"></i>
                     </button>
                 </td>
             </tr>
