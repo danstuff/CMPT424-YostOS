@@ -199,7 +199,6 @@ module TSOS {
             //load next instruction into the IR
             this.IR = _MemoryAccessor.getValue(this.PC);
 
-            console.log(Control.toHexStr(this.IR));
             //perform action based on instruction
             switch(this.IR) {
 
@@ -248,8 +247,14 @@ module TSOS {
                     break;
                 
                 case 0xD0:  //BNE
+                    var hex = this.getNextConstant();
                     if(this.Zflag == false) {
-                        this.PC += this.getNextMemory();
+                        //process signed values
+                        if((hex & 0x80) > 0) {
+                            hex -= 0x100;
+                        }
+
+                        this.PC += hex;
                     }
                     break;
                 
@@ -268,7 +273,7 @@ module TSOS {
                         var char_val = 0;
 
                         do {
-                            char_val = this.getNextConstant();
+                            char_val = _MemoryAccessor.getValue(char_addr);
                             char_addr++;
 
                             strOut += String.fromCharCode(char_val);

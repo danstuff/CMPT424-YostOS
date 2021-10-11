@@ -202,7 +202,6 @@ var TSOS;
             _Kernel.debugMode = !_Kernel.debugMode;
             document.getElementById("btnStep").
                 disabled = false;
-            console.log(_Kernel.debugMode);
         };
         Control.hostBtnStep_click = function (btn) {
             _CPU.isExecuting = true;

@@ -244,13 +244,10 @@ module TSOS {
         }
 
         public static hostBtnDebug_click(btn): void {
-            
             _Kernel.debugMode = !_Kernel.debugMode;
 
             (<HTMLButtonElement>document.getElementById("btnStep")).
                 disabled = false;
-
-            console.log(_Kernel.debugMode);
         }
 
         public static hostBtnStep_click(btn): void {

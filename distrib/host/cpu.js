@@ -109,7 +109,6 @@ var TSOS;
             // TODO: Accumulate CPU usage and profiling statistics here.
             //load next instruction into the IR
             this.IR = _MemoryAccessor.getValue(this.PC);
-            console.log(TSOS.Control.toHexStr(this.IR));
             //perform action based on instruction
             switch (this.IR) {
                 case 0xA9: //LDA (constant)
@@ -146,8 +145,13 @@ var TSOS;
                     this.Zflag = (this.Xreg == cmp_val);
                     break;
                 case 0xD0: //BNE
+                    var hex = this.getNextConstant();
                     if (this.Zflag == false) {
-                        this.PC += this.getNextMemory();
+                        //process signed values
+                        if ((hex & 0x80) > 0) {
+                            hex -= 0x100;
+                        }
+                        this.PC += hex;
                     }
                     break;
                 case 0xEE: //INC
@@ -163,7 +167,7 @@ var TSOS;
                         var char_addr = this.Yreg;
                         var char_val = 0;
                         do {
-                            char_val = this.getNextConstant();
+                            char_val = _MemoryAccessor.getValue(char_addr);
                             char_addr++;
                             strOut += String.fromCharCode(char_val);
                         } while (char_val != 0 && char_addr < TSOS.MEMORY_SIZE);
