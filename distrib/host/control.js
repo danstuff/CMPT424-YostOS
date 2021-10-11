@@ -128,7 +128,7 @@ var TSOS;
                 pcbTable[i][3] = Control.toHexStr(pcb.accumulator);
                 pcbTable[i][4] = Control.toHexStr(pcb.Xreg);
                 pcbTable[i][5] = Control.toHexStr(pcb.Yreg);
-                pcbTable[i][6] = Control.toHexStr(pcb.Zflag);
+                pcbTable[i][6] = Control.toHexStr(+pcb.Zflag);
                 pcbTable[i][7] = Control.toHexStr(pcb.processPriority);
                 pcbTable[i][8] = Control.toHexStr(pcb.processState);
                 pcbTable[i][9] = Control.toHexStr(pcb.processLocation);
@@ -143,12 +143,12 @@ var TSOS;
             cpuRow[2] = Control.toHexStr(_CPU.Acc);
             cpuRow[3] = Control.toHexStr(_CPU.Xreg);
             cpuRow[3] = Control.toHexStr(_CPU.Yreg);
-            cpuRow[4] = Control.toHexStr(_CPU.Zflag);
+            cpuRow[4] = Control.toHexStr(+_CPU.Zflag);
             cpuTable[0] = cpuRow;
             Control.hostSetTable("taCPU", cpuTable);
             //look up the current instruction and set it to thINST
             var thINST = document.getElementById("thINST");
-            thINST.innerHTML = TSOS.Cpu.instructions[_CPU.IR];
+            thINST.innerHTML = TSOS.Cpu.instructions[_CPU.IR].mnemonic;
         };
         //
         // Host Events

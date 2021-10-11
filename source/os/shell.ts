@@ -394,7 +394,9 @@ module TSOS {
             _ProcessList[pcb.processID] = pcb;
 
             //store loaded input in memory
-            _MemoryManager.setSegment(pcb.processLocation, hexList);
+            if(!_MemoryManager.setSegment(pcb.processLocation, hexList)) {
+                return;
+            }
 
             _StdOut.putLine("Load successful. Assigned PID " + 
                             pcb.processID + ".");
@@ -409,7 +411,7 @@ module TSOS {
                 var pid = args[0];
 
                 if(_ProcessList[pid]) {
-                    //TODO execute the program
+                    _CPU.startProcess(_ProcessList[pid]);
                 } else {
                     _StdOut.putLine("ERROR - PCB for Process ID " + pid +
                                     " is undefined.");

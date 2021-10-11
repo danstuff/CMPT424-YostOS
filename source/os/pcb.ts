@@ -26,7 +26,7 @@ module TSOS {
 
         public Xreg = 0;
         public Yreg = 0;
-        public Zflag = 0;
+        public Zflag = false;
 
         public processPriority = 0;
         public processState = ProcessState.PROCESS_STATE_IDLE;

@@ -6,7 +6,7 @@
 
 module TSOS {
 
-    export const MEMORY_SIZE = 256;
+    export const MEMORY_SIZE = 1024;
 
     export class Memory {
 

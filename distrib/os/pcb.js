@@ -19,7 +19,7 @@ var TSOS;
             this.accumulator = 0;
             this.Xreg = 0;
             this.Yreg = 0;
-            this.Zflag = 0;
+            this.Zflag = false;
             this.processPriority = 0;
             this.processState = ProcessState.PROCESS_STATE_IDLE;
             this.processLocation = 0;

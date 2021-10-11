@@ -95,7 +95,7 @@ module TSOS {
                     public Acc: number = 0,
                     public Xreg: number = 0,
                     public Yreg: number = 0,
-                    public Zflag: number = 0,
+                    public Zflag: boolean = false,
                     public isExecuting: boolean = false) {
 
         }
@@ -106,7 +106,7 @@ module TSOS {
             this.Acc = 0;
             this.Xreg = 0;
             this.Yreg = 0;
-            this.Zflag = 0;
+            this.Zflag = false;
             this.isExecuting = false;
         }
 
@@ -144,7 +144,7 @@ module TSOS {
             // TODO: Accumulate CPU usage and profiling statistics here.
 
             //load next instruction into the IR
-            this.IR = _MemoryAccessor.getConstant(this.PC);
+            this.IR = this.getConstant(this.PC);
 
             //perform action based on instruction
             switch(this.IR) {
@@ -194,7 +194,7 @@ module TSOS {
                     break;
                 
                 case 0xD0:  //BNE
-                    if(this.Zflag == 0) {
+                    if(this.Zflag == false) {
                         this.PC += this.getMemory(++this.PC);
                     }
                     break;
@@ -206,7 +206,7 @@ module TSOS {
                 
                 case 0xFF:  //SYS
                     if(this.Xreg == 0x01) {
-                        _StdIn.putLine(this.Yreg);
+                        _StdIn.putLine(Control.toHexStr(this.Yreg));
                     } else if(this.Xreg == 0x02) {
                         var strOut = "";
 
@@ -222,6 +222,12 @@ module TSOS {
                         
                         _StdIn.putLine(strOut);
                     }
+                    break;
+                default:
+                    //unknown instruction, post error and stop
+                    _StdIn.putLine("ERROR - Unknown instruction: " +
+                                   Control.toHexStr(this.IR));
+                    this.isExecuting = false;
                     break;
             }
 
