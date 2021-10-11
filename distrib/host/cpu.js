@@ -183,12 +183,12 @@ var TSOS;
                             char_addr++;
                             strOut += String.fromCharCode(char_val);
                         } while (char_val != 0 && char_addr < TSOS.MEMORY_SIZE);
-                        _StdIn.putLine(strOut);
+                        _StdIn.putText(strOut);
                     }
                     break;
                 default:
                     //unknown instruction, post error and stop
-                    _StdIn.putLine("ERROR - Unknown instruction: " +
+                    _StdIn.putText("ERROR - Unknown instruction: " +
                         TSOS.Control.toHexStr(this.IR));
                     this.isExecuting = false;
                     break;

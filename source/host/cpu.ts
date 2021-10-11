@@ -293,12 +293,12 @@ module TSOS {
                             strOut += String.fromCharCode(char_val);
                         } while(char_val != 0 && char_addr < MEMORY_SIZE);
                         
-                        _StdIn.putLine(strOut);
+                        _StdIn.putText(strOut);
                     }
                     break;
                 default:
                     //unknown instruction, post error and stop
-                    _StdIn.putLine("ERROR - Unknown instruction: " +
+                    _StdIn.putText("ERROR - Unknown instruction: " +
                                    Control.toHexStr(this.IR));
                     this.isExecuting = false;
                     break;

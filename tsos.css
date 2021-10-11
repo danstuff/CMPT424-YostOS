@@ -87,7 +87,6 @@ button:disabled {
 
 #descINST {
     font-size: 10px;
-    width: 100%;
     visibility: hidden;
     position: absolute;
     top: 0;

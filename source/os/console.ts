@@ -220,11 +220,19 @@ module TSOS {
                     }
 
                     // Draw the word at the current X and Y coordinates.
-                    _DrawingContext.drawText(this.currentFont, this.currentFontSize,
-                        this.currentXPosition, this.currentYPosition, words[i]);
+                    _DrawingContext.drawText(this.currentFont,
+                                             this.currentFontSize,
+                                             this.currentXPosition,
+                                             this.currentYPosition,
+                                             words[i]);
 
                     // Move the current X position.
                     this.currentXPosition = this.currentXPosition + offset;
+
+                    // If current word contains a newline, advance line
+                    if(words[i].search("\n") >= 0) {
+                        this.advanceLine();
+                    }
                 }
             }
         }

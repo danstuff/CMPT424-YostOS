@@ -7,7 +7,7 @@
 module TSOS {
 
     //could be anything. Project 2 says to use 256 bytes
-    export const MEMORY_SIZE = 256;
+    export const MEMORY_SIZE = 512;
 
     export class Memory {
 
