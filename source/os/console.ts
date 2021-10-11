@@ -17,7 +17,8 @@ module TSOS {
             public bufHistory = [],
             public bufHistoryPos = -1,
             public predictionBase = "",
-            public predictionNum = 0) {
+            public predictionNum = 0,
+            public ctrlPressed=false) {
         }
 
         public init(): void {
@@ -173,12 +174,24 @@ module TSOS {
 
                     this.predictionNum = 0;
 
+                } else if (chr === '#LControl') {
+                    this.ctrlPressed = true;
+
                 } else {
-                    // This is a "normal" character, so ...
-                    // ... draw it on the screen and add it to our buffer.
-                    this.addTypedText(chr); 
-                    this.bufHistoryPos = -1;
-                    this.predictionNum = 0;
+                    if(this.ctrlPressed && 
+                      chr == 'c' || chr == 'C') {
+                        _CPU.isExecuting = false;
+                        _Kernel.krnTrace("CPU force halt");
+                    } else {
+                        this.ctrlPressed = false;
+                        
+                        // This is a "normal" character, so
+                        // draw it on the screen and add it to our buffer.
+                        this.addTypedText(chr); 
+                        this.bufHistoryPos = -1;
+                        this.predictionNum = 0;
+                    }
+
                 }
                 // TODO: Add a case for Ctrl-C that would allow the user to break the current program.
             }

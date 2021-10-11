@@ -24,7 +24,8 @@ var KeySpecials = {
     9: '#Tab',
     38: '#Up',
     40: '#Down',
-    8: '#Backspace'
+    8: '#Backspace',
+    17: '#LControl'
 };
 var KeyPairs = {
     192: ['`', '~'],

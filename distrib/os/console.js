@@ -7,7 +7,7 @@
 var TSOS;
 (function (TSOS) {
     var Console = /** @class */ (function () {
-        function Console(currentFont, currentFontSize, currentXPosition, currentYPosition, buffer, bufHistory, bufHistoryPos, predictionBase, predictionNum) {
+        function Console(currentFont, currentFontSize, currentXPosition, currentYPosition, buffer, bufHistory, bufHistoryPos, predictionBase, predictionNum, ctrlPressed) {
             if (currentFont === void 0) { currentFont = _DefaultFontFamily; }
             if (currentFontSize === void 0) { currentFontSize = _DefaultFontSize; }
             if (currentXPosition === void 0) { currentXPosition = 0; }
@@ -17,6 +17,7 @@ var TSOS;
             if (bufHistoryPos === void 0) { bufHistoryPos = -1; }
             if (predictionBase === void 0) { predictionBase = ""; }
             if (predictionNum === void 0) { predictionNum = 0; }
+            if (ctrlPressed === void 0) { ctrlPressed = false; }
             this.currentFont = currentFont;
             this.currentFontSize = currentFontSize;
             this.currentXPosition = currentXPosition;
@@ -26,6 +27,7 @@ var TSOS;
             this.bufHistoryPos = bufHistoryPos;
             this.predictionBase = predictionBase;
             this.predictionNum = predictionNum;
+            this.ctrlPressed = ctrlPressed;
         }
         Console.prototype.init = function () {
             this.clearScreen();
@@ -148,12 +150,23 @@ var TSOS;
                     }
                     this.predictionNum = 0;
                 }
+                else if (chr === '#LControl') {
+                    this.ctrlPressed = true;
+                }
                 else {
-                    // This is a "normal" character, so ...
-                    // ... draw it on the screen and add it to our buffer.
-                    this.addTypedText(chr);
-                    this.bufHistoryPos = -1;
-                    this.predictionNum = 0;
+                    if (this.ctrlPressed &&
+                        chr == 'c' || chr == 'C') {
+                        _CPU.isExecuting = false;
+                        _Kernel.krnTrace("CPU force halt");
+                    }
+                    else {
+                        this.ctrlPressed = false;
+                        // This is a "normal" character, so
+                        // draw it on the screen and add it to our buffer.
+                        this.addTypedText(chr);
+                        this.bufHistoryPos = -1;
+                        this.predictionNum = 0;
+                    }
                 }
                 // TODO: Add a case for Ctrl-C that would allow the user to break the current program.
             }
