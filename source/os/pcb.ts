@@ -6,10 +6,11 @@
    ------------ */
 
 module TSOS {
-    enum ProcessState {
-        PROCESS_STATE_IDLE,
-        PROCESS_STATE_RUNNING,
-        PROCESS_STATE_MAX
+    export enum ProcessState {
+        STOPPED,
+        RUNNING,
+        DONE,
+        MAX
     }
 
     export class PCB {
@@ -29,7 +30,7 @@ module TSOS {
         public Zflag = false;
 
         public processPriority = 0;
-        public processState = ProcessState.PROCESS_STATE_IDLE;
+        public processState = ProcessState.STOPPED;
         public processLocation = 0;
 
         constructor(_processLength) {

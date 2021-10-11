@@ -92,6 +92,11 @@ module TSOS {
             } else if (_CPU.isExecuting) { // If there are no interrupts then run one CPU cycle if there is anything being processed.
                 _CPU.cycle();
 
+                //update the process list with the CPU status
+                for(var i in _ProcessList) {
+                    _CPU.syncProcess(_ProcessList[i]);
+                }
+
                 //only do one step at a time if you're in debug mode
                 if(this.debugMode) {
                     _CPU.isExecuting = false;
@@ -99,7 +104,7 @@ module TSOS {
             } else {                       // If there are no interrupts and there is nothing being executed then just be idle.
                 this.krnTrace("Idle");
             }
-
+            
             //log memory to memory table
             Control.hostUpdateMemoryTable();
             Control.hostUpdateCPUTable();

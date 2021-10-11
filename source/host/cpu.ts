@@ -33,7 +33,7 @@ module TSOS {
 
             0x6D : {
                 mnemonic: "ADC",
-                description: "Add with carry."
+                description: "Add with carry the contents of an address to the accumulator."
             },
 
             0xA2 : {
@@ -69,24 +69,24 @@ module TSOS {
 
 
             0xEC : {
-                mnemonic: "LDA",
-                description: "Load the accumulator with a constant."
+                mnemonic: "CPX",
+                description: "Compare a byte in memory to the X reg. Sets the Z flag if equal."
             },
 
             0xD0 : {
-                mnemonic: "LDA",
-                description: "Load the accumulator with a constant."
+                mnemonic: "BNE",
+                description: "Branch n bytes if Z flag = 0."
             },
 
 
             0xEE : {
-                mnemonic: "LDA",
-                description: "Load the accumulator with a constant."
+                mnemonic: "INC",
+                description: "Increment the value of a byte."
             },
 
             0xFF : {
                 mnemonic: "SYS",
-                description: "System call. Print integer or string."
+                description: "System call. Print integer (Xreg = 1) or string (Xreg = 2)."
             }
         };
 
@@ -96,7 +96,8 @@ module TSOS {
                     public Xreg: number = 0,
                     public Yreg: number = 0,
                     public Zflag: boolean = false,
-                    public isExecuting: boolean = false) {
+                    public isExecuting: boolean = false,
+                    public PID: number=0) {
 
         }
 
@@ -108,33 +109,83 @@ module TSOS {
             this.Yreg = 0;
             this.Zflag = false;
             this.isExecuting = false;
+            this.PID = 0;
         }
 
         public startProcess(pcb: PCB) {
             this.PC = pcb.programCounter;
             this.Acc = pcb.accumulator;
             this.Xreg = pcb.Xreg;
-            this.Xreg = pcb.Xreg;
+            this.Yreg = pcb.Yreg;
             this.Zflag = pcb.Zflag;
             this.isExecuting = true;
-        }
-        
-        public getConstant(addr: number) {
-            return _MemoryAccessor.getValue(addr);
+            this.PID = pcb.processID;
+            pcb.processState = ProcessState.RUNNING;
         }
 
-        public getMemory(addr0: number) {
-            var addr1 =  _MemoryAccessor.getValue(addr0);
-            return _MemoryAccessor.getValue(addr1);
+        public syncProcess(pcb: PCB) {
+            if(this.PID == pcb.processID) {
+                pcb.programCounter = this.PC; 
+                pcb.accumulator = this.Acc;
+                pcb.Xreg = this.Xreg;
+                pcb.Yreg = this.Yreg;
+                pcb.Zflag = this.Zflag;
+
+                if(this.isExecuting) {
+                    pcb.processState = ProcessState.RUNNING;
+                } else {
+                    pcb.processState = ProcessState.DONE;
+                    Control.hostUpdateProcessTable();
+                }
+            } else {
+                pcb.processState = ProcessState.STOPPED;
+            }
+        }
+
+        public stopProcess(pcb: PCB) {
+            this.isExecuting = false;
+            pcb.processState = ProcessState.STOPPED;
+
+        }
+
+        public endProcess(pcb: PCB) {
+            this.isExecuting = false;
+            pcb.processState = ProcessState.DONE;
+        }
+
+        
+        public getNextConstant() {
+            return _MemoryAccessor.getValue(++this.PC);
+        }
+
+        public getNextMemory() {
+            var addr0 = _MemoryAccessor.getValue(++this.PC);
+            var addr1 = _MemoryAccessor.getValue(++this.PC);
+
+            //assemble bytes in little endian
+            var addr = addr0 + (addr1 * 0xFF);
+
+            return _MemoryAccessor.getValue(addr);
         }        
 
-        public setConstant(addr: number, value: number) {
-            _MemoryAccessor.setValue(addr, value);
+        public setNextMemory(value: number) {
+            var addr0 = _MemoryAccessor.getValue(++this.PC);
+            var addr1 = _MemoryAccessor.getValue(++this.PC);
+
+            //assemble bytes in little endian
+            var addr = addr0 + (addr1 * 0xFF);
+
+            return _MemoryAccessor.setValue(addr, value);
         }
 
-        public setMemory(addr0: number, value: number) {
-            var addr1 =  _MemoryAccessor.getValue(addr0);
-            _MemoryAccessor.setValue(addr1, value);
+        public peekNextMemory() {
+            var addr0 = _MemoryAccessor.getValue(this.PC+1);
+            var addr1 = _MemoryAccessor.getValue(this.PC+2);
+
+            //assemble bytes in little endian
+            var addr = addr0 + (addr1 * 0xFF);
+
+            return _MemoryAccessor.getValue(addr);
         }
 
         public cycle(): void {
@@ -144,41 +195,42 @@ module TSOS {
             // TODO: Accumulate CPU usage and profiling statistics here.
 
             //load next instruction into the IR
-            this.IR = this.getConstant(this.PC);
+            this.IR = _MemoryAccessor.getValue(this.PC);
 
+            console.log(Control.toHexStr(this.IR));
             //perform action based on instruction
             switch(this.IR) {
 
                 case 0xA9:  //LDA (constant)
-                    this.Acc = this.getConstant(++this.PC);
+                    this.Acc = this.getNextConstant();
                     break;
 
                 case 0xAD:  //LDA (memory)
-                    this.Acc = this.getMemory(++this.PC);
+                    this.Acc = this.getNextMemory();
                     break;
 
                 case 0x8D:  //STA (memory)
-                    this.setMemory(++this.PC, this.Acc);
+                    this.setNextMemory(this.Acc);
                     break;
 
                 case 0x6D:  //ADC
-                    this.Acc += this.getMemory(++this.PC);
+                    this.Acc += this.getNextMemory();
                     break;
 
                 case 0xA2:  //LDX (constant)
-                    this.Xreg = this.getConstant(++this.PC);
+                    this.Xreg = this.getNextConstant();
                     break;
 
                 case 0xAE:  //LDX (memory)
-                    this.Xreg = this.getMemory(++this.PC);
+                    this.Xreg = this.getNextMemory();
                     break;
 
                 case 0xA0:  //LDY (constant)
-                    this.Xreg = this.getConstant(++this.PC);
+                    this.Yreg = this.getNextConstant();
                     break;
                 
                 case 0xAC:  //LDY (memory)
-                    this.Xreg = this.getMemory(++this.PC);
+                    this.Yreg = this.getNextMemory();
                     break;
                 
                 case 0xEA:  //NOP
@@ -189,19 +241,19 @@ module TSOS {
                     break;
                 
                 case 0xEC:  //CPX
-                    var cmp_val = this.getMemory(++this.PC);
+                    var cmp_val = this.getNextMemory();
                     this.Zflag = (this.Xreg == cmp_val);
                     break;
                 
                 case 0xD0:  //BNE
                     if(this.Zflag == false) {
-                        this.PC += this.getMemory(++this.PC);
+                        this.PC += this.getNextMemory();
                     }
                     break;
                 
                 case 0xEE:  //INC
-                    var val = this.getMemory(++this.PC);
-                    this.setMemory(this.PC, val+1);
+                    var val = this.peekNextMemory();
+                    this.setNextMemory(++val);
                     break;
                 
                 case 0xFF:  //SYS
@@ -214,7 +266,7 @@ module TSOS {
                         var char_val = 0;
 
                         do {
-                            char_val = this.getConstant(char_addr);
+                            char_val = this.getNextConstant();
                             char_addr++;
 
                             strOut += String.fromCharCode(char_val);

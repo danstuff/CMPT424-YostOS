@@ -183,8 +183,8 @@ module TSOS {
             cpuRow[1] = Control.toHexStr(_CPU.IR);
             cpuRow[2] = Control.toHexStr(_CPU.Acc);
             cpuRow[3] = Control.toHexStr(_CPU.Xreg);
-            cpuRow[3] = Control.toHexStr(_CPU.Yreg);
-            cpuRow[4] = Control.toHexStr(+_CPU.Zflag);
+            cpuRow[4] = Control.toHexStr(_CPU.Yreg);
+            cpuRow[5] = Control.toHexStr(+_CPU.Zflag);
 
             cpuTable[0] = cpuRow;
 
