@@ -15,6 +15,7 @@ module TSOS {
 
     export class Cpu {
 
+        //op codes, their mnemonics, and a description
         static instructions = {
             0xA9 : {
                 mnemonic: "LDA",
@@ -101,6 +102,7 @@ module TSOS {
 
         }
 
+        //initialize CPU state
         public init(): void {
             this.PC = 0;
             this.IR = 0;
@@ -112,6 +114,7 @@ module TSOS {
             this.PID = 0;
         }
 
+        //take a PCB, set it to run, and copy its data to the CPU state
         public startProcess(pcb: PCB) {
             pcb.processState = ProcessState.RUNNING;
             pcb.programCounter = pcb.processLocation;
@@ -126,6 +129,8 @@ module TSOS {
         }
 
         public syncProcess(pcb: PCB) {
+            //if PIDs match, this is the current process.
+            //Sync it with CPU state.
             if(this.PID == pcb.processID) {
                 pcb.programCounter = this.PC; 
                 pcb.accumulator = this.Acc;
@@ -133,12 +138,15 @@ module TSOS {
                 pcb.Yreg = this.Yreg;
                 pcb.Zflag = this.Zflag;
 
+                //adjust process state based on whether or not CPU running
                 if(this.isExecuting) {
                     pcb.processState = ProcessState.RUNNING;
                 } else {
                     pcb.processState = ProcessState.DONE;
                     Control.hostUpdateProcessTable();
                 }
+
+            //all processes besides the current one should be stopped
             } else {
                 pcb.processState = ProcessState.STOPPED;
             }
@@ -155,11 +163,12 @@ module TSOS {
             pcb.processState = ProcessState.DONE;
         }
 
-        
+        //advance the program counter and get the value at it's position
         public getNextConstant() {
             return _MemoryAccessor.getValue(++this.PC);
         }
 
+        //advance PC and get next two bytes, which are an address
         public getNextMemory() {
             var addr0 = _MemoryAccessor.getValue(++this.PC);
             var addr1 = _MemoryAccessor.getValue(++this.PC);
@@ -170,6 +179,7 @@ module TSOS {
             return _MemoryAccessor.getValue(addr);
         }        
 
+        //advance PC, get 2 bytes, and set the value at the address
         public setNextMemory(value: number) {
             var addr0 = _MemoryAccessor.getValue(++this.PC);
             var addr1 = _MemoryAccessor.getValue(++this.PC);
@@ -180,6 +190,7 @@ module TSOS {
             return _MemoryAccessor.setValue(addr, value);
         }
 
+        //same as getNextMemory except PC is not incremented
         public peekNextMemory() {
             var addr0 = _MemoryAccessor.getValue(this.PC+1);
             var addr1 = _MemoryAccessor.getValue(this.PC+2);
@@ -264,8 +275,11 @@ module TSOS {
                     break;
                 
                 case 0xFF:  //SYS
+                    //print single hex digit
                     if(this.Xreg == 0x01) {
                         _StdIn.putLine(Control.toHexStr(this.Yreg));
+
+                    //print 00-terminated string
                     } else if(this.Xreg == 0x02) {
                         var strOut = "";
 

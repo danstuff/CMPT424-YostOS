@@ -56,7 +56,7 @@ var TSOS;
             _Memory = new TSOS.Memory();
             _Memory.init();
             _MemoryAccessor = new TSOS.MemoryAccessor();
-            //disable all buttons
+            //disable all buttons (except start)
             document.getElementById("btnHaltOS").
                 disabled = true;
             document.getElementById("btnReset").
@@ -87,6 +87,7 @@ var TSOS;
                 new Date().toLocaleString();
             // TODO in the future: Optionally update a log database or some streaming service.
         };
+        //apply a 2D array to an HTML table
         Control.hostSetTable = function (tableID, tableData) {
             var taBody = document
                 .getElementById(tableID);
@@ -103,12 +104,13 @@ var TSOS;
             //replace the old body with the new one
             taBody.parentNode.replaceChild(taBodyNew, taBody);
         };
+        //put all of memory into a table and apply it to the HTML
         Control.hostUpdateMemoryTable = function () {
             var start = 0;
             var end = TSOS.MEMORY_SIZE - 1;
             var rowlen = 8;
             //create array to store the rows of the table
-            var tableRows = new Array();
+            var memTable = new Array();
             //iterate over all the rows
             var rownum = Math.ceil((end - start) / rowlen);
             for (var i = 0; i < rownum; i++) {
@@ -121,15 +123,18 @@ var TSOS;
                     tableRow[j] = Control.toHexStr(_MemoryAccessor.
                         getValue((i * rowlen) + j - 1));
                 }
-                tableRows[i] = tableRow;
+                memTable[i] = tableRow;
             }
-            Control.hostSetTable("taMemory", tableRows);
+            //apply memTable to the memory table
+            Control.hostSetTable("taMemory", memTable);
         };
+        //get the list of all processes in a table and apply it
         Control.hostUpdateProcessTable = function () {
             //update process table log
             var pcbTable = new Array();
             for (var i in _ProcessList) {
                 pcbTable[i] = new Array();
+                //add process state to the table row
                 var pcb = _ProcessList[i];
                 pcbTable[i][0] = Control.toHexStr(pcb.processID);
                 pcbTable[i][1] = Control.toHexStr(pcb.programCounter);
@@ -142,10 +147,13 @@ var TSOS;
                 pcbTable[i][8] = Control.toHexStr(pcb.processState);
                 pcbTable[i][9] = Control.toHexStr(pcb.processLocation);
             }
+            //apply pcbTable to the processes html table
             Control.hostSetTable("taProcesses", pcbTable);
         };
+        //update CPU html table with current CPU state
         Control.hostUpdateCPUTable = function () {
             var cpuTable = new Array();
+            //add one row that contains all state
             var cpuRow = new Array();
             cpuRow[0] = Control.toHexStr(_CPU.PC);
             cpuRow[1] = Control.toHexStr(_CPU.IR);
@@ -154,10 +162,14 @@ var TSOS;
             cpuRow[4] = Control.toHexStr(_CPU.Yreg);
             cpuRow[5] = Control.toHexStr(+_CPU.Zflag);
             cpuTable[0] = cpuRow;
+            //apply cpuTable to html table
             Control.hostSetTable("taCPU", cpuTable);
             //look up the current instruction and set it to thINST
             var thINST = document.getElementById("thINST");
             thINST.innerHTML = TSOS.Cpu.instructions[_CPU.IR].mnemonic;
+            //set instruction description as well
+            var descINST = document.getElementById("descINST");
+            descINST.innerHTML = TSOS.Cpu.instructions[_CPU.IR].description;
         };
         //
         // Host Events
@@ -199,11 +211,14 @@ var TSOS;
             // page from its cache, which is not what we want.
         };
         Control.hostBtnDebug_click = function (btn) {
+            //toggle kernel debug mode
             _Kernel.debugMode = !_Kernel.debugMode;
+            //if debug mode is true, btnStep should not be disabled
             document.getElementById("btnStep").
-                disabled = false;
+                disabled = !_Kernel.debugMode;
         };
         Control.hostBtnStep_click = function (btn) {
+            //force CPU to execute when step is clicked
             _CPU.isExecuting = true;
         };
         return Control;

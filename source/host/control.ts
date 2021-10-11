@@ -64,7 +64,7 @@ module TSOS {
             _Memory.init();
             _MemoryAccessor = new MemoryAccessor();
 
-            //disable all buttons
+            //disable all buttons (except start)
             (<HTMLButtonElement>document.getElementById("btnHaltOS")).
                 disabled = true;
             (<HTMLButtonElement>document.getElementById("btnReset")).
@@ -102,6 +102,7 @@ module TSOS {
             // TODO in the future: Optionally update a log database or some streaming service.
         }
 
+        //apply a 2D array to an HTML table
         public static hostSetTable(tableID: string, tableData) {
             var taBody = <HTMLTableSectionElement> document
                 .getElementById(tableID);
@@ -122,13 +123,14 @@ module TSOS {
             taBody.parentNode.replaceChild(taBodyNew, taBody);
         }
 
+        //put all of memory into a table and apply it to the HTML
         public static hostUpdateMemoryTable() {
             const start = 0;
             const end = MEMORY_SIZE-1;
             const rowlen = 8;
 
             //create array to store the rows of the table
-            var tableRows = new Array<any>();
+            var memTable = new Array<any>();
 
             //iterate over all the rows
             var rownum = Math.ceil((end - start) / rowlen);
@@ -146,12 +148,14 @@ module TSOS {
                         getValue((i*rowlen)+j-1));
                 }
               
-                tableRows[i] = tableRow;
+                memTable[i] = tableRow;
             }
 
-            Control.hostSetTable("taMemory", tableRows);
+            //apply memTable to the memory table
+            Control.hostSetTable("taMemory", memTable);
         }
 
+        //get the list of all processes in a table and apply it
         public static hostUpdateProcessTable() {
             //update process table log
             var pcbTable = new Array<any>();
@@ -159,6 +163,7 @@ module TSOS {
             for(var i in _ProcessList) {
                 pcbTable[i] = new Array<string>();
 
+                //add process state to the table row
                 var pcb = _ProcessList[i];
                 pcbTable[i][0] = Control.toHexStr(pcb.processID);
                 pcbTable[i][1] = Control.toHexStr(pcb.programCounter);
@@ -172,12 +177,15 @@ module TSOS {
                 pcbTable[i][9] = Control.toHexStr(pcb.processLocation);
             }
 
+            //apply pcbTable to the processes html table
             Control.hostSetTable("taProcesses", pcbTable);
         }
 
+        //update CPU html table with current CPU state
         public static hostUpdateCPUTable() {
             var cpuTable = new Array<any>();
 
+            //add one row that contains all state
             var cpuRow = new Array<string>();
             cpuRow[0] = Control.toHexStr(_CPU.PC);
             cpuRow[1] = Control.toHexStr(_CPU.IR);
@@ -188,11 +196,16 @@ module TSOS {
 
             cpuTable[0] = cpuRow;
 
+            //apply cpuTable to html table
             Control.hostSetTable("taCPU", cpuTable);
 
             //look up the current instruction and set it to thINST
             var thINST = document.getElementById("thINST");
             thINST.innerHTML = Cpu.instructions[_CPU.IR].mnemonic;
+
+            //set instruction description as well
+            var descINST = document.getElementById("descINST");
+            descINST.innerHTML = Cpu.instructions[_CPU.IR].description;
         }
 
         //
@@ -206,8 +219,6 @@ module TSOS {
             (<HTMLButtonElement>document.getElementById("btnHaltOS")).disabled = false;
             (<HTMLButtonElement>document.getElementById("btnReset")).disabled = false;
             (<HTMLButtonElement>document.getElementById("btnDebug")).disabled = false;
-
-
 
             // .. set focus on the OS console display ...
             document.getElementById("display").focus();
@@ -244,13 +255,16 @@ module TSOS {
         }
 
         public static hostBtnDebug_click(btn): void {
+            //toggle kernel debug mode
             _Kernel.debugMode = !_Kernel.debugMode;
 
+            //if debug mode is true, btnStep should not be disabled
             (<HTMLButtonElement>document.getElementById("btnStep")).
-                disabled = false;
+                disabled = !_Kernel.debugMode;
         }
 
         public static hostBtnStep_click(btn): void {
+            //force CPU to execute when step is clicked
             _CPU.isExecuting = true; 
         }
     }

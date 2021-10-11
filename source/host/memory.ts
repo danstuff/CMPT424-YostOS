@@ -6,7 +6,8 @@
 
 module TSOS {
 
-    export const MEMORY_SIZE = 1024;
+    //could be anything. Project 2 says to use 256 bytes
+    export const MEMORY_SIZE = 256;
 
     export class Memory {
 
@@ -17,6 +18,7 @@ module TSOS {
         }
 
         public init() {
+            //set all mem values to 0 (not always necessary)
             for(var i = 0; i < MEMORY_SIZE; i++) {
                 this.data[i] = 0;
             }

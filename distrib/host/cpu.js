@@ -31,6 +31,7 @@ var TSOS;
             this.isExecuting = isExecuting;
             this.PID = PID;
         }
+        //initialize CPU state
         Cpu.prototype.init = function () {
             this.PC = 0;
             this.IR = 0;
@@ -41,6 +42,7 @@ var TSOS;
             this.isExecuting = false;
             this.PID = 0;
         };
+        //take a PCB, set it to run, and copy its data to the CPU state
         Cpu.prototype.startProcess = function (pcb) {
             pcb.processState = TSOS.ProcessState.RUNNING;
             pcb.programCounter = pcb.processLocation;
@@ -53,12 +55,15 @@ var TSOS;
             this.PID = pcb.processID;
         };
         Cpu.prototype.syncProcess = function (pcb) {
+            //if PIDs match, this is the current process.
+            //Sync it with CPU state.
             if (this.PID == pcb.processID) {
                 pcb.programCounter = this.PC;
                 pcb.accumulator = this.Acc;
                 pcb.Xreg = this.Xreg;
                 pcb.Yreg = this.Yreg;
                 pcb.Zflag = this.Zflag;
+                //adjust process state based on whether or not CPU running
                 if (this.isExecuting) {
                     pcb.processState = TSOS.ProcessState.RUNNING;
                 }
@@ -66,6 +71,7 @@ var TSOS;
                     pcb.processState = TSOS.ProcessState.DONE;
                     TSOS.Control.hostUpdateProcessTable();
                 }
+                //all processes besides the current one should be stopped
             }
             else {
                 pcb.processState = TSOS.ProcessState.STOPPED;
@@ -79,9 +85,11 @@ var TSOS;
             this.isExecuting = false;
             pcb.processState = TSOS.ProcessState.DONE;
         };
+        //advance the program counter and get the value at it's position
         Cpu.prototype.getNextConstant = function () {
             return _MemoryAccessor.getValue(++this.PC);
         };
+        //advance PC and get next two bytes, which are an address
         Cpu.prototype.getNextMemory = function () {
             var addr0 = _MemoryAccessor.getValue(++this.PC);
             var addr1 = _MemoryAccessor.getValue(++this.PC);
@@ -89,6 +97,7 @@ var TSOS;
             var addr = addr0 + (addr1 * 0xFF);
             return _MemoryAccessor.getValue(addr);
         };
+        //advance PC, get 2 bytes, and set the value at the address
         Cpu.prototype.setNextMemory = function (value) {
             var addr0 = _MemoryAccessor.getValue(++this.PC);
             var addr1 = _MemoryAccessor.getValue(++this.PC);
@@ -96,6 +105,7 @@ var TSOS;
             var addr = addr0 + (addr1 * 0xFF);
             return _MemoryAccessor.setValue(addr, value);
         };
+        //same as getNextMemory except PC is not incremented
         Cpu.prototype.peekNextMemory = function () {
             var addr0 = _MemoryAccessor.getValue(this.PC + 1);
             var addr1 = _MemoryAccessor.getValue(this.PC + 2);
@@ -159,8 +169,10 @@ var TSOS;
                     this.setNextMemory(++val);
                     break;
                 case 0xFF: //SYS
+                    //print single hex digit
                     if (this.Xreg == 0x01) {
                         _StdIn.putLine(TSOS.Control.toHexStr(this.Yreg));
+                        //print 00-terminated string
                     }
                     else if (this.Xreg == 0x02) {
                         var strOut = "";
@@ -183,6 +195,7 @@ var TSOS;
             }
             this.PC++;
         };
+        //op codes, their mnemonics, and a description
         Cpu.instructions = {
             0xA9: {
                 mnemonic: "LDA",
