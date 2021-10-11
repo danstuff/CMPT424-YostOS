@@ -357,7 +357,7 @@ var TSOS;
         };
         Shell.prototype.shellRun = function (args) {
             if (args.length > 0) {
-                var pid = args[0];
+                var pid = parseInt(args[0]);
                 if (_ProcessList[pid]) {
                     _CPU.startProcess(_ProcessList[pid]);
                 }

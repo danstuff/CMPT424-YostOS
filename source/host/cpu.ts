@@ -113,6 +113,9 @@ module TSOS {
         }
 
         public startProcess(pcb: PCB) {
+            pcb.processState = ProcessState.RUNNING;
+            pcb.programCounter = pcb.processLocation;
+
             this.PC = pcb.programCounter;
             this.Acc = pcb.accumulator;
             this.Xreg = pcb.Xreg;
@@ -120,7 +123,6 @@ module TSOS {
             this.Zflag = pcb.Zflag;
             this.isExecuting = true;
             this.PID = pcb.processID;
-            pcb.processState = ProcessState.RUNNING;
         }
 
         public syncProcess(pcb: PCB) {

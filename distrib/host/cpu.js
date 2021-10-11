@@ -42,6 +42,8 @@ var TSOS;
             this.PID = 0;
         };
         Cpu.prototype.startProcess = function (pcb) {
+            pcb.processState = TSOS.ProcessState.RUNNING;
+            pcb.programCounter = pcb.processLocation;
             this.PC = pcb.programCounter;
             this.Acc = pcb.accumulator;
             this.Xreg = pcb.Xreg;
@@ -49,7 +51,6 @@ var TSOS;
             this.Zflag = pcb.Zflag;
             this.isExecuting = true;
             this.PID = pcb.processID;
-            pcb.processState = TSOS.ProcessState.RUNNING;
         };
         Cpu.prototype.syncProcess = function (pcb) {
             if (this.PID == pcb.processID) {
