@@ -54,7 +54,7 @@ module TSOS {
         }
 
         public setSegment(start: number, data: Array<number>) {
-            if(this.isValid(start) && this.isValid(start+data.length)) {
+            if(this.isValid(start) && this.isValid(start+data.length-1)) {
                 _MemoryAccessor.setSegment(start, data);
                 return true;
             } else {

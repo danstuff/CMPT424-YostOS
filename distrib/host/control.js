@@ -31,6 +31,14 @@ var TSOS;
             }
             return str;
         };
+        Control.toSignedHex = function (value) {
+            //procesed a signed hex value
+            //only works with 1 or 2-digit hex bytes
+            if ((value & 0x80) > 0) {
+                value = value - 0x100;
+            }
+            return value;
+        };
         Control.hostInit = function () {
             // This is called from index.html's onLoad event via the onDocumentLoad function pointer.
             // Get a global reference to the canvas.  TODO: Should we move this stuff into a Display Device Driver?

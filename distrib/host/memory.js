@@ -6,7 +6,7 @@
 var TSOS;
 (function (TSOS) {
     //could be anything. Project 2 says to use 256 bytes
-    TSOS.MEMORY_SIZE = 512;
+    TSOS.MEMORY_SIZE = 256;
     var Memory = /** @class */ (function () {
         function Memory() {
             this.data = new Array(TSOS.MEMORY_SIZE);

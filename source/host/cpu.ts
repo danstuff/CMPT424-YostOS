@@ -207,6 +207,13 @@ module TSOS {
 
             // TODO: Accumulate CPU usage and profiling statistics here.
 
+            //ensure PC is within memory bounds
+            if(this.PC > MEMORY_SIZE || this.PC < 0) {
+                _StdOut.putLine("ERROR - Program Counter out of range.");
+                this.isExecuting = false;
+                return;
+            }
+
             //load next instruction into the IR
             this.IR = _MemoryAccessor.getValue(this.PC);
 
@@ -258,14 +265,22 @@ module TSOS {
                     break;
                 
                 case 0xD0:  //BNE
-                    var hex = this.getNextConstant();
+                    var hex = Control.toSignedHex(
+                        this.getNextConstant());
+                    
+                    //only branch if zflag not set
                     if(this.Zflag == false) {
-                        //process signed values
-                        if((hex & 0x80) > 0) {
-                            hex -= 0x100;
+                        this.PC += hex;
+
+                        //wrap to 0 if you exceeded memory size
+                        while(this.PC >= MEMORY_SIZE) {
+                            this.PC -= MEMORY_SIZE;
                         }
 
-                        this.PC += hex;
+                        //wrap to memory size - 1 if you're below 0
+                        while(this.PC < 0) {
+                            this.PC += MEMORY_SIZE;
+                        }
                     }
                     break;
                 
@@ -277,7 +292,7 @@ module TSOS {
                 case 0xFF:  //SYS
                     //print single hex digit
                     if(this.Xreg == 0x01) {
-                        _StdIn.putLine(Control.toHexStr(this.Yreg));
+                        _StdIn.putText(Control.toHexStr(this.Yreg));
 
                     //print 00-terminated string
                     } else if(this.Xreg == 0x02) {
@@ -298,7 +313,7 @@ module TSOS {
                     break;
                 default:
                     //unknown instruction, post error and stop
-                    _StdIn.putText("ERROR - Unknown instruction: " +
+                    _StdIn.putLine("ERROR - Unknown instruction: " +
                                    Control.toHexStr(this.IR));
                     this.isExecuting = false;
                     break;

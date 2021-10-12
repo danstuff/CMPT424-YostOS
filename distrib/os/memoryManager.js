@@ -46,7 +46,7 @@ var TSOS;
             }
         };
         MemoryManager.prototype.setSegment = function (start, data) {
-            if (this.isValid(start) && this.isValid(start + data.length)) {
+            if (this.isValid(start) && this.isValid(start + data.length - 1)) {
                 _MemoryAccessor.setSegment(start, data);
                 return true;
             }

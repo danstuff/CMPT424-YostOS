@@ -31,6 +31,16 @@ module TSOS {
             return str;
         }
 
+        public static toSignedHex(value: number) {
+            //procesed a signed hex value
+            //only works with 1 or 2-digit hex bytes
+            if((value & 0x80) > 0) {
+                value = value - 0x100;
+            }
+
+            return value;
+        }
+
         public static hostInit(): void {
             // This is called from index.html's onLoad event via the onDocumentLoad function pointer.
 
