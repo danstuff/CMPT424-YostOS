@@ -153,11 +153,16 @@ var TSOS;
         Shell.prototype.shellHelp = function (args) {
             _StdOut.putText("Commands:");
             for (var i in _OsShell.commandList) {
+                var cmdStr = _OsShell.commandList[i].command;
+                var cmdInfo = TSOS.ShellCommand.information[cmdStr];
+                if (!cmdInfo) {
+                    var cmdInfo = {
+                        help: "No description provided"
+                    };
+                }
                 _StdOut.advanceLine();
-                _StdOut.putText("  " +
-                    _OsShell.commandList[i].command +
-                    " - " +
-                    TSOS.ShellCommand.information[i].description);
+                _StdOut.putText("  " + cmdStr +
+                    " - " + cmdInfo.help);
             }
         };
         Shell.prototype.shellShutdown = function (args) {

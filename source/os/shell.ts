@@ -172,11 +172,17 @@ module TSOS {
         public shellHelp(args: string[]) {
             _StdOut.putText("Commands:");
             for (var i in _OsShell.commandList) {
+                var cmdStr = _OsShell.commandList[i].command;
+                var cmdInfo = ShellCommand.information[cmdStr];
+
+                if(!cmdInfo) {
+                    var cmdInfo = {
+                        help : "No description provided."
+                    };
+                }
                 _StdOut.advanceLine();
-                _StdOut.putText("  " + 
-                                _OsShell.commandList[i].command + 
-                                " - " + 
-                                ShellCommand.information[i].description);
+                _StdOut.putText("  " + cmdStr +
+                                " - " + cmdInfo.help);
             }
         }
 
