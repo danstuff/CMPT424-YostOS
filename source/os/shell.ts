@@ -426,5 +426,11 @@ module TSOS {
                 Shell.putUsage("run");
             }
         }
+
+        public shellProcesses(args: string[]) {
+            for(var i in _ProcessList) {
+                
+            }
+        }
     }
 }

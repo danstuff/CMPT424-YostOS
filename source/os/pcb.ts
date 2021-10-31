@@ -6,7 +6,7 @@
    ------------ */
 
 module TSOS {
-    export enum ProcessState {
+    export string[] ProcessState {
         LOADED,
         READY,
         RUNNING,
