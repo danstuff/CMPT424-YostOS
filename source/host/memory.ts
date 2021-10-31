@@ -6,20 +6,20 @@
 
 module TSOS {
 
-    //could be anything. Project 2 says to use 256 bytes
-    export const MEMORY_SIZE = 256;
+    export const MEM_SEGMENT_SIZE = 256;
+    export const MEM_SEGMENT_COUNT = 3; //grant ability to load 3 programs 
 
     export class Memory {
 
         public data: Array<number>;
 
         constructor(){
-            this.data = new Array<number>(MEMORY_SIZE);
+            this.data = new Array<number>(MEM_SEGMENT_SIZE*MEM_SEGMENT_COUNT);
         }
 
         public init() {
             //set all mem values to 0 (not always necessary)
-            for(var i = 0; i < MEMORY_SIZE; i++) {
+            for(var i = 0; i < this.data.length; i++) {
                 this.data[i] = 0;
             }
         }

@@ -157,7 +157,7 @@ var TSOS;
                 var cmdInfo = TSOS.ShellCommand.information[cmdStr];
                 if (!cmdInfo) {
                     var cmdInfo = {
-                        help: "No description provided"
+                        help: "No description provided."
                     };
                 }
                 _StdOut.advanceLine();

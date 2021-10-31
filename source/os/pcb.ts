@@ -8,6 +8,7 @@
 module TSOS {
     export enum ProcessState {
         STOPPED,
+        READY,
         RUNNING,
         DONE,
         MAX
@@ -16,7 +17,7 @@ module TSOS {
     export class PCB {
         // Static properties
         public static lastID = 0;
-        public static lastLocation = 0;
+        public static lastBase = 0;
 
         // Properties
         public processID;
@@ -31,13 +32,15 @@ module TSOS {
 
         public processPriority = 0;
         public processState = ProcessState.STOPPED;
-        public processLocation = 0;
 
-        constructor(_processLength) {
+        public processBase = 0;
+        public processLimit = 256;
+
+        constructor() {
             // sequential PID
             this.processID = PCB.lastID++;
-            this.processLocation = PCB.lastLocation;
-            PCB.lastLocation += _processLength;
+            this.processBase = PCB.lastBase;
+            PCB.lastBase += this.processLimit;
         }   
     }
 }
