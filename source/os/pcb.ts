@@ -7,7 +7,7 @@
 
 module TSOS {
     export enum ProcessState {
-        STOPPED,
+        LOADED,
         READY,
         RUNNING,
         DONE,

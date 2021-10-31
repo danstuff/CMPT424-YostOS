@@ -18,7 +18,7 @@ module TSOS {
             }
         }
 
-        //ensure that the following access calls only occur within a certain memory range
+        //ensure that any following access calls only occur within a certain memory range
         public useSegment(start: number, end: number) {
             curSegStart = start;
             curSegEnd = end;
