@@ -24,6 +24,9 @@ var TSOS;
                 return false;
             }
         };
+        MemoryManager.prototype.usePCBSegment = function (pcb) {
+            _MemoryAccessor.useSegment(pcb.processBase, pcb.processLimit);
+        };
         MemoryManager.prototype.setValue = function (index, value) {
             // ensure index is within memory bounds
             if (this.isValid(index)) {
@@ -36,7 +39,7 @@ var TSOS;
                 return _MemoryAccessor.getValue(index);
             }
         };
-        MemoryManager.prototype.clearSegment = function (clearValue, start, end) {
+        MemoryManager.prototype.clearArray = function (clearValue, start, end) {
             if (clearValue === void 0) { clearValue = 0; }
             if (start === void 0) { start = 0; }
             if (end === void 0) { end = TSOS.MEMORY_SIZE - 1; }
@@ -45,18 +48,18 @@ var TSOS;
                 this.setValue(i, clearValue);
             }
         };
-        MemoryManager.prototype.setSegment = function (start, data) {
+        MemoryManager.prototype.setArray = function (start, data) {
             if (this.isValid(start) && this.isValid(start + data.length - 1)) {
-                _MemoryAccessor.setSegment(start, data);
+                _MemoryAccessor.setArray(start, data);
                 return true;
             }
             else {
                 return false;
             }
         };
-        MemoryManager.prototype.getSegment = function (start, end) {
+        MemoryManager.prototype.getArray = function (start, end) {
             if (this.isValid(start) && this.isValid(end)) {
-                return _MemoryAccessor.getSegment(start, end);
+                return _MemoryAccessor.getArray(start, end);
             }
         };
         return MemoryManager;

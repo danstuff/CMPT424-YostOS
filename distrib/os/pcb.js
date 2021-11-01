@@ -8,13 +8,22 @@ var TSOS;
 (function (TSOS) {
     var ProcessState;
     (function (ProcessState) {
-        ProcessState[ProcessState["STOPPED"] = 0] = "STOPPED";
-        ProcessState[ProcessState["RUNNING"] = 1] = "RUNNING";
-        ProcessState[ProcessState["DONE"] = 2] = "DONE";
-        ProcessState[ProcessState["MAX"] = 3] = "MAX";
+        ProcessState[ProcessState["LOADED"] = 0] = "LOADED";
+        ProcessState[ProcessState["READY"] = 1] = "READY";
+        ProcessState[ProcessState["RUNNING"] = 2] = "RUNNING";
+        ProcessState[ProcessState["STOPPED"] = 3] = "STOPPED";
+        ProcessState[ProcessState["DONE"] = 4] = "DONE";
+        ProcessState[ProcessState["MAX"] = 5] = "MAX";
     })(ProcessState = TSOS.ProcessState || (TSOS.ProcessState = {}));
+    TSOS.ProcessStrings = [
+        "loaded",
+        "ready",
+        "running",
+        "stopped",
+        "done"
+    ];
     var PCB = /** @class */ (function () {
-        function PCB(_processLength) {
+        function PCB() {
             this.programCounter = 0;
             this.instructionReg = 0;
             this.accumulator = 0;
@@ -23,15 +32,16 @@ var TSOS;
             this.Zflag = false;
             this.processPriority = 0;
             this.processState = ProcessState.STOPPED;
-            this.processLocation = 0;
+            this.processBase = 0;
+            this.processLimit = 256;
             // sequential PID
             this.processID = PCB.lastID++;
-            this.processLocation = PCB.lastLocation;
-            PCB.lastLocation += _processLength;
+            this.processBase = PCB.lastBase;
+            PCB.lastBase += this.processLimit;
         }
         // Static properties
         PCB.lastID = 0;
-        PCB.lastLocation = 0;
+        PCB.lastBase = 0;
         return PCB;
     }());
     TSOS.PCB = PCB;

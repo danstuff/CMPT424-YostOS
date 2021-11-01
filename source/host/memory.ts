@@ -9,12 +9,14 @@ module TSOS {
     export const MEM_SEGMENT_SIZE = 256;
     export const MEM_SEGMENT_COUNT = 3; //grant ability to load 3 programs 
 
+    export const MEMORY_SIZE = MEM_SEGMENT_SIZE*MEM_SEGMENT_COUNT;
+
     export class Memory {
 
         public data: Array<number>;
 
         constructor(){
-            this.data = new Array<number>(MEM_SEGMENT_SIZE*MEM_SEGMENT_COUNT);
+            this.data = new Array<number>(MEMORY_SIZE);
         }
 
         public init() {

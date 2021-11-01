@@ -29,6 +29,10 @@ module TSOS {
             }
         }
 
+        public usePCBSegment(pcb: PCB) {
+            _MemoryAccessor.useSegment(pcb.processBase, pcb.processLimit);
+        }
+
         public setValue(index: number, value: number) {
             // ensure index is within memory bounds
             if(this.isValid(index)) {
@@ -43,7 +47,7 @@ module TSOS {
             }
         }
 
-        public clearSegment(clearValue: number = 0,
+        public clearArray(clearValue: number = 0,
                             start: number = 0,
                             end: number =  MEMORY_SIZE-1) {
 
@@ -53,18 +57,18 @@ module TSOS {
             }
         }
 
-        public setSegment(start: number, data: Array<number>) {
+        public setArray(start: number, data: Array<number>) {
             if(this.isValid(start) && this.isValid(start+data.length-1)) {
-                _MemoryAccessor.setSegment(start, data);
+                _MemoryAccessor.setArray(start, data);
                 return true;
             } else {
                 return false;
             }
         }
 
-        public getSegment(start: number, end: number) {
+        public getArray(start: number, end: number) {
             if(this.isValid(start) && this.isValid(end)) {
-                return _MemoryAccessor.getSegment(start, end);
+                return _MemoryAccessor.getArray(start, end);
             }
         }
     }

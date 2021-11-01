@@ -91,6 +91,26 @@ var TSOS;
                 usage: "<pid>",
                 help: " kills the specified process ID (PID).",
                 manual: "Immediately terminate the process at the desired process ID (PID)."
+            },
+            "clearmem": {
+                usage: "",
+                help: " clear all memory partitions.",
+                manual: "Reset all values in all memory partitions to 0."
+            },
+            "runall": {
+                usage: "",
+                help: " run all loaded programs.",
+                manual: "Execute all programs stored in memory simultaneously."
+            },
+            "killall": {
+                usage: "",
+                help: " kill all running processes.",
+                manual: "Immediately terminate every process that is currently running or ready."
+            },
+            "quantum": {
+                usage: "<int>",
+                help: " set the Round Robin quantum.",
+                manual: "Set the number of CPU cycles used for the Round Robin quantum."
             }
         };
         return ShellCommand;

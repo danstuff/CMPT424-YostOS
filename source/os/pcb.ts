@@ -6,13 +6,22 @@
    ------------ */
 
 module TSOS {
-    export string[] ProcessState {
+    export enum ProcessState {
         LOADED,
         READY,
         RUNNING,
+        STOPPED,
         DONE,
         MAX
     }
+
+    export const ProcessStrings: Array<string> = [
+        "loaded",
+        "ready",
+        "running",
+        "stopped",
+        "done"
+    ]
 
     export class PCB {
         // Static properties

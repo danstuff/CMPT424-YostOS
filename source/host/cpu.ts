@@ -117,7 +117,7 @@ module TSOS {
         //take a PCB, set it to run, and copy its data to the CPU state
         public startProcess(pcb: PCB) {
             pcb.processState = ProcessState.RUNNING;
-            pcb.programCounter = pcb.processLocation;
+            pcb.programCounter = pcb.processBase;
 
             this.PC = pcb.programCounter;
             this.Acc = pcb.accumulator;

@@ -115,7 +115,7 @@ var TSOS;
         //put all of memory into a table and apply it to the HTML
         Control.hostUpdateMemoryTable = function () {
             var start = 0;
-            var end = TSOS.MEMORY_SIZE - 1;
+            var end = TSOS.MEM_SEGMENT_SIZE - 1;
             var rowlen = 8;
             //create array to store the rows of the table
             var memTable = new Array();
@@ -125,11 +125,10 @@ var TSOS;
                 //create a new row and prepend it with row address
                 var tableRow = new Array();
                 tableRow[tableRow.length] = "0x" +
-                    Control.toHexStr(i * rowlen, 3);
+                    Control.toHexStr(_MemoryAccessor.curBase + i * rowlen, 3);
                 //add values to the row in descending order
                 for (var j = 1; j <= rowlen; j++) {
-                    tableRow[j] = Control.toHexStr(_MemoryAccessor.
-                        getValue((i * rowlen) + j - 1));
+                    tableRow[j] = Control.toHexStr(_MemoryAccessor.getValue((i * rowlen) + j - 1));
                 }
                 memTable[i] = tableRow;
             }
@@ -152,8 +151,8 @@ var TSOS;
                 pcbTable[i][5] = Control.toHexStr(pcb.Yreg);
                 pcbTable[i][6] = Control.toHexStr(+pcb.Zflag);
                 pcbTable[i][7] = Control.toHexStr(pcb.processPriority);
-                pcbTable[i][8] = Control.toHexStr(pcb.processState);
-                pcbTable[i][9] = Control.toHexStr(pcb.processLocation);
+                pcbTable[i][8] = TSOS.ProcessState[pcb.processState];
+                pcbTable[i][9] = "Memory";
             }
             //apply pcbTable to the processes html table
             Control.hostSetTable("taProcesses", pcbTable);

@@ -38,8 +38,8 @@ var TSOS;
             addCmd(this.shellCrash, "crash");
             addCmd(this.shellLoad, "load");
             addCmd(this.shellRun, "run");
-            //addCmd(this.shellProcesses, "ps");
-            //addCmd(this.shellKill, "kill");
+            addCmd(this.shellProcesses, "ps");
+            addCmd(this.shellKill, "kill");
             // Display the initial prompt.
             this.putPrompt();
         };
@@ -348,10 +348,11 @@ var TSOS;
                     hexStrBuf + "' is not used. ");
             }
             //create a PCB for the new program
-            var pcb = new TSOS.PCB(hexList.length);
+            var pcb = new TSOS.PCB();
             _ProcessList[pcb.processID] = pcb;
             //store loaded input in memory
-            if (!_MemoryManager.setSegment(pcb.processLocation, hexList)) {
+            _MemoryManager.usePCBSegment(pcb);
+            if (!_MemoryManager.setArray(0, hexList)) {
                 return;
             }
             _StdOut.putLine("Load successful. Assigned PID " +
@@ -364,6 +365,7 @@ var TSOS;
             if (args.length > 0) {
                 var pid = parseInt(args[0]);
                 if (_ProcessList[pid]) {
+                    _MemoryManager.usePCBSegment(_ProcessList[pid]);
                     _CPU.startProcess(_ProcessList[pid]);
                 }
                 else {
@@ -373,6 +375,22 @@ var TSOS;
             }
             else {
                 Shell.putUsage("run");
+            }
+        };
+        Shell.prototype.shellProcesses = function (args) {
+            for (var i in _ProcessList) {
+                var p = _ProcessList[i];
+                _StdOut.putLine("Process " + p.processID + ": " +
+                    TSOS.ProcessStrings[p.processState]);
+            }
+        };
+        Shell.prototype.shellKill = function (args) {
+            if (args.length > 0) {
+                var pid = parseInt(args[0]);
+                _ProcessList[pid].processState = TSOS.ProcessState.STOPPED;
+            }
+            else {
+                Shell.putUsage("kill");
             }
         };
         return Shell;

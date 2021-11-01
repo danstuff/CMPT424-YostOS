@@ -42,8 +42,8 @@ module TSOS {
             addCmd(this.shellCrash, "crash");
             addCmd(this.shellLoad, "load");
             addCmd(this.shellRun, "run");
-            //addCmd(this.shellProcesses, "ps");
-            //addCmd(this.shellKill, "kill");
+            addCmd(this.shellProcesses, "ps");
+            addCmd(this.shellKill, "kill");
 
             // Display the initial prompt.
             this.putPrompt();
@@ -396,11 +396,12 @@ module TSOS {
             }
 
             //create a PCB for the new program
-            var pcb = new PCB(hexList.length);
+            var pcb = new PCB();
             _ProcessList[pcb.processID] = pcb;
 
             //store loaded input in memory
-            if(!_MemoryManager.setSegment(pcb.processLocation, hexList)) {
+            _MemoryManager.usePCBSegment(pcb);
+            if(!_MemoryManager.setArray(0, hexList)) {
                 return;
             }
 
@@ -417,6 +418,7 @@ module TSOS {
                 var pid = parseInt(args[0]);
 
                 if(_ProcessList[pid]) {
+                    _MemoryManager.usePCBSegment(_ProcessList[pid]);
                     _CPU.startProcess(_ProcessList[pid]);
                 } else {
                     _StdOut.putLine("ERROR - PCB for Process ID " + pid +
@@ -429,7 +431,19 @@ module TSOS {
 
         public shellProcesses(args: string[]) {
             for(var i in _ProcessList) {
-                
+                var p = _ProcessList[i];
+                _StdOut.putLine(
+                    "Process " + p.processID + ": " +
+                    ProcessStrings[p.processState]);
+            }
+        }
+
+        public shellKill(args: string[]) {
+            if(args.length > 0) {
+                var pid = parseInt(args[0]);
+                _ProcessList[pid].processState = ProcessState.STOPPED;
+            } else {
+                Shell.putUsage("kill");
             }
         }
     }

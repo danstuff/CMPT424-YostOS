@@ -136,7 +136,7 @@ module TSOS {
         //put all of memory into a table and apply it to the HTML
         public static hostUpdateMemoryTable() {
             const start = 0;
-            const end = MEMORY_SIZE-1;
+            const end = MEM_SEGMENT_SIZE-1;
             const rowlen = 8;
 
             //create array to store the rows of the table
@@ -145,17 +145,17 @@ module TSOS {
             //iterate over all the rows
             var rownum = Math.ceil((end - start) / rowlen);
             for(var i = 0; i < rownum; i++) {
-
                 //create a new row and prepend it with row address
                 var tableRow = new Array<string>();
 
                 tableRow[tableRow.length] = "0x" + 
-                    Control.toHexStr(i*rowlen, 3);
+                    Control.toHexStr(
+                        _MemoryAccessor.curBase + i*rowlen, 3);
 
                 //add values to the row in descending order
                 for(var j = 1; j <= rowlen; j++) {
-                    tableRow[j] = Control.toHexStr(_MemoryAccessor.
-                        getValue((i*rowlen)+j-1));
+                    tableRow[j] = Control.toHexStr(
+                        _MemoryAccessor.getValue((i*rowlen)+j-1));
                 }
               
                 memTable[i] = tableRow;
@@ -183,8 +183,9 @@ module TSOS {
                 pcbTable[i][5] = Control.toHexStr(pcb.Yreg);
                 pcbTable[i][6] = Control.toHexStr(+pcb.Zflag);
                 pcbTable[i][7] = Control.toHexStr(pcb.processPriority);
-                pcbTable[i][8] = Control.toHexStr(pcb.processState);
-                pcbTable[i][9] = Control.toHexStr(pcb.processLocation);
+
+                pcbTable[i][8] = ProcessState[pcb.processState];
+                pcbTable[i][9] = "Memory";
             }
 
             //apply pcbTable to the processes html table
