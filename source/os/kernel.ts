@@ -12,9 +12,6 @@ module TSOS {
     export class Kernel {
         public debugMode: boolean;
 
-        public quantum: number = 6;
-        public cycleCount: number = 0;
-
         //
         // OS Startup and Shutdown Routines
         //
@@ -80,7 +77,6 @@ module TSOS {
             this.krnTrace("end shutdown OS");
         }
 
-
         public krnOnCPUClockPulse() {
             /* This gets called from the host hardware simulation every time there is a hardware clock pulse.
                This is NOT the same as a TIMER, which causes an interrupt and is handled like other interrupts.
@@ -143,7 +139,7 @@ module TSOS {
                     _StdIn.handleInput();
                     break;
                 case CONTEXT_SWITCH_IRQ:
-                    //TODO
+                    _KernelDispatcher.switchProcess(params[0], params[1]);
                     break;
                 default:
                     this.krnTrapError("Invalid Interrupt Request. irq=" + irq + " params=[" + params + "]");

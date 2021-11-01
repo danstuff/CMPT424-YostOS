@@ -474,7 +474,7 @@ module TSOS {
 
         public shellQuantum(args: string[]) {
             if(args.length > 0) {
-                _Kernel.quantum = parseInt(args[0]);
+                _KernelScheduler.quantum = parseInt(args[0]);
             } else {
                 Shell.putUsage("quantum");
             }
