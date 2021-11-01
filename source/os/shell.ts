@@ -422,9 +422,7 @@ module TSOS {
                 var pid = parseInt(args[0]);
 
                 if(_ProcessList[pid]) {
-                    _KernelScheduler.scheduleProcess(_ProcessList[pid]);
-
-                    Control.hostUpdateProcessTable();
+                    _KernelDispatcher.startProcess(_ProcessList[pid]);
                 } else {
                     _StdOut.putLine("ERROR - PCB for Process ID " + pid +
                                     " is undefined.");
@@ -447,7 +445,6 @@ module TSOS {
             if(args.length > 0) {
                 var pid = parseInt(args[0]);
                 _KernelDispatcher.stopProcess(_ProcessList[pid]);
-                Control.hostUpdateProcessTable();
             } else {
                 Shell.putUsage("kill");
             }
@@ -462,7 +459,11 @@ module TSOS {
 
         public shellRunAll(args: string[]) {
             for(var i in _ProcessList) {
-                _OsShell.shellRun([""+_ProcessList[i].processID]);
+                _KernelScheduler.scheduleProcess(_ProcessList[i]);
+            }
+
+            if(_ProcessList.length >= 1) {
+                _KernelDispatcher.startProcess(_ProcessList[0]);
             }
         }
 

@@ -81,6 +81,7 @@ var TSOS;
                 // If there are no interrupts then run one CPU cycle if there is anything being processed.
                 _CPU.cycle();
                 _KernelScheduler.cycle();
+                _KernelDispatcher.syncProcesses();
             }
             else {
                 // If there are no interrupts and there is nothing being

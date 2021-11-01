@@ -22,37 +22,44 @@ var TSOS;
             _CPU.Zflag = pcb.Zflag;
             _CPU.isExecuting = true;
             _CPU.PID = pcb.processID;
+            TSOS.Control.hostUpdateProcessTable();
         };
-        Dispatcher.prototype.syncProcess = function (pcb) {
-            //if PIDs match, this is the current process.
-            //Sync it with CPU state.
-            if (_CPU.PID == pcb.processID) {
-                pcb.programCounter = _CPU.PC;
-                pcb.accumulator = _CPU.Acc;
-                pcb.Xreg = _CPU.Xreg;
-                pcb.Yreg = _CPU.Yreg;
-                pcb.Zflag = _CPU.Zflag;
-                //adjust process state based on whether or not CPU running
-                if (_CPU.isExecuting) {
-                    pcb.processState = TSOS.ProcessState.RUNNING;
-                }
-                else {
-                    pcb.processState = TSOS.ProcessState.DONE;
-                    TSOS.Control.hostUpdateProcessTable();
+        Dispatcher.prototype.syncProcesses = function () {
+            for (var i in _ProcessList) {
+                var pcb = _ProcessList[i];
+                //if PIDs match, this is the current process.
+                //Sync it with CPU state.
+                if (_CPU.PID == pcb.processID) {
+                    pcb.programCounter = _CPU.PC;
+                    pcb.accumulator = _CPU.Acc;
+                    pcb.Xreg = _CPU.Xreg;
+                    pcb.Yreg = _CPU.Yreg;
+                    pcb.Zflag = _CPU.Zflag;
+                    //adjust process state based on whether or not
+                    //the CPU is running
+                    if (_CPU.isExecuting) {
+                        pcb.processState = TSOS.ProcessState.RUNNING;
+                    }
+                    else {
+                        pcb.processState = TSOS.ProcessState.DONE;
+                    }
                 }
             }
+            TSOS.Control.hostUpdateProcessTable();
         };
         Dispatcher.prototype.stopProcess = function (pcb) {
             if (pcb.processID == _CPU.PID) {
                 _CPU.isExecuting = false;
             }
             pcb.processState = TSOS.ProcessState.STOPPED;
+            TSOS.Control.hostUpdateProcessTable();
         };
         Dispatcher.prototype.endProcess = function (pcb) {
             if (pcb.processID == _CPU.PID) {
                 _CPU.isExecuting = false;
             }
             pcb.processState = TSOS.ProcessState.DONE;
+            TSOS.Control.hostUpdateProcessTable();
         };
         Dispatcher.prototype.switchProcess = function (pcb0, pcb1) {
             pcb0.processState = TSOS.ProcessState.READY;

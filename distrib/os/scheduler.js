@@ -44,8 +44,8 @@ var TSOS;
                     if (i >= _ProcessList.length)
                         i = 0;
                 }
-                //if there was no next process, loop back to 0
-                if (cur_pcb && cur_pcb != next_pcb) {
+                //if there is a next process, perform a context switch
+                if (cur_pcb && next_pcb && cur_pcb != next_pcb) {
                     _KernelInterruptQueue.enqueue(new TSOS.Interrupt(CONTEXT_SWITCH_IRQ, [cur_pcb, next_pcb]));
                 }
                 this.cycleCount = 0;

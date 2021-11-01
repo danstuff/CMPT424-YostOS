@@ -22,26 +22,34 @@ module TSOS {
             _CPU.Zflag = pcb.Zflag;
             _CPU.isExecuting = true;
             _CPU.PID = pcb.processID;
+
+            Control.hostUpdateProcessTable();
         }
 
-        public syncProcess(pcb: PCB) {
-            //if PIDs match, this is the current process.
-            //Sync it with CPU state.
-            if(_CPU.PID == pcb.processID) {
-                pcb.programCounter = _CPU.PC; 
-                pcb.accumulator = _CPU.Acc;
-                pcb.Xreg = _CPU.Xreg;
-                pcb.Yreg = _CPU.Yreg;
-                pcb.Zflag = _CPU.Zflag;
+        public syncProcesses() {
+            for(var i in _ProcessList) {
+                var pcb = _ProcessList[i];
 
-                //adjust process state based on whether or not CPU running
-                if(_CPU.isExecuting) {
-                    pcb.processState = ProcessState.RUNNING;
-                } else {
-                    pcb.processState = ProcessState.DONE;
-                    Control.hostUpdateProcessTable();
+                //if PIDs match, this is the current process.
+                //Sync it with CPU state.
+                if(_CPU.PID == pcb.processID) {
+                    pcb.programCounter = _CPU.PC; 
+                    pcb.accumulator = _CPU.Acc;
+                    pcb.Xreg = _CPU.Xreg;
+                    pcb.Yreg = _CPU.Yreg;
+                    pcb.Zflag = _CPU.Zflag;
+
+                    //adjust process state based on whether or not
+                    //the CPU is running
+                    if(_CPU.isExecuting) {
+                        pcb.processState = ProcessState.RUNNING;
+                    } else {
+                        pcb.processState = ProcessState.DONE;
+                    }
                 }
             }
+
+            Control.hostUpdateProcessTable();
         }
 
         public stopProcess(pcb: PCB) {
@@ -50,6 +58,8 @@ module TSOS {
             }
 
             pcb.processState = ProcessState.STOPPED;
+
+            Control.hostUpdateProcessTable();
         }
 
         public endProcess(pcb: PCB) {
@@ -58,6 +68,8 @@ module TSOS {
             }
 
             pcb.processState = ProcessState.DONE;
+
+            Control.hostUpdateProcessTable();
         }
 
         public switchProcess(pcb0: PCB, pcb1: PCB) {

@@ -369,8 +369,7 @@ var TSOS;
             if (args.length > 0) {
                 var pid = parseInt(args[0]);
                 if (_ProcessList[pid]) {
-                    _KernelScheduler.scheduleProcess(_ProcessList[pid]);
-                    TSOS.Control.hostUpdateProcessTable();
+                    _KernelDispatcher.startProcess(_ProcessList[pid]);
                 }
                 else {
                     _StdOut.putLine("ERROR - PCB for Process ID " + pid +
@@ -392,7 +391,6 @@ var TSOS;
             if (args.length > 0) {
                 var pid = parseInt(args[0]);
                 _KernelDispatcher.stopProcess(_ProcessList[pid]);
-                TSOS.Control.hostUpdateProcessTable();
             }
             else {
                 Shell.putUsage("kill");
@@ -406,7 +404,10 @@ var TSOS;
         };
         Shell.prototype.shellRunAll = function (args) {
             for (var i in _ProcessList) {
-                _OsShell.shellRun(["" + _ProcessList[i].processID]);
+                _KernelScheduler.scheduleProcess(_ProcessList[i]);
+            }
+            if (_ProcessList.length >= 1) {
+                _KernelDispatcher.startProcess(_ProcessList[0]);
             }
         };
         Shell.prototype.shellKillAll = function (args) {
