@@ -99,14 +99,17 @@ var TSOS;
                             use_next = true;
                             //if the flag was set, switch to the next process
                         }
-                        else if (use_next) {
+                        else if (use_next &&
+                            _ProcessList[i].processState ==
+                                TSOS.ProcessState.READY) {
                             _CPU.switchProcess(cur_process, _ProcessList[i]);
                             use_next = false;
                             break;
                         }
                     }
                     //if there was no next process, loop back to 0
-                    if (use_next) {
+                    if (use_next && _ProcessList[i].processState ==
+                        TSOS.ProcessState.READY) {
                         _CPU.switchProcess(cur_process, _ProcessList[0]);
                     }
                     console.log("Switch");
