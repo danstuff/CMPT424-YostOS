@@ -8,9 +8,7 @@ module TSOS {
 
     export class MemoryManager {
 
-        constructor(){
-            
-        }
+        constructor(){}
 
         public init() {
             // ensure memory accessor exists
@@ -20,10 +18,12 @@ module TSOS {
         }
 
         public isValid(index: number) {
-            if(index >= 0 && index < MEMORY_SIZE) {
+            if(index + _MemoryAccessor.curBase <=
+               _MemoryAccessor.curLimit) {
                 return true;
             } else {
-                _Kernel.krnTrapError("Index " + index + " out of range");
+                _StdOut.putLine("Index " + index + 
+                                " out of range. Ignoring.");
                 return false;
             }
         }

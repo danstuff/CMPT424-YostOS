@@ -26,30 +26,33 @@ module TSOS {
 
         public inSegment(index: number) {
             if(this.curBase+index > this.curLimit) {
-                _Kernel.krnTrapError(
-                    "Index " + index + 
-                    " is out of the current segment bounds.");
-                console.log(this.curBase, this.curLimit);
+                _StdOut.putLine("Index " + index + 
+                                " out of range. Ignoring.");
+                return false;
+            } else {
+                return true;
             }
         }
 
         //single-value setter and getter
         public setValue(index: number, value: number) {
-            this.inSegment(index);
-            _Memory.data[this.curBase+index] = value;
+            if(this.inSegment(index)) {
+                _Memory.data[this.curBase+index] = value;
+            }
         }
 
         public getValue(index: number) {
-            this.inSegment(index);
-            return _Memory.data[this.curBase+index];
+            if(this.inSegment(index)) {
+                return _Memory.data[this.curBase+index];
+            }
         }
 
         //return a portion of memory as an array via slice()
         public getArray(start: number, end: number) {
-            this.inSegment(start);
-            this.inSegment(end);
-            return _Memory.data.slice(this.curBase+start,
-                                      this.curBase+end);
+            if(this.inSegment(start) && this.inSegment(end)) {
+                return _Memory.data.slice(this.curBase+start,
+                                          this.curBase+end);
+            }
         }
 
         //apply an array to a portion of memory

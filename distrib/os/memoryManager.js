@@ -15,11 +15,13 @@ var TSOS;
             }
         };
         MemoryManager.prototype.isValid = function (index) {
-            if (index >= 0 && index < TSOS.MEMORY_SIZE) {
+            if (index + _MemoryAccessor.curBase <=
+                _MemoryAccessor.curLimit) {
                 return true;
             }
             else {
-                _Kernel.krnTrapError("Index " + index + " out of range");
+                _StdOut.putLine("Index " + index +
+                    " out of range. Ignoring.");
                 return false;
             }
         };

@@ -57,6 +57,7 @@ module TSOS {
                         new Interrupt(
                             CONTEXT_SWITCH_IRQ,
                             [cur_pcb, next_pcb]));
+
                     _Kernel.krnTrace("Context switch scheduled");    
                 }                
                 
