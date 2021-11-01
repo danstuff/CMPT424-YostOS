@@ -15,6 +15,8 @@ module TSOS {
 
         public scheduleProcess(pcb: PCB) {
             pcb.processState = ProcessState.READY;
+
+            _Kernel.krnTrace("Process " + pcb.processID + " scheduled");
         }
 
         public cycle() {
@@ -51,10 +53,11 @@ module TSOS {
 
                 //if there is a next process, perform a context switch
                 if(cur_pcb && next_pcb && cur_pcb != next_pcb) {
-                        _KernelInterruptQueue.enqueue(
-                            new Interrupt(
-                                CONTEXT_SWITCH_IRQ,
-                                [cur_pcb, next_pcb]));
+                    _KernelInterruptQueue.enqueue(
+                        new Interrupt(
+                            CONTEXT_SWITCH_IRQ,
+                            [cur_pcb, next_pcb]));
+                    _Kernel.krnTrace("Context switch scheduled");    
                 }                
                 
                 this.cycleCount = 0;
