@@ -407,15 +407,21 @@ var TSOS;
         };
         Shell.prototype.shellRunAll = function (args) {
             for (var i in _ProcessList) {
-                Shell.shellRun(["" + _ProcessList[i].processID]);
+                _OsShell.shellRun(["" + _ProcessList[i].processID]);
             }
         };
         Shell.prototype.shellKillAll = function (args) {
             for (var i in _ProcessList) {
-                Shell.shellKill(["" + _ProcessList[i].processID]);
+                _OsShell.shellKill(["" + _ProcessList[i].processID]);
             }
         };
         Shell.prototype.shellQuantum = function (args) {
+            if (args.length > 0) {
+                _Kernel.quantum = parseInt(args[0]);
+            }
+            else {
+                Shell.putUsage("quantum");
+            }
         };
         return Shell;
     }());

@@ -98,7 +98,7 @@ button:disabled {
     width: 32px;
     height: 32px;
     
-    background-color: #0F0F15;
+    background-color: #12121B;
     color: white;
 
     border: 1px solid black;
@@ -112,7 +112,7 @@ button:disabled {
 }
 
 .solid {
-    background: #0F0F15;
+    background: #12121B;
 }
 
 .solid thead {
@@ -125,7 +125,7 @@ button:disabled {
 }
 
 .solid tr {
-    background-color: #0F0F15;
+    background-color: #12121B;
 }
 .solid td {
     border-top: 1px solid black;
