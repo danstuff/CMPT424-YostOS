@@ -33,15 +33,16 @@ var TSOS;
             this.processPriority = 0;
             this.processState = ProcessState.STOPPED;
             this.processBase = 0;
-            this.processLimit = 256;
+            this.processLimit = TSOS.MEM_SEGMENT_SIZE - 1;
             // sequential PID
-            this.processID = PCB.lastID++;
-            this.processBase = PCB.lastBase;
-            PCB.lastBase += this.processLimit;
+            this.processID = PCB.nextID++;
+            this.processBase = PCB.nextBase;
+            this.processLimit = this.processBase + TSOS.MEM_SEGMENT_SIZE - 1;
+            PCB.nextBase = this.processLimit + 1;
         }
         // Static properties
-        PCB.lastID = 0;
-        PCB.lastBase = 0;
+        PCB.nextID = 0;
+        PCB.nextBase = 0;
         return PCB;
     }());
     TSOS.PCB = PCB;

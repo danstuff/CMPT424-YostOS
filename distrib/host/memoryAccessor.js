@@ -8,7 +8,7 @@ var TSOS;
     var MemoryAccessor = /** @class */ (function () {
         function MemoryAccessor() {
             this.curBase = 0;
-            this.curLimit = 255;
+            this.curLimit = TSOS.MEM_SEGMENT_SIZE;
             //ensure memory exists
             if (!_Memory) {
                 _Kernel.krnTrapError("Global _Memory is undefined");
@@ -23,12 +23,13 @@ var TSOS;
             if (this.curBase + index > this.curLimit) {
                 _Kernel.krnTrapError("Index " + index +
                     " is out of the current segment bounds.");
+                console.log(this.curBase, this.curLimit);
             }
         };
         //single-value setter and getter
         MemoryAccessor.prototype.setValue = function (index, value) {
             this.inSegment(index);
-            _Memory.data[index] = value;
+            _Memory.data[this.curBase + index] = value;
         };
         MemoryAccessor.prototype.getValue = function (index) {
             this.inSegment(index);

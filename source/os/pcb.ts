@@ -25,8 +25,8 @@ module TSOS {
 
     export class PCB {
         // Static properties
-        public static lastID = 0;
-        public static lastBase = 0;
+        public static nextID = 0;
+        public static nextBase = 0;
 
         // Properties
         public processID;
@@ -43,13 +43,14 @@ module TSOS {
         public processState = ProcessState.STOPPED;
 
         public processBase = 0;
-        public processLimit = 256;
+        public processLimit = MEM_SEGMENT_SIZE-1;
 
         constructor() {
             // sequential PID
-            this.processID = PCB.lastID++;
-            this.processBase = PCB.lastBase;
-            PCB.lastBase += this.processLimit;
+            this.processID = PCB.nextID++;
+            this.processBase = PCB.nextBase;
+            this.processLimit = this.processBase+MEM_SEGMENT_SIZE-1;
+            PCB.nextBase = this.processLimit+1;
         }   
     }
 }

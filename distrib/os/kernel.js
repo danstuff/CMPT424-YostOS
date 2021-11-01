@@ -165,10 +165,12 @@ var TSOS;
             }
         };
         Kernel.prototype.krnTrapError = function (msg) {
-            TSOS.Control.hostLog("OS ERROR - TRAP: " + msg);
+            msg = "OS ERROR - TRAP: " + msg;
+            TSOS.Control.hostLog(msg);
             // Display error on console, perhaps in some sort of colored screen. (Maybe blue?)
-            _Console.blueScreen("OS ERROR - TRAP: " + msg);
+            _Console.blueScreen(msg);
             this.krnShutdown();
+            throw new Error(msg);
         };
         return Kernel;
     }());

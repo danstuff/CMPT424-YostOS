@@ -9,7 +9,7 @@ module TSOS {
     export class MemoryAccessor {
 
         public curBase: number = 0;
-        public curLimit: number = 255;
+        public curLimit: number = MEM_SEGMENT_SIZE;
 
         constructor(){
             //ensure memory exists
@@ -29,13 +29,14 @@ module TSOS {
                 _Kernel.krnTrapError(
                     "Index " + index + 
                     " is out of the current segment bounds.");
+                console.log(this.curBase, this.curLimit);
             }
         }
 
         //single-value setter and getter
         public setValue(index: number, value: number) {
             this.inSegment(index);
-            _Memory.data[index] = value;
+            _Memory.data[this.curBase+index] = value;
         }
 
         public getValue(index: number) {

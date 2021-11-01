@@ -151,7 +151,7 @@ var TSOS;
                 pcbTable[i][5] = Control.toHexStr(pcb.Yreg);
                 pcbTable[i][6] = Control.toHexStr(+pcb.Zflag);
                 pcbTable[i][7] = Control.toHexStr(pcb.processPriority);
-                pcbTable[i][8] = TSOS.ProcessState[pcb.processState];
+                pcbTable[i][8] = TSOS.ProcessStrings[pcb.processState];
                 pcbTable[i][9] = "Memory";
             }
             //apply pcbTable to the processes html table

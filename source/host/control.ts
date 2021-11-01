@@ -184,7 +184,7 @@ module TSOS {
                 pcbTable[i][6] = Control.toHexStr(+pcb.Zflag);
                 pcbTable[i][7] = Control.toHexStr(pcb.processPriority);
 
-                pcbTable[i][8] = ProcessState[pcb.processState];
+                pcbTable[i][8] = ProcessStrings[pcb.processState];
                 pcbTable[i][9] = "Memory";
             }
 
