@@ -12,6 +12,8 @@ module TSOS {
     export class Kernel {
         public debugMode: boolean;
 
+        public quantum: number = 6;
+
         //
         // OS Startup and Shutdown Routines
         //

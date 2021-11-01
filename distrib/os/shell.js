@@ -40,6 +40,10 @@ var TSOS;
             addCmd(this.shellRun, "run");
             addCmd(this.shellProcesses, "ps");
             addCmd(this.shellKill, "kill");
+            addCmd(this.shellClearMem, "clearmem");
+            addCmd(this.shellRunAll, "runall");
+            addCmd(this.shellKillAll, "killall");
+            addCmd(this.shellQuantum, "quantum");
             // Display the initial prompt.
             this.putPrompt();
         };
@@ -394,6 +398,18 @@ var TSOS;
             else {
                 Shell.putUsage("kill");
             }
+        };
+        Shell.prototype.shellClearMem = function (args) {
+            for (var i = 0; i < TSOS.MEM_SEGMENT_COUNT; i++) {
+                _MemoryManager.useAllMemory();
+                _MemoryManager.clearArray();
+            }
+        };
+        Shell.prototype.shellRunAll = function (args) {
+        };
+        Shell.prototype.shellKillAll = function (args) {
+        };
+        Shell.prototype.shellQuantum = function (args) {
         };
         return Shell;
     }());

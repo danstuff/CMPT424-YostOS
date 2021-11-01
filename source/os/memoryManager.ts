@@ -20,7 +20,7 @@ module TSOS {
         }
 
         public isValid(index: number) {
-            if(index >= 0 && index < MEM_SEGMENT_SIZE) {
+            if(index >= 0 && index < MEMORY_SIZE) {
                 return true;
             } else {
                 _Kernel.krnTrapError("Index " + index + " out of range");
@@ -30,6 +30,10 @@ module TSOS {
 
         public usePCBSegment(pcb: PCB) {
             _MemoryAccessor.useSegment(pcb.processBase, pcb.processLimit);
+        }
+
+        public useAllMemory() {
+            _MemoryAccessor.useSegment(0, MEMORY_SIZE);
         }
 
         public setValue(index: number, value: number) {

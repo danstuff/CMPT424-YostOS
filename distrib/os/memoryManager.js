@@ -15,7 +15,7 @@ var TSOS;
             }
         };
         MemoryManager.prototype.isValid = function (index) {
-            if (index >= 0 && index < TSOS.MEM_SEGMENT_SIZE) {
+            if (index >= 0 && index < TSOS.MEMORY_SIZE) {
                 return true;
             }
             else {
@@ -25,6 +25,9 @@ var TSOS;
         };
         MemoryManager.prototype.usePCBSegment = function (pcb) {
             _MemoryAccessor.useSegment(pcb.processBase, pcb.processLimit);
+        };
+        MemoryManager.prototype.useAllMemory = function () {
+            _MemoryAccessor.useSegment(0, TSOS.MEMORY_SIZE);
         };
         MemoryManager.prototype.setValue = function (index, value) {
             // ensure index is within memory bounds

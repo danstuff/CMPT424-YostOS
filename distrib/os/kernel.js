@@ -10,6 +10,7 @@ var TSOS;
 (function (TSOS) {
     var Kernel = /** @class */ (function () {
         function Kernel() {
+            this.quantum = 6;
         }
         //
         // OS Startup and Shutdown Routines

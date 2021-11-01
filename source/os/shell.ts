@@ -44,6 +44,10 @@ module TSOS {
             addCmd(this.shellRun, "run");
             addCmd(this.shellProcesses, "ps");
             addCmd(this.shellKill, "kill");
+            addCmd(this.shellClearMem, "clearmem");
+            addCmd(this.shellRunAll, "runall");
+            addCmd(this.shellKillAll, "killall");
+            addCmd(this.shellQuantum, "quantum");
 
             // Display the initial prompt.
             this.putPrompt();
@@ -448,6 +452,25 @@ module TSOS {
             } else {
                 Shell.putUsage("kill");
             }
+        }
+
+        public shellClearMem(args: string[]) {
+            for(var i = 0; i < MEM_SEGMENT_COUNT; i++) {
+                _MemoryManager.useAllMemory();
+                _MemoryManager.clearArray();
+            }
+        }
+
+        public shellRunAll(args: string[]) {
+
+        }
+
+        public shellKillAll(args: string[]) {
+
+        }
+
+        public shellQuantum(args: string[]) {
+
         }
     }
 }
