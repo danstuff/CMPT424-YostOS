@@ -22,37 +22,39 @@ module TSOS {
 
             //perform round robin context switching
             if(this.cycleCount > this.quantum) {
-                var use_next = false;
-                var cur_process: PCB = null;
+                var cur_pcb: PCB = null;
+                var next_pcb: PCB = null;
 
-                //search for the current process, set a flag when found
-                for(var i in _ProcessList) {
+                var i = 0;
+
+                while(next_pcb == null) {
+
+                    //search for the current process, 
                     if(_ProcessList[i].processID == _CPU.PID) {
-                        cur_process = _ProcessList[i];
-                        use_next = true;
+                        if(cur_pcb) {
+                            next_pcb = cur_pcb;
+                        } else {
+                            cur_pcb = _ProcessList[i];
+                        }
 
-                    //if the flag was set, switch to the next ready process
-                    } else if(use_next && 
+                    //then the next ready process
+                    } else if(cur_pcb && 
                               _ProcessList[i].processState ==
                               ProcessState.READY) {
-                    
-                        _KernelInterruptQueue.enqueue(
-                            new Interrupt(
-                                CONTEXT_SWITCH_IRQ,
-                                [cur_process, _ProcessList[i]));
-
-                        use_next = false;
-                        break;
+                        next_pcb = _ProcessList[i];
                     }
+
+                    //increment and loop back to 0
+                    i++;
+                    if(i >= _ProcessList.length) i = 0;
                 }
 
-                //if there was no next process, loop back to 0
-                if(use_next && _ProcessList[0].processState ==
-                    ProcessState.READY) {
+                //if there is a next process, perform a context switch
+                if(cur_pcb && next_pcb && cur_pcb != next_pcb) {
                         _KernelInterruptQueue.enqueue(
                             new Interrupt(
                                 CONTEXT_SWITCH_IRQ,
-                                [cur_process, _ProcessList[0]));
+                                [cur_pcb, next_pcb]));
                 }                
                 
                 this.cycleCount = 0;

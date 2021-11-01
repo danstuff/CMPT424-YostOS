@@ -391,7 +391,7 @@ var TSOS;
         Shell.prototype.shellKill = function (args) {
             if (args.length > 0) {
                 var pid = parseInt(args[0]);
-                _KernelScheduler.stopProcess(_ProcessList[pid]);
+                _KernelDispatcher.stopProcess(_ProcessList[pid]);
                 TSOS.Control.hostUpdateProcessTable();
             }
             else {
@@ -416,7 +416,7 @@ var TSOS;
         };
         Shell.prototype.shellQuantum = function (args) {
             if (args.length > 0) {
-                _Kernel.quantum = parseInt(args[0]);
+                _KernelScheduler.quantum = parseInt(args[0]);
             }
             else {
                 Shell.putUsage("quantum");

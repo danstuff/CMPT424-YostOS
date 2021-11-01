@@ -446,7 +446,7 @@ module TSOS {
         public shellKill(args: string[]) {
             if(args.length > 0) {
                 var pid = parseInt(args[0]);
-                _KernelScheduler.stopProcess(_ProcessList[pid]);
+                _KernelDispatcher.stopProcess(_ProcessList[pid]);
                 Control.hostUpdateProcessTable();
             } else {
                 Shell.putUsage("kill");

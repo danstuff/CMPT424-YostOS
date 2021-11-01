@@ -10,8 +10,6 @@ var TSOS;
 (function (TSOS) {
     var Kernel = /** @class */ (function () {
         function Kernel() {
-            this.quantum = 6;
-            this.cycleCount = 0;
         }
         //
         // OS Startup and Shutdown Routines
@@ -23,6 +21,7 @@ var TSOS;
             _KernelBuffers = new Array(); // Buffers... for the kernel.
             _KernelInputQueue = new TSOS.Queue(); // Where device input lands before being processed out somewhere.
             _KernelScheduler = new TSOS.Scheduler();
+            _KernelDispatcher = new TSOS.Dispatcher();
             // Initialize the console.
             _Console = new TSOS.Console(); // The command line interface / console I/O device.
             _Console.init();
@@ -122,7 +121,7 @@ var TSOS;
                     _StdIn.handleInput();
                     break;
                 case CONTEXT_SWITCH_IRQ:
-                    //TODO
+                    _KernelDispatcher.switchProcess(params[0], params[1]);
                     break;
                 default:
                     this.krnTrapError("Invalid Interrupt Request. irq=" + irq + " params=[" + params + "]");
