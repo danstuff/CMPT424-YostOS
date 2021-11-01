@@ -42,53 +42,6 @@ var TSOS;
             this.isExecuting = false;
             this.PID = 0;
         };
-        //take a PCB, set it to run, and copy its data to the CPU state
-        Cpu.prototype.startProcess = function (pcb) {
-            pcb.processState = TSOS.ProcessState.RUNNING;
-            pcb.programCounter = 0;
-            this.PC = pcb.programCounter;
-            this.Acc = pcb.accumulator;
-            this.Xreg = pcb.Xreg;
-            this.Yreg = pcb.Yreg;
-            this.Zflag = pcb.Zflag;
-            this.isExecuting = true;
-            this.PID = pcb.processID;
-        };
-        Cpu.prototype.syncProcess = function (pcb) {
-            //if PIDs match, this is the current process.
-            //Sync it with CPU state.
-            if (this.PID == pcb.processID) {
-                pcb.programCounter = this.PC;
-                pcb.accumulator = this.Acc;
-                pcb.Xreg = this.Xreg;
-                pcb.Yreg = this.Yreg;
-                pcb.Zflag = this.Zflag;
-                //adjust process state based on whether or not CPU running
-                if (this.isExecuting) {
-                    pcb.processState = TSOS.ProcessState.RUNNING;
-                }
-                else {
-                    pcb.processState = TSOS.ProcessState.DONE;
-                    TSOS.Control.hostUpdateProcessTable();
-                }
-            }
-        };
-        Cpu.prototype.stopProcess = function (pcb) {
-            if (pcb.processID == this.PID) {
-                this.isExecuting = false;
-            }
-            pcb.processState = TSOS.ProcessState.STOPPED;
-        };
-        Cpu.prototype.endProcess = function (pcb) {
-            if (pcb.processID == this.PID) {
-                this.isExecuting = false;
-            }
-            pcb.processState = TSOS.ProcessState.DONE;
-        };
-        Cpu.prototype.switchProcess = function (pcb0, pcb1) {
-            pcb0.processState = TSOS.ProcessState.READY;
-            this.startProcess(pcb1);
-        };
         //advance the program counter and get the value at it's position
         Cpu.prototype.getNextConstant = function () {
             return _MemoryAccessor.getValue(++this.PC);

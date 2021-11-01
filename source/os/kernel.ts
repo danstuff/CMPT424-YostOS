@@ -26,6 +26,8 @@ module TSOS {
             _KernelBuffers = new Array();         // Buffers... for the kernel.
             _KernelInputQueue = new Queue();      // Where device input lands before being processed out somewhere.
 
+            _KernelScheduler = new Scheduler();
+
             // Initialize the console.
             _Console = new Console();             // The command line interface / console I/O device.
             _Console.init();
@@ -92,55 +94,14 @@ module TSOS {
                 // TODO (maybe): Implement a priority queue based on the IRQ number/id to enforce interrupt priority.
                 var interrupt = _KernelInterruptQueue.dequeue();
                 this.krnInterruptHandler(interrupt.irq, interrupt.params);
-            } else if (_CPU.isExecuting) { // If there are no interrupts then run one CPU cycle if there is anything being processed.
+            } else if (_CPU.isExecuting) { 
+                // If there are no interrupts then run one CPU cycle if there is anything being processed.
                 _CPU.cycle();
+                _KernelScheduler.cycle(); 
 
-                //update the process list with the CPU status
-                for(var i in _ProcessList) {
-                    _CPU.syncProcess(_ProcessList[i]);
-                }
-
-                //only do one step at a time if you're in debug mode
-                if(this.debugMode) {
-                    _CPU.isExecuting = false;
-                }
-
-                //perform round robin context switching
-                this.cycleCount++;
-                
-                if(this.cycleCount > this.quantum) {
-                    var use_next = false;
-                    var cur_process: PCB = null;
-
-                    //search for the current process, set a flag when found
-                    for(var i in _ProcessList) {
-                        if(_ProcessList[i].processID == _CPU.PID) {
-                            cur_process = _ProcessList[i];
-                            use_next = true;
-
-                        //if the flag was set, switch to the next process
-                        } else if(use_next && 
-                                  _ProcessList[i].processState ==
-                                  ProcessState.READY) {
-                        
-                            _CPU.switchProcess(cur_process, _ProcessList[i]);
-                            use_next = false;
-                            break;
-                        }
-                    }
-
-                    //if there was no next process, loop back to 0
-                    if(use_next && _ProcessList[i].processState ==
-                        ProcessState.READY) {
-                        _CPU.switchProcess(cur_process, _ProcessList[0]);
-                    }                
-                    
-                    console.log("Switch");
-                    Control.hostUpdateProcessTable();
-                    
-                    this.cycleCount = 0;
-                }
-            } else {                       // If there are no interrupts and there is nothing being executed then just be idle.
+            } else {                       
+                // If there are no interrupts and there is nothing being
+                // executed then just be idle.
                 this.krnTrace("Idle");
             }
             
@@ -180,6 +141,9 @@ module TSOS {
                 case KEYBOARD_IRQ:
                     _krnKeyboardDriver.isr(params);   // Kernel mode device driver
                     _StdIn.handleInput();
+                    break;
+                case CONTEXT_SWITCH_IRQ:
+                    //TODO
                     break;
                 default:
                     this.krnTrapError("Invalid Interrupt Request. irq=" + irq + " params=[" + params + "]");

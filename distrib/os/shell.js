@@ -369,8 +369,7 @@ var TSOS;
             if (args.length > 0) {
                 var pid = parseInt(args[0]);
                 if (_ProcessList[pid]) {
-                    _MemoryManager.usePCBSegment(_ProcessList[pid]);
-                    _CPU.startProcess(_ProcessList[pid]);
+                    _KernelScheduler.scheduleProcess(_ProcessList[pid]);
                     TSOS.Control.hostUpdateProcessTable();
                 }
                 else {
@@ -392,7 +391,7 @@ var TSOS;
         Shell.prototype.shellKill = function (args) {
             if (args.length > 0) {
                 var pid = parseInt(args[0]);
-                _CPU.stopProcess(_ProcessList[pid]);
+                _KernelScheduler.stopProcess(_ProcessList[pid]);
                 TSOS.Control.hostUpdateProcessTable();
             }
             else {
