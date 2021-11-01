@@ -20,10 +20,9 @@ module TSOS {
         }
 
         public isValid(index: number) {
-            if(index >= 0 && index < MEMORY_SIZE) {
+            if(index >= 0 && index < MEM_SEGMENT_SIZE) {
                 return true;
             } else {
-                //TODO make this error not destroy everything
                 _Kernel.krnTrapError("Index " + index + " out of range");
                 return false;
             }

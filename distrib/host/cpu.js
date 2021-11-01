@@ -45,7 +45,7 @@ var TSOS;
         //take a PCB, set it to run, and copy its data to the CPU state
         Cpu.prototype.startProcess = function (pcb) {
             pcb.processState = TSOS.ProcessState.RUNNING;
-            pcb.programCounter = pcb.processBase;
+            pcb.programCounter = 0;
             this.PC = pcb.programCounter;
             this.Acc = pcb.accumulator;
             this.Xreg = pcb.Xreg;

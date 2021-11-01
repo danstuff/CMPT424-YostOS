@@ -367,6 +367,7 @@ var TSOS;
                 if (_ProcessList[pid]) {
                     _MemoryManager.usePCBSegment(_ProcessList[pid]);
                     _CPU.startProcess(_ProcessList[pid]);
+                    TSOS.Control.hostUpdateProcessTable();
                 }
                 else {
                     _StdOut.putLine("ERROR - PCB for Process ID " + pid +
@@ -388,6 +389,7 @@ var TSOS;
             if (args.length > 0) {
                 var pid = parseInt(args[0]);
                 _ProcessList[pid].processState = TSOS.ProcessState.STOPPED;
+                TSOS.Control.hostUpdateProcessTable();
             }
             else {
                 Shell.putUsage("kill");
