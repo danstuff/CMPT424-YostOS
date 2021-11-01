@@ -164,6 +164,11 @@ module TSOS {
             pcb.processState = ProcessState.DONE;
         }
 
+        public switchProcess(pcb0: PCB, pcb1: PCB) {
+            pcb0.processState = ProcessState.READY;
+            this.startProcess(pcb1);
+        }
+
         //advance the program counter and get the value at it's position
         public getNextConstant() {
             return _MemoryAccessor.getValue(++this.PC);

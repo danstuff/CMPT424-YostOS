@@ -11,6 +11,7 @@ var TSOS;
     var Kernel = /** @class */ (function () {
         function Kernel() {
             this.quantum = 6;
+            this.cycleCount = 0;
         }
         //
         // OS Startup and Shutdown Routines
@@ -85,6 +86,32 @@ var TSOS;
                 //only do one step at a time if you're in debug mode
                 if (this.debugMode) {
                     _CPU.isExecuting = false;
+                }
+                //perform round robin context switching
+                this.cycleCount++;
+                if (this.cycleCount > this.quantum) {
+                    var use_next = false;
+                    var cur_process = null;
+                    //search for the current process, set a flag when found
+                    for (var i in _ProcessList) {
+                        if (_ProcessList[i].processID == _CPU.PID) {
+                            cur_process = _ProcessList[i];
+                            use_next = true;
+                            //if the flag was set, switch to the next process
+                        }
+                        else if (use_next) {
+                            _CPU.switchProcess(cur_process, _ProcessList[i]);
+                            use_next = false;
+                            break;
+                        }
+                    }
+                    //if there was no next process, loop back to 0
+                    if (use_next) {
+                        _CPU.switchProcess(cur_process, _ProcessList[0]);
+                    }
+                    console.log("Switch");
+                    TSOS.Control.hostUpdateProcessTable();
+                    this.cycleCount = 0;
                 }
             }
             else { // If there are no interrupts and there is nothing being executed then just be idle.

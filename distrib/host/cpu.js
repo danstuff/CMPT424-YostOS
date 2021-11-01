@@ -85,6 +85,10 @@ var TSOS;
             }
             pcb.processState = TSOS.ProcessState.DONE;
         };
+        Cpu.prototype.switchProcess = function (pcb0, pcb1) {
+            pcb0.processState = TSOS.ProcessState.READY;
+            this.startProcess(pcb1);
+        };
         //advance the program counter and get the value at it's position
         Cpu.prototype.getNextConstant = function () {
             return _MemoryAccessor.getValue(++this.PC);
