@@ -156,7 +156,8 @@ var TSOS;
                 else {
                     if (this.ctrlPressed &&
                         chr == 'c' || chr == 'C') {
-                        _CPU.isExecuting = false;
+                        _OsShell.shellKill(["" + _CPU.PID]);
+                        this.putLine("CPU force halt");
                         _Kernel.krnTrace("CPU force halt");
                     }
                     else {

@@ -40,7 +40,7 @@ module TSOS {
         public Zflag = false;
 
         public processPriority = 0;
-        public processState = ProcessState.STOPPED;
+        public processState = ProcessState.LOADED;
 
         public processBase = 0;
         public processLimit = MEM_SEGMENT_SIZE-1;

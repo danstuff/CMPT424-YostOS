@@ -443,7 +443,7 @@ module TSOS {
         public shellKill(args: string[]) {
             if(args.length > 0) {
                 var pid = parseInt(args[0]);
-                _ProcessList[pid].processState = ProcessState.STOPPED;
+                _CPU.stopProcess(_ProcessList[pid]);
                 Control.hostUpdateProcessTable();
             } else {
                 Shell.putUsage("kill");

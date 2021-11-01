@@ -71,18 +71,18 @@ var TSOS;
                     pcb.processState = TSOS.ProcessState.DONE;
                     TSOS.Control.hostUpdateProcessTable();
                 }
-                //all processes besides the current one should be stopped
-            }
-            else {
-                pcb.processState = TSOS.ProcessState.STOPPED;
             }
         };
         Cpu.prototype.stopProcess = function (pcb) {
-            this.isExecuting = false;
+            if (pcb.processID == this.PID) {
+                this.isExecuting = false;
+            }
             pcb.processState = TSOS.ProcessState.STOPPED;
         };
         Cpu.prototype.endProcess = function (pcb) {
-            this.isExecuting = false;
+            if (pcb.processID == this.PID) {
+                this.isExecuting = false;
+            }
             pcb.processState = TSOS.ProcessState.DONE;
         };
         //advance the program counter and get the value at it's position

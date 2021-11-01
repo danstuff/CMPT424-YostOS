@@ -388,7 +388,7 @@ var TSOS;
         Shell.prototype.shellKill = function (args) {
             if (args.length > 0) {
                 var pid = parseInt(args[0]);
-                _ProcessList[pid].processState = TSOS.ProcessState.STOPPED;
+                _CPU.stopProcess(_ProcessList[pid]);
                 TSOS.Control.hostUpdateProcessTable();
             }
             else {

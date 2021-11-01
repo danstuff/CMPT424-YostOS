@@ -15,11 +15,10 @@ var TSOS;
             }
         };
         MemoryManager.prototype.isValid = function (index) {
-            if (index >= 0 && index < TSOS.MEMORY_SIZE) {
+            if (index >= 0 && index < TSOS.MEM_SEGMENT_SIZE) {
                 return true;
             }
             else {
-                //TODO make this error not destroy everything
                 _Kernel.krnTrapError("Index " + index + " out of range");
                 return false;
             }

@@ -31,7 +31,7 @@ var TSOS;
             this.Yreg = 0;
             this.Zflag = false;
             this.processPriority = 0;
-            this.processState = ProcessState.STOPPED;
+            this.processState = ProcessState.LOADED;
             this.processBase = 0;
             this.processLimit = TSOS.MEM_SEGMENT_SIZE - 1;
             // sequential PID

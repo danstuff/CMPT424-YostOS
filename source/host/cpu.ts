@@ -145,21 +145,22 @@ module TSOS {
                     pcb.processState = ProcessState.DONE;
                     Control.hostUpdateProcessTable();
                 }
-
-            //all processes besides the current one should be stopped
-            } else {
-                pcb.processState = ProcessState.STOPPED;
             }
         }
 
         public stopProcess(pcb: PCB) {
-            this.isExecuting = false;
-            pcb.processState = ProcessState.STOPPED;
+            if(pcb.processID == this.PID) {
+                this.isExecuting = false;
+            }
 
+            pcb.processState = ProcessState.STOPPED;
         }
 
         public endProcess(pcb: PCB) {
-            this.isExecuting = false;
+            if(pcb.processID == this.PID) {
+                this.isExecuting = false;
+            }
+
             pcb.processState = ProcessState.DONE;
         }
 
