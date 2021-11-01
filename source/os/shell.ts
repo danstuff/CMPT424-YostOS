@@ -462,15 +462,23 @@ module TSOS {
         }
 
         public shellRunAll(args: string[]) {
-
+            for(var i in _ProcessList) {
+                _OsShell.shellRun([""+_ProcessList[i].processID]);
+            }
         }
 
         public shellKillAll(args: string[]) {
-
+            for(var i in _ProcessList) {
+                _OsShell.shellKill([""+_ProcessList[i].processID]);
+            }
         }
 
         public shellQuantum(args: string[]) {
-
+            if(args.length > 0) {
+                _Kernel.quantum = parseInt(args[0]);
+            } else {
+                Shell.putUsage("quantum");
+            }
         }
     }
 }

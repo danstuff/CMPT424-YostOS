@@ -406,8 +406,14 @@ var TSOS;
             }
         };
         Shell.prototype.shellRunAll = function (args) {
+            for (var i in _ProcessList) {
+                Shell.shellRun(["" + _ProcessList[i].processID]);
+            }
         };
         Shell.prototype.shellKillAll = function (args) {
+            for (var i in _ProcessList) {
+                Shell.shellKill(["" + _ProcessList[i].processID]);
+            }
         };
         Shell.prototype.shellQuantum = function (args) {
         };
