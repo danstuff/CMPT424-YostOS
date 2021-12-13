@@ -462,10 +462,6 @@ module TSOS {
             for(var i in _ProcessList) {
                 _KernelScheduler.scheduleProcess(_ProcessList[i]);
             }
-
-            if(_ProcessList.length >= 1) {
-                _KernelDispatcher.startProcess(_ProcessList[0]);
-            }
         }
 
         public shellKillAll(args: string[]) {

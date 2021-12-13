@@ -12,7 +12,39 @@ var TSOS;
         function Scheduler() {
             this.quantum = 6;
             this.cycleCount = 0;
+            this.currentPCBIndex = null;
         }
+        Scheduler.prototype.getNextRunnableProcess = function () {
+            //if there's no current process, return the first one
+            if (this.currentPCBIndex == null) {
+                for (var i = 0; i < _ProcessList.length; i++) {
+                    if (_ProcessList[i].processState ==
+                        TSOS.ProcessState.READY) {
+                        console.log(i);
+                        return i;
+                    }
+                }
+                //otherwise, look for the next one
+            }
+            else {
+                var take_next = false;
+                var inc = function (v, c) {
+                    return (v + 1 < c) ? v + 1 : 0;
+                };
+                var i = inc(this.currentPCBIndex, _ProcessList.length);
+                var loops = 2;
+                while (loops > 0) {
+                    if (_ProcessList[i].processState ==
+                        TSOS.ProcessState.READY) {
+                        return i;
+                    }
+                    i = inc(i, _ProcessList.length);
+                    if (i == 0)
+                        loops--;
+                }
+            }
+            return this.currentPCBIndex;
+        };
         Scheduler.prototype.scheduleProcess = function (pcb) {
             pcb.processState = TSOS.ProcessState.READY;
             _Kernel.krnTrace("Process " + pcb.processID + " scheduled");
@@ -21,33 +53,12 @@ var TSOS;
             this.cycleCount++;
             //perform round robin context switching
             if (this.cycleCount > this.quantum) {
-                var cur_pcb = null;
-                var next_pcb = null;
-                var i = 0;
-                while (next_pcb == null) {
-                    //search for the current process, 
-                    if (_ProcessList[i].processID == _CPU.PID) {
-                        if (cur_pcb) {
-                            next_pcb = cur_pcb;
-                        }
-                        else {
-                            cur_pcb = _ProcessList[i];
-                        }
-                        //then the next ready process
-                    }
-                    else if (cur_pcb &&
-                        _ProcessList[i].processState ==
-                            TSOS.ProcessState.READY) {
-                        next_pcb = _ProcessList[i];
-                    }
-                    //increment and loop back to 0
-                    i++;
-                    if (i >= _ProcessList.length)
-                        i = 0;
-                }
+                var next_pcb_i = this.getNextRunnableProcess();
                 //if there is a next process, perform a context switch
-                if (cur_pcb && next_pcb && cur_pcb != next_pcb) {
-                    _KernelInterruptQueue.enqueue(new TSOS.Interrupt(CONTEXT_SWITCH_IRQ, [cur_pcb, next_pcb]));
+                if (this.currentPCBIndex != next_pcb_i) {
+                    _KernelInterruptQueue.enqueue(new TSOS.Interrupt(CONTEXT_SWITCH_IRQ, [_ProcessList[this.currentPCBIndex],
+                        _ProcessList[next_pcb_i]]));
+                    this.currentPCBIndex = next_pcb_i;
                     _Kernel.krnTrace("Context switch scheduled");
                 }
                 this.cycleCount = 0;

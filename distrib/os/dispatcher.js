@@ -62,7 +62,8 @@ var TSOS;
             TSOS.Control.hostUpdateProcessTable();
         };
         Dispatcher.prototype.switchProcess = function (pcb0, pcb1) {
-            pcb0.processState = TSOS.ProcessState.READY;
+            if (pcb0 && pcb0.processState == TSOS.ProcessState.RUNNING)
+                pcb0.processState = TSOS.ProcessState.READY;
             this.startProcess(pcb1);
         };
         return Dispatcher;

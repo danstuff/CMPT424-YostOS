@@ -80,7 +80,6 @@ var TSOS;
             else if (_CPU.isExecuting) {
                 // If there are no interrupts then run one CPU cycle if there is anything being processed.
                 _CPU.cycle();
-                _KernelScheduler.cycle();
                 _KernelDispatcher.syncProcesses();
             }
             else {
@@ -88,6 +87,7 @@ var TSOS;
                 // executed then just be idle.
                 this.krnTrace("Idle");
             }
+            _KernelScheduler.cycle();
             //log memory to memory table
             TSOS.Control.hostUpdateMemoryTable();
             TSOS.Control.hostUpdateCPUTable();

@@ -73,7 +73,8 @@ module TSOS {
         }
 
         public switchProcess(pcb0: PCB, pcb1: PCB) {
-            pcb0.processState = ProcessState.READY;
+            if(pcb0 && pcb0.processState == ProcessState.RUNNING)
+                pcb0.processState = ProcessState.READY;
             this.startProcess(pcb1);
         }
     }
