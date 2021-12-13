@@ -180,9 +180,12 @@ module TSOS {
                 } else if (chr === '#LControl') {
                     this.ctrlPressed = true;
 
+                } else if (chr === '#LShift') {
+                    //do nothing for now
+
                 } else {
                     if(this.ctrlPressed && 
-                      chr == 'c' || chr == 'C') {
+                      (chr == 'c' || chr == 'C')) {
                         _OsShell.shellKill([""+_CPU.PID]);
                         
                         this.putLine("CPU force halt");

@@ -25,6 +25,7 @@ var KeySpecials = {
     38: '#Up',
     40: '#Down',
     8: '#Backspace',
+    16: '#LShift',
     17: '#LControl'
 };
 var KeyPairs = {
