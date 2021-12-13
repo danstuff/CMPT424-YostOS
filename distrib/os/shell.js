@@ -390,7 +390,8 @@ var TSOS;
         Shell.prototype.shellKill = function (args) {
             if (args.length > 0) {
                 var pid = parseInt(args[0]);
-                _KernelDispatcher.stopProcess(_ProcessList[pid]);
+                if (_ProcessList[pid])
+                    _KernelDispatcher.stopProcess(_ProcessList[pid]);
             }
             else {
                 Shell.putUsage("kill");

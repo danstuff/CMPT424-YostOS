@@ -82,7 +82,8 @@ module TSOS {
                 // TODO: Check for caps-lock and handle as shifted if so.
                 _KernelInputQueue.enqueue(chr);
 
-            // check if keycode is a special control button (enter, up arrow, etc.)
+            // check if keycode is a special control button 
+            // (enter, up arrow, etc.)
             } else if (KeySpecials[keyCode]) {
                 chr = KeySpecials[keyCode];
                 _KernelInputQueue.enqueue(chr);
