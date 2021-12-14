@@ -477,5 +477,25 @@ module TSOS {
                 Shell.putUsage("quantum");
             }
         }
+
+        public shellCreate(args: string[]) {
+
+        }
+
+        public shellRead(args: string[]) {
+
+        }
+
+        public shellWrite(args: string[]) {
+
+        }
+
+        public shellDelete(args: string[]) {
+
+        }
+
+        public shellFormat(args: string[]) {
+
+        }
     }
 }

@@ -41,7 +41,10 @@ module TSOS {
             this.krnTrace(_krnKeyboardDriver.status);
 
             //Load the disk device driver
-            this.krnTrace("Loading the keyboard device driver.");
+            this.krnTrace("Loading the Disk device driver.");
+            _krnDiskDriver = new DeviceDriverDisk();
+            _krnDiskDriver.driverEntry();
+            this.krnTrae(_krnDiskDriver.status);
 
             // Initialize the memory manager.
             _MemoryManager = new MemoryManager();
@@ -148,6 +151,8 @@ module TSOS {
                     _KernelDispatcher.switchProcess(params[0], params[1]);
                     break;
                 case DISK_IRQ:
+                    _krnDiskDriver.isr(params);
+                    break;
                 default:
                     this.krnTrapError("Invalid Interrupt Request. irq=" + irq + " params=[" + params + "]");
             }

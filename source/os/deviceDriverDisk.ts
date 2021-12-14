@@ -13,6 +13,10 @@ module TSOS {
         public sector: number = 0;
         public block: number = 0;
 
+        public track_count: number = 16;
+        public sector_count: number = 32;
+        public block_count: number = 64;
+
         constructor() {
             // Override the base method pointers.
             super();

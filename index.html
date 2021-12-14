@@ -115,7 +115,7 @@
                     <canvas id="display"
                             class="bordered solid"
                             width="500px"
-                            height="600px"
+                            height="650px"
                             tabindex="3">
                     </canvas>
                 </td>
@@ -148,7 +148,8 @@
                         <table class="bordered solid scrolling">
                             <thead>
                             <tr>
-                                <th colspan='10'>Processes</th>
+                                <th colspan='8'>Processes</th>
+                                <th colspan='2' id='thSCHED'>Round Robin</th>
                             </tr>
 
                             <tr>
@@ -221,6 +222,20 @@
                     </td>
                     </tr>
                 </table>
+            </tr>
+
+            <tr>
+            <td>
+                <table class="bordered solid scrolling">
+                    <thead>
+                    <tr>
+                        <th colspan="4">Hard Drive</th>
+                    </tr>
+                    </thead>
+                    <tbody id="taHardDrive">
+                    </tbody>
+                </table>
+            </td>
             </tr>
         </table>
     </body>
