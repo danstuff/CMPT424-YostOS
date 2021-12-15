@@ -479,18 +479,37 @@ module TSOS {
         }
 
         public shellCreate(args: string[]) {
-
+            if(args.length > 0) {
+                
+            } else {
+                Shell.putUsage("create");
+            }
         }
 
         public shellRead(args: string[]) {
+            if(args.length > 0) {
+                
+            } else {
+                Shell.putUsage("read");
+            }
 
         }
 
         public shellWrite(args: string[]) {
+            if(args.length > 0) {
+                
+            } else {
+                Shell.putUsage("write");
+            }
 
         }
 
         public shellDelete(args: string[]) {
+            if(args.length > 0) {
+                
+            } else {
+                Shell.putUsage("delete");
+            }
 
         }
 
