@@ -36,7 +36,11 @@ module TSOS {
         }
 
         public deleteBlock() {
+            this.in_use = false;
+            this.next_address = 0;
+            this.data = _krnDiskDriver.clearBlock;
 
+            this.saveBlock();
         }
     }
 
@@ -51,6 +55,8 @@ module TSOS {
         public name: string;
         public file_location: number = 0;
         public file_size: number = 0; // in blocks
+
+        public current_block: Block;
 
         constructor() {}
 
@@ -77,7 +83,14 @@ module TSOS {
                         this.data.substr(61, 3));
 
                     return true;
-                } else if(name === "") {
+                }
+            }
+
+            for(var loc = 0; loc < 256; loc++) {
+                var b = new Block();
+                b.loadBlock(loc):
+
+                if(!b.in_use) {
                     this.file_location = loc;
                     this.file_size = 0;
                     return false;
@@ -101,6 +114,12 @@ module TSOS {
                 DeviceDriverDisk.locNumToStr(this.file_size);
 
             this.saveBlock();
+        }
+
+        getNextBlock() {
+            if(this.file_location == 0) return null;
+            this.current_block.loadBlock(this.file_location);
+            return b;
         }
     }
 }

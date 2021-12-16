@@ -494,7 +494,20 @@ module TSOS {
 
         public shellRead(args: string[]) {
             if(args.length > 0) {
-                
+                var f = new File();
+                if(!f.loadFCB(args[0])) {
+                    _StdOut.putLine("File does not exist.");
+                } else {
+                    StdOut.putLine("---Contents of "+args[0]);
+
+                    var b = f.getNextBlock();
+                    while(b != null) {
+                        StdOut.putText(b.data);
+                        b = f.getNextBlock();
+                    }
+
+                    StdOut.putLine("");
+                }
             } else {
                 Shell.putUsage("read");
             }
@@ -503,7 +516,30 @@ module TSOS {
 
         public shellWrite(args: string[]) {
             if(args.length > 0) {
-                
+                var f = new File();
+                if(!f.loadFCB(args[0])) {
+                    _StdOut.putLine("File does not exist, creating it.");
+                } 
+
+                var arg_str = "";
+                for(var i in args) {
+                    arg_str += args[i];
+                }
+
+                var data_set = [ "" ];
+                var ld = data_set[data_set.length-1];
+                if(ld.length < 64) {
+
+                }
+
+                var b = f.getNextBlock();
+                while(b != null) {
+                    b.data = 
+                    b = f.getNextBlock();
+                }
+
+                StdOut.putLine("");
+
             } else {
                 Shell.putUsage("write");
             }
