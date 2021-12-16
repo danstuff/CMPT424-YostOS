@@ -421,6 +421,36 @@ var TSOS;
                 Shell.putUsage("quantum");
             }
         };
+        Shell.prototype.shellCreate = function (args) {
+            if (args.length > 0) {
+            }
+            else {
+                Shell.putUsage("create");
+            }
+        };
+        Shell.prototype.shellRead = function (args) {
+            if (args.length > 0) {
+            }
+            else {
+                Shell.putUsage("read");
+            }
+        };
+        Shell.prototype.shellWrite = function (args) {
+            if (args.length > 0) {
+            }
+            else {
+                Shell.putUsage("write");
+            }
+        };
+        Shell.prototype.shellDelete = function (args) {
+            if (args.length > 0) {
+            }
+            else {
+                Shell.putUsage("delete");
+            }
+        };
+        Shell.prototype.shellFormat = function (args) {
+        };
         return Shell;
     }());
     TSOS.Shell = Shell;

@@ -178,6 +178,11 @@ var TSOS;
             var descINST = document.getElementById("descINST");
             descINST.innerHTML = TSOS.Cpu.instructions[_CPU.IR].description;
         };
+        //update hard disk table
+        Control.hostUpdateDiskTable = function () {
+            var diskTable = new Array();
+            //TODO
+        };
         //
         // Host Events
         //

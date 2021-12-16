@@ -480,6 +480,12 @@ module TSOS {
 
         public shellCreate(args: string[]) {
             if(args.length > 0) {
+                var f = new File();
+                if(f.loadFCB(args[0])) {
+                    _StdOut.putLine("File already exists.");
+                } else {
+                    f.saveFCB();
+                }
                 
             } else {
                 Shell.putUsage("create");

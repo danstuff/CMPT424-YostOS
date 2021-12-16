@@ -219,6 +219,18 @@ module TSOS {
             descINST.innerHTML = Cpu.instructions[_CPU.IR].description;
         }
 
+        //update hard disk table
+        public static hostUpdateDiskTable() {
+            var diskTable = new Array<any>();
+
+            for(var i = 0; i < 64; i++) {
+                _krnDiskDriver.krnDskMove(i);
+                diskTable[i] = _krnDiskDriver.krnDskRead();
+            }
+
+            Control.hostSetTable("taHardDrive", diskTable);
+        }
+
         //
         // Host Events
         //

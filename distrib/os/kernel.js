@@ -33,6 +33,11 @@ var TSOS;
             _krnKeyboardDriver = new TSOS.DeviceDriverKeyboard(); // Construct it.
             _krnKeyboardDriver.driverEntry(); // Call the driverEntry() initialization routine.
             this.krnTrace(_krnKeyboardDriver.status);
+            //Load the disk device driver
+            this.krnTrace("Loading the Disk device driver.");
+            _krnDiskDriver = new TSOS.DeviceDriverDisk();
+            _krnDiskDriver.driverEntry();
+            this.krnTrace(_krnDiskDriver.status);
             // Initialize the memory manager.
             _MemoryManager = new TSOS.MemoryManager();
             _MemoryManager.init();
@@ -123,6 +128,9 @@ var TSOS;
                     break;
                 case CONTEXT_SWITCH_IRQ:
                     _KernelDispatcher.switchProcess(params[0], params[1]);
+                    break;
+                case DISK_IRQ:
+                    _krnDiskDriver.isr(params);
                     break;
                 default:
                     this.krnTrapError("Invalid Interrupt Request. irq=" + irq + " params=[" + params + "]");

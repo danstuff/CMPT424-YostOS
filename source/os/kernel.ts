@@ -44,7 +44,7 @@ module TSOS {
             this.krnTrace("Loading the Disk device driver.");
             _krnDiskDriver = new DeviceDriverDisk();
             _krnDiskDriver.driverEntry();
-            this.krnTrae(_krnDiskDriver.status);
+            this.krnTrace(_krnDiskDriver.status);
 
             // Initialize the memory manager.
             _MemoryManager = new MemoryManager();
@@ -113,6 +113,7 @@ module TSOS {
             //log memory to memory table
             Control.hostUpdateMemoryTable();
             Control.hostUpdateCPUTable();
+            Control.hostUpdateDiskTable();
         }
 
         //
