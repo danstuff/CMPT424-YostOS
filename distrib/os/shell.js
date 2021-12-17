@@ -44,6 +44,11 @@ var TSOS;
             addCmd(this.shellRunAll, "runall");
             addCmd(this.shellKillAll, "killall");
             addCmd(this.shellQuantum, "quantum");
+            addCmd(this.shellCreate, "create");
+            addCmd(this.shellRead, "read");
+            addCmd(this.shellWrite, "write");
+            addCmd(this.shellDelete, "delete");
+            addCmd(this.shellFormat, "format");
             // Display the initial prompt.
             this.putPrompt();
         };
@@ -423,6 +428,13 @@ var TSOS;
         };
         Shell.prototype.shellCreate = function (args) {
             if (args.length > 0) {
+                var f = new TSOS.File();
+                if (f.loadFCB(args[0])) {
+                    _StdOut.putLine("File already exists.");
+                }
+                else {
+                    f.saveFCB();
+                }
             }
             else {
                 Shell.putUsage("create");
@@ -430,6 +442,23 @@ var TSOS;
         };
         Shell.prototype.shellRead = function (args) {
             if (args.length > 0) {
+                var f = new TSOS.File();
+                if (!f.loadFCB(args[0])) {
+                    _StdOut.putLine("File does not exist.");
+                }
+                else {
+                    _StdOut.putLine("---Contents of " + args[0]);
+                    if (f.next_address) {
+                        var b = new TSOS.Block();
+                        b.loadBlock(f.next_address);
+                        _StdOut.putText(b.data.substr(4));
+                        while (b.next_address != 0) {
+                            b.loadBlock(b.next_address);
+                            _StdOut.putText(b.data.substr(4));
+                        }
+                    }
+                    _StdOut.putLine("");
+                }
             }
             else {
                 Shell.putUsage("read");
@@ -437,6 +466,17 @@ var TSOS;
         };
         Shell.prototype.shellWrite = function (args) {
             if (args.length > 0) {
+                var f = new TSOS.File();
+                if (!f.loadFCB(args[0])) {
+                    _StdOut.putLine("File does not exist.");
+                    return;
+                }
+                var arg_str = "";
+                for (var i = 1; i < args.length; i++) {
+                    arg_str += args[i] + " ";
+                }
+                f.addToFile(arg_str);
+                _StdOut.putLine("");
             }
             else {
                 Shell.putUsage("write");
@@ -444,12 +484,25 @@ var TSOS;
         };
         Shell.prototype.shellDelete = function (args) {
             if (args.length > 0) {
+                var f = new TSOS.File();
+                if (!f.loadFCB(args[0])) {
+                    _StdOut.putLine("File does exist.");
+                }
+                else {
+                    f["delete"]();
+                }
             }
             else {
                 Shell.putUsage("delete");
             }
         };
         Shell.prototype.shellFormat = function (args) {
+            for (var loc = 0; loc < 2048; loc++) {
+                _StdOut.putLine(loc.toString());
+                var b = new TSOS.Block();
+                b.loadBlock(loc);
+                b["delete"]();
+            }
         };
         return Shell;
     }());

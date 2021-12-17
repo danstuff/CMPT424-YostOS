@@ -96,7 +96,8 @@ var TSOS;
             // TODO in the future: Optionally update a log database or some streaming service.
         };
         //apply a 2D array to an HTML table
-        Control.hostSetTable = function (tableID, tableData) {
+        Control.hostSetTable = function (tableID, tableData, single) {
+            if (single === void 0) { single = false; }
             var taBody = document
                 .getElementById(tableID);
             var taBodyNew = document.createElement("tbody");
@@ -104,9 +105,15 @@ var TSOS;
             //populate the new table body with data
             for (var i in tableData) {
                 var taRow = taBodyNew.insertRow(-1);
-                for (var j in tableData[i]) {
+                if (single) {
                     var taCell = taRow.insertCell(-1);
-                    taCell.innerHTML = tableData[i][j];
+                    taCell.innerHTML = tableData[i];
+                }
+                else {
+                    for (var j in tableData[i]) {
+                        var taCell = taRow.insertCell(-1);
+                        taCell.innerHTML = tableData[i][j];
+                    }
                 }
             }
             //replace the old body with the new one
@@ -181,7 +188,11 @@ var TSOS;
         //update hard disk table
         Control.hostUpdateDiskTable = function () {
             var diskTable = new Array();
-            //TODO
+            for (var i = 0; i < 64; i++) {
+                _krnDiskDriver.krnDskMove(i);
+                diskTable[i] = _krnDiskDriver.krnDskRead();
+            }
+            Control.hostSetTable("taHardDrive", diskTable, true);
         };
         //
         // Host Events

@@ -96,6 +96,7 @@ var TSOS;
             //log memory to memory table
             TSOS.Control.hostUpdateMemoryTable();
             TSOS.Control.hostUpdateCPUTable();
+            TSOS.Control.hostUpdateDiskTable();
         };
         //
         // Interrupt Handling

@@ -33,19 +33,20 @@ var TSOS;
             _this.track_count = 0xFF; // 256 tracks per disk
             _this.sector_count = 0xFF; // 256 sectors per track
             _this.block_count = 0xFF; // 256 blocks per sector
+            _this.clearBlock = "";
             _this.driverEntry = _this.krnDskDriverEntry;
             _this.isr = _this.krnDskMove;
+            for (var i = 0; i < 64; i++)
+                _this.clearBlock += "\0";
             return _this;
         }
         DeviceDriverDisk.locStrToNum = function (str) {
-            return;
-            str.charCodeAt(0) +
+            return str.charCodeAt(0) +
                 str.charCodeAt(1) * 0x100 +
                 str.charCodeAt(2) * 0x10000;
         };
         DeviceDriverDisk.locNumToStr = function (num) {
-            return;
-            String.fromCharCode(num & 0x0000FF) +
+            return String.fromCharCode(num & 0x0000FF) +
                 String.fromCharCode((num & 0x00FF00) / 0x100) +
                 String.fromCharCode((num & 0xFF0000) / 0x10000);
         };
@@ -72,11 +73,17 @@ var TSOS;
             this.block = +loc & 0xFF0000 / 0x10000;
         };
         DeviceDriverDisk.prototype.krnDskRead = function () {
-            return sessionStorage.getItem(this.getDskLoc().toString());
+            return sessionStorage.getItem(DeviceDriverDisk.locNumToStr(this.getDskLoc())) ||
+                this.clearBlock;
         };
         DeviceDriverDisk.prototype.krnDskWrite = function (block) {
-            sessionStorage.setItem(this.getDskLoc().toString(), block);
+            sessionStorage.setItem(DeviceDriverDisk.locNumToStr(this.getDskLoc()), block);
+            TSOS.Control.hostUpdateDiskTable();
         };
+        DeviceDriverDisk.prototype.krnDskClear = function () {
+            this.krnDskWrite(this.clearBlock);
+        };
+        DeviceDriverDisk.LOC_COUNT = 0xFFFFFF;
         return DeviceDriverDisk;
     }(TSOS.DeviceDriver));
     TSOS.DeviceDriverDisk = DeviceDriverDisk;

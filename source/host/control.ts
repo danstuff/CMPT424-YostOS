@@ -113,7 +113,8 @@ module TSOS {
         }
 
         //apply a 2D array to an HTML table
-        public static hostSetTable(tableID: string, tableData) {
+        public static hostSetTable(tableID: string, tableData,
+                                   single=false) {
             var taBody = <HTMLTableSectionElement> document
                 .getElementById(tableID);
             var taBodyNew = document.createElement("tbody");
@@ -123,9 +124,14 @@ module TSOS {
             for(var i in tableData) {
                 var taRow = taBodyNew.insertRow(-1);
 
-                for(var j in tableData[i]) {
+                if(single) {
                     var taCell = taRow.insertCell(-1);
-                    taCell.innerHTML = tableData[i][j];
+                    taCell.innerHTML = tableData[i];
+                } else {
+                    for(var j in tableData[i]) {
+                        var taCell = taRow.insertCell(-1);
+                        taCell.innerHTML = tableData[i][j];
+                    }
                 }
             }
     
@@ -221,14 +227,14 @@ module TSOS {
 
         //update hard disk table
         public static hostUpdateDiskTable() {
-            var diskTable = new Array<any>();
+            var diskTable = new Array<string>();
 
             for(var i = 0; i < 64; i++) {
                 _krnDiskDriver.krnDskMove(i);
                 diskTable[i] = _krnDiskDriver.krnDskRead();
             }
 
-            Control.hostSetTable("taHardDrive", diskTable);
+            Control.hostSetTable("taHardDrive", diskTable, true);
         }
 
         //

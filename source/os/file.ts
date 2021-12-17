@@ -24,13 +24,32 @@ module TSOS {
             
         }
 
+        public createBlock() {
+            //search first sector for an empty block
+            var loc = 0;
+            while(loc < 2048) {
+                var b = new Block();
+                b.loadBlock(loc);
+
+                if(!b.in_use) {
+                    this.loadBlock(loc);
+                    this.in_use = true;
+                    return true;
+                }
+
+                loc++;
+            }
+
+            return false;
+        }
+
         public saveBlock() {
             _krnDiskDriver.krnDskMove(this.address);
 
             this.data = 
                 ((this.in_use) ? "U" : "\0") +
                 DeviceDriverDisk.locNumToStr(this.next_address) +
-                this.data.slice(3);
+                this.data.slice(4);
             
             _krnDiskDriver.krnDskWrite(this.data);
         }
@@ -42,42 +61,70 @@ module TSOS {
 
             this.saveBlock();
         }
+
+        public addNextBlock() {
+            if(this.next_address == 0) {
+                var nb = new Block();
+                nb.createBlock();
+
+                this.next_address = nb.address;
+                this.saveBlock();
+                return nb;
+
+            } else {
+                var nb = new Block();
+                nb.loadBlock(this.next_address);
+                
+                if(nb.in_use) {
+                    return nb.addNextBlock(); 
+                } else {
+                    return nb;
+                }
+            }
+        }
+
+        public delete() {
+            if(this.next_address != 0) {
+                var nb = new Block();
+                nb.loadBlock(this.next_address);
+                nb.delete(); 
+            }
+
+            this.in_use = false;
+            this.next_address = 0;
+            this.saveBlock();
+        }
     }
 
     export class File extends Block {
         //FCBs are 64 bytes in length
         //in use - 1 byte
         //next block address - 3 bytes
-        //name - 54 bytes/characters
-        //file_location - 3 bytes
+        //name - 57 bytes/characters
         //file_size - 3 bytes
 
         public name: string;
-        public file_location: number = 0;
         public file_size: number = 0; // in blocks
 
-        public current_block: Block;
-
-        constructor() {}
+        constructor() {
+            super();
+        }
 
         loadFCB(filename: string) {
             this.name = filename;
 
-            //search the first sector for FCBs
+            //pass 1  - search the first sector for matching FCBs
             for(var loc = 0; loc < 256; loc++) {
                 var b = new Block();
                 b.loadBlock(loc);
 
-                //center 50 bytes are name
-                var name = b.data.substr(4, 54).trim();
+                //center 57 bytes are name
+                var name = b.data.substr(4, 57).replace(/\0/g, "");
 
-                if(name === this.name) {
+                if(b.in_use && name === this.name) {
                     this.loadBlock(loc);
 
-                    //final 6 bytes are location and size
-                    this.file_location = 
-                        DeviceDriverDisk.locStrToNum(
-                        this.data.substr(58, 3));
+                    //final 3 bytes are size
                     this.file_size = 
                         DeviceDriverDisk.locStrToNum(
                         this.data.substr(61, 3));
@@ -86,21 +133,13 @@ module TSOS {
                 }
             }
 
-            for(var loc = 0; loc < 256; loc++) {
-                var b = new Block();
-                b.loadBlock(loc):
-
-                if(!b.in_use) {
-                    this.file_location = loc;
-                    this.file_size = 0;
-                    return false;
-                }
-            }
-
+            //pass 2 - search for an empty FCB
+            this.createBlock();
             return false;
         }
 
         saveFCB() {
+            //ensure equal number of characters
             var space_count = 54 - this.name.length;            
         
             if(space_count > 0) {
@@ -109,17 +148,20 @@ module TSOS {
                 this.name = this.name.substr(0, 54);
             }
 
+            //put name into data
             this.data = this.data.slice(0, 4) + this.name +
-                DeviceDriverDisk.locNumToStr(this.file_location) +
                 DeviceDriverDisk.locNumToStr(this.file_size);
 
             this.saveBlock();
         }
 
-        getNextBlock() {
-            if(this.file_location == 0) return null;
-            this.current_block.loadBlock(this.file_location);
-            return b;
+        addToFile(data) {
+            var b = this.addNextBlock();
+            b.in_use = true;
+            b.data = b.data.slice(0, 4) + data;
+            this.file_size++;
+            b.saveBlock();
+            this.saveFCB();
         }
     }
 }

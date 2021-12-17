@@ -17,6 +17,8 @@ module TSOS {
         public sector_count: number = 0xFF;  // 256 sectors per track
         public block_count: number = 0xFF;  // 256 blocks per sector
 
+        public static LOC_COUNT: number = 0xFFFFFF;
+
         public clearBlock: string = "";
 
         constructor() {
@@ -29,15 +31,13 @@ module TSOS {
         }
 
         static locStrToNum(str: string) : number {
-            return 
-                str.charCodeAt(0) + 
+            return str.charCodeAt(0) + 
                 str.charCodeAt(1) * 0x100 +
                 str.charCodeAt(2) * 0x10000;
         }
 
         static locNumToStr(num: number) : string {
-            return
-                String.fromCharCode( num & 0x0000FF) +
+            return String.fromCharCode(num & 0x0000FF) +
                 String.fromCharCode((num & 0x00FF00) / 0x100) +
                 String.fromCharCode((num & 0xFF0000) / 0x10000);
         }
@@ -70,12 +70,14 @@ module TSOS {
         }
 
         public krnDskRead() {
-            return sessionStorage.getItem(this.getDskLoc().toString()) ||
+            return sessionStorage.getItem(
+                DeviceDriverDisk.locNumToStr(this.getDskLoc())) ||
                 this.clearBlock;
         }
 
         public krnDskWrite(block) {
-            sessionStorage.setItem(this.getDskLoc().toString(), block);
+            sessionStorage.setItem(
+                DeviceDriverDisk.locNumToStr(this.getDskLoc()), block);
             Control.hostUpdateDiskTable();
         }
 

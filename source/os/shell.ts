@@ -48,6 +48,11 @@ module TSOS {
             addCmd(this.shellRunAll, "runall");
             addCmd(this.shellKillAll, "killall");
             addCmd(this.shellQuantum, "quantum");
+            addCmd(this.shellCreate, "create");
+            addCmd(this.shellRead, "read");
+            addCmd(this.shellWrite, "write");
+            addCmd(this.shellDelete, "delete");
+            addCmd(this.shellFormat, "format");
 
             // Display the initial prompt.
             this.putPrompt();
@@ -498,15 +503,20 @@ module TSOS {
                 if(!f.loadFCB(args[0])) {
                     _StdOut.putLine("File does not exist.");
                 } else {
-                    StdOut.putLine("---Contents of "+args[0]);
+                    _StdOut.putLine("---Contents of "+args[0]);
 
-                    var b = f.getNextBlock();
-                    while(b != null) {
-                        StdOut.putText(b.data);
-                        b = f.getNextBlock();
+                    if(f.next_address) {
+                        var b = new Block();
+                        b.loadBlock(f.next_address);
+                        _StdOut.putText(b.data.substr(4));
+                        
+                        while(b.next_address != 0) {
+                            b.loadBlock(b.next_address);
+                            _StdOut.putText(b.data.substr(4));
+                        }
                     }
 
-                    StdOut.putLine("");
+                    _StdOut.putLine("");
                 }
             } else {
                 Shell.putUsage("read");
@@ -518,36 +528,32 @@ module TSOS {
             if(args.length > 0) {
                 var f = new File();
                 if(!f.loadFCB(args[0])) {
-                    _StdOut.putLine("File does not exist, creating it.");
+                    _StdOut.putLine("File does not exist.");
+                    return;
                 } 
 
                 var arg_str = "";
-                for(var i in args) {
-                    arg_str += args[i];
+                for(var i = 1; i < args.length; i++) {
+                    arg_str += args[i] + " ";
                 }
 
-                var data_set = [ "" ];
-                var ld = data_set[data_set.length-1];
-                if(ld.length < 64) {
+                f.addToFile(arg_str);
 
-                }
-
-                var b = f.getNextBlock();
-                while(b != null) {
-                    b.data = 
-                    b = f.getNextBlock();
-                }
-
-                StdOut.putLine("");
+                _StdOut.putLine("");
 
             } else {
                 Shell.putUsage("write");
             }
-
         }
 
         public shellDelete(args: string[]) {
             if(args.length > 0) {
+                var f = new File();
+                if(!f.loadFCB(args[0])) {
+                    _StdOut.putLine("File does exist.");
+                } else {
+                    f.delete();
+                }
                 
             } else {
                 Shell.putUsage("delete");
@@ -556,7 +562,12 @@ module TSOS {
         }
 
         public shellFormat(args: string[]) {
-
+            for(var loc = 0; loc < 2048; loc++) {
+                _StdOut.putLine(loc.toString());
+                var b = new Block();
+                b.loadBlock(loc);
+                b.delete();
+            }
         }
     }
 }

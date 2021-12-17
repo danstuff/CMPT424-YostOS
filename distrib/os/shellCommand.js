@@ -111,6 +111,31 @@ var TSOS;
                 usage: "<int>",
                 help: " set the Round Robin quantum.",
                 manual: "Set the number of CPU cycles used for the Round Robin quantum."
+            },
+            "read": {
+                usage: "<filename>",
+                help: " read a file.",
+                manual: "Read in bytes from a file and display them to the screen."
+            },
+            "write": {
+                usage: "<filename> <data>",
+                help: " write a file.",
+                manual: "Write <data> to the file at <filename>."
+            },
+            "create": {
+                usage: "<filename>",
+                help: " create a file.",
+                manual: "Create a new file at <filename>."
+            },
+            "delete": {
+                usage: "<filename>",
+                help: " delete a file.",
+                manual: "Delete the file at <filename>."
+            },
+            "format": {
+                usage: "",
+                help: " delete all data on disk.",
+                manual: "Delete all of the data in session storage."
             }
         };
         return ShellCommand;
